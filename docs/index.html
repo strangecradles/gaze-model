@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gaze Tracking at the Scan-Line Rate with a Multimodal Particle Filter</title>
+<meta name="description" content="Per-line Bayesian gaze reconstruction from a scanning ophthalmoscope: a multimodal particle filter with a saccadic main-sequence prior resolves retinal aliasing at the scan-line rate.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400;1,8..60,600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+
+<script>
+  window.MathJax = {
+    tex: {
+      inlineMath: [['\\(', '\\)']],
+      displayMath: [['\\[', '\\]']],
+      tags: 'all'
+    },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+
+<body>
+<div class="wrap">
+
+<!-- ===================== HEADER ===================== -->
+<header class="paper-head">
+  <p class="eyebrow">Preprint &middot; under review</p>
+  <h1 class="paper-title">Gaze Tracking at the Scan-Line Rate with a Multimodal Particle Filter</h1>
+  <p class="subtitle">Resolving retinal aliasing with a saccadic-dynamics prior and a slow two-dimensional anchor</p>
+
+  <div class="byline">
+    <span class="author">Ashton Perlroth</span>
+  </div>
+  <p class="affil">Kodiak</p>
+
+  <ul class="badges">
+    <li><a href="#code">Code</a></li>
+    <li><a href="#results">Results</a></li>
+    <li><a href="#video">Video</a></li>
+    <li><a href="#bibtex">BibTeX</a></li>
+  </ul>
+</header>
+
+<!-- ===================== ABSTRACT ===================== -->
+<section id="abstract" class="abstract">
+  <h2>Abstract</h2>
+  <p>
+  A scanning ophthalmoscope acquires the retina one fast line at a time, producing a measurement stream at
+  tens of kilohertz that is, in principle, an ideal substrate for high-rate gaze estimation. In practice a
+  single line is a weak and ambiguous observation: the retina is quasi-periodic, so one line matches a
+  reference at many spatial offsets and the standard cross-correlation estimator commits to the wrong match
+  whenever the eye moves quickly. We cast per-line gaze estimation as recursive Bayesian inference and solve
+  it with a particle filter whose belief is deliberately <em>multimodal</em>. Each particle proposes a gaze
+  state, renders the line it would produce from a recent frame through a frozen differentiable decoder, and
+  is scored by appearance match; an interacting-multiple-model prior built from the oculomotor main sequence
+  propagates the cloud, and a slow two-dimensional registration re-anchors it when appearance becomes
+  uninformative. We characterize the method on a controlled synthetic benchmark with known ground truth and
+  deploy it on real captures up to the 11.8&nbsp;kHz line rate. With exact physics and labels, fixation and
+  smooth-pursuit error reaches \(0.86'\) at 12&nbsp;kHz and the rate of persistent tracking failures collapses
+  above a predicted aliasing gate; through-saccade accuracy is shown to be fundamentally limited by motion
+  blur rather than by the estimator. Against five baselines on real data, the filter attains the best
+  fine-motion precision (\(1.76'\)) while preserving the absolute accuracy of the slow channel, and the
+  fixational eye movements it recovers reproduce the expected oculomotor statistics. We position the approach
+  relative to retinal-imaging eye trackers and outline the ground-truth experiments required to establish
+  it at the frontier.
+  </p>
+</section>
+
+<!-- ===================== 1. INTRODUCTION ===================== -->
+<section id="intro">
+  <h2>1&ensp;Introduction</h2>
+
+  <p>
+  Estimating where the eye points, quickly and precisely, is a shared bottleneck across active vision,
+  gaze-contingent display, retinal imaging, and the study of fixational eye movements. Scanning
+  ophthalmoscopes are attractive sensors for this task because they observe the retina itself rather than the
+  pupil, and because they do so sequentially: a fast scanner sweeps a thin line across the tissue and
+  successive lines accumulate into a frame. The line stream arrives at the scanner&rsquo;s line rate&mdash;here
+  \(11.8\) kHz&mdash;while complete frames arrive only at \(14.6\) Hz. A method that could turn each line into a
+  gaze estimate would deliver three orders of magnitude more temporal resolution than frame registration.
+  </p>
+
+  <p>
+  The obstacle is that a single line is a poor locator. Retinal appearance is approximately periodic at the
+  scale of the photoreceptor mosaic and of larger vascular structure, so the similarity between an observed
+  line and a reference frame exhibits several near-equal maxima spaced roughly one degree apart
+  (Figure&nbsp;2a). Any estimator that maintains a single hypothesis&mdash;a Kalman filter, or the
+  <span class="smallcaps">argmax</span> of a cross-correlation&mdash;will intermittently lock to the wrong
+  maximum, and once locked it cannot recover from local evidence alone. This failure is not hypothetical:
+  four single-hypothesis trackers were tried and discarded over the course of this project before we adopted
+  the approach described here.
+  </p>
+
+  <p>
+  Our key observation is that the ambiguity is structured and therefore resolvable. The maxima are separated by
+  a known alias spacing; the eye obeys known dynamics (smooth pursuit and drift at low velocity, saccades on a
+  stereotyped peak-velocity&ndash;amplitude main sequence); and a slow but unambiguous absolute fix is available
+  from frame registration. A representation that carries all the maxima simultaneously, weights them by a
+  physically grounded motion model, and falls back on the slow fix when appearance fails can track the correct
+  branch through motion that defeats a single-hypothesis estimator. A particle filter realizes exactly this
+  representation.
+  </p>
+
+  <p>
+  A useful way to read the geometry is that one axis is easy and one is hard, set entirely by the line
+  orientation. Motion <em>along</em> the line shifts a one-dimensional signal within the sweep and is recovered
+  by a direct, unimodal measurement&mdash;the trusted channel. Motion <em>across</em> the line moves the sweep
+  onto different tissue and is recoverable only by two-dimensional appearance matching&mdash;the aliased,
+  multimodal channel. In our raster the fast sweep is a column, so the trusted axis is vertical and the hard
+  axis is horizontal; the method targets the hard axis and reuses the trusted axis as a low-variance
+  measurement.
+  </p>
+
+  <p class="contrib-lead"><strong>Contributions.</strong></p>
+  <ul class="contributions">
+    <li><strong>Per-line gaze as multimodal filtering.</strong> We formulate scan-line gaze estimation as
+    recursive Bayesian inference and instantiate it as an analysis-by-synthesis particle filter that keeps the
+    aliased belief explicit, couples a saccadic main-sequence prior to a trusted along-axis measurement, and
+    reacquires from a slow absolute anchor under an observation-quality monitor.</li>
+    <li><strong>A controlled benchmark with an interpretable failure boundary.</strong> Under exact physics and
+    known labels we sweep the effective rate and show that fixation/pursuit reaches sub-\(0.1^\circ\) accuracy,
+    that the rate of persistent failures collapses across a predicted aliasing gate, and that the residual
+    through-saccade error is a motion-blur limit of the sensor rather than of the estimator.</li>
+    <li><strong>Real-data evaluation against five baselines.</strong> On real captures up to \(11.8\) kHz the
+    filter attains the best fine-motion precision while matching the absolute accuracy of frame registration,
+    with the recovered microsaccades obeying the main sequence and an independent tracker confirming sub-frame
+    content.</li>
+    <li><strong>Positioning and a falsifiable roadmap.</strong> We state plainly where the method stands
+    against the retinal-tracking literature and specify the adaptive-optics substrate and artificial-eye
+    protocol that would test it against ground truth.</li>
+  </ul>
+</section>
+
+<!-- ===================== 2. RELATED WORK ===================== -->
+<section id="related">
+  <h2>2&ensp;Related Work</h2>
+
+  <p>
+  <strong>Retinal-image eye tracking.</strong> Strip-based registration of scanning-laser-ophthalmoscope
+  (SLO) imagery is the dominant approach: each frame is divided into strips parallel to the fast scanner and
+  each strip is cross-correlated against a reference, yielding sub-frame motion at up to roughly a kilohertz
+  [1,&nbsp;3]. With adaptive optics and a curated reference frame, digital registration reaches residual motion
+  of \(0.04\)&ndash;\(0.06'\) [2], the most accurate eye tracking reported. These methods are accurate but
+  rely on the argmax of the strip correlation, which presumes the correct peak dominates; they avoid aliasing
+  by making strips tall enough to be locally unique, which bounds their temporal resolution.</p>
+
+  <p>
+  <strong>Probabilistic tracking and analysis-by-synthesis.</strong> Particle filters are standard for
+  nonlinear, non-Gaussian state estimation and have been applied to retinal motion offline for optical-coherence-tomography
+  volume alignment [4], but not, to our knowledge, as an online per-line gaze estimator with an explicitly
+  multimodal appearance likelihood. Our observation model follows the analysis-by-synthesis principle&mdash;score
+  a hypothesis by rendering its predicted observation through a differentiable forward model and comparing to
+  the measurement&mdash;which is widely used in model-based tracking and inverse rendering. The novelty here is
+  to retain the full multimodal likelihood induced by aliasing rather than collapse it, and to disambiguate it
+  with oculomotor dynamics.</p>
+
+  <p>
+  <strong>Oculomotor priors.</strong> The saccadic main sequence (a tight peak-velocity&ndash;amplitude
+  relation) and the drift/microsaccade structure of fixation are well characterized and have been used as
+  kinematic constraints in prior high-rate trackers [5]. We encode them as an interacting-multiple-model prior
+  with a pursuit mode and a ballistic saccade mode, and use the prior only to break alias ties and bridge brief
+  dropouts&mdash;never as a smoothness penalty, which we found rewards stimulus-envelope following.</p>
+</section>
+
+<!-- ===================== 3. PROBLEM FORMULATION ===================== -->
+<section id="problem">
+  <h2>3&ensp;Problem Formulation</h2>
+
+  <p>
+  At each line index \(t\) the sensor returns a one-dimensional measurement \(z_t \in \mathbb{R}^{L}\): the
+  intensity profile of one fast sweep, acquired at time \(t/f_{\text{line}}\) with \(f_{\text{line}}=11.8\)
+  kHz. A recent frame, registered into a common coordinate frame, serves as an appearance map (atlas)
+  \(\mathcal{A}\). We seek the two-dimensional gaze at line rate, decomposed into the trusted along-axis
+  position and the aliased across-axis (perp) position.</p>
+
+  <p>
+  <strong>Forward model.</strong> Given a gaze state, the line the sensor would observe is obtained by sampling
+  the atlas along the swept path. We write this as a differentiable decoder
+  \(\hat z = g(p, a; \mathcal{A})\), where \(p\) is the perp coordinate, \(a\) the along coordinate, and
+  \(g\) is bilinear atlas interpolation along the sweep. Because the scanner advances independently of the eye,
+  the observed line changes for two reasons&mdash;the known raster advance and the unknown eye motion. We absorb
+  the former by centering the decoder window on the current scan column, so \(p\) is the gaze
+  <em>residual</em> relative to where the scan nominally points; the slow registration supplies the absolute
+  offset, recovered as \(\hat x_{\text{gaze}}=\text{anchor}_x + \hat p\) and
+  \(\hat y_{\text{gaze}}=\text{anchor}_y + \hat a\).</p>
+
+  <p>
+  <strong>Why the perp likelihood is multimodal.</strong> The appearance match
+  \(s(p) = \text{NCC}\!\left(z_t,\, g(p,a;\mathcal{A})\right)\) inherits the retina&rsquo;s quasi-periodicity:
+  it has a sharp true peak and a comb of alias peaks at spacing \(\Delta\) (Figure&nbsp;2a). A point estimator
+  reduces \(s(p)\) to \(\arg\max_p s(p)\) and is therefore one bad line away from a persistent mislock. The
+  inference problem is to maintain the full posterior over \(p\) and resolve the comb using dynamics and the
+  slow anchor.</p>
+
+  <p>
+  <strong>The aliasing gate.</strong> A saccade of peak velocity \(V_{\max}\) displaces the gaze by
+  \(V_{\max}/f\) between consecutive samples at rate \(f\). When this per-sample displacement is smaller than the
+  alias spacing \(\Delta\), a saccade cannot carry the estimate a full alias period within one step, so it
+  cannot seed a persistent jump to a wrong branch. This defines a gate rate
+  \(f^\star = V_{\max}/\Delta \approx 826\) Hz above which persistent mislocks should be suppressed&mdash;a
+  prediction we test directly in &sect;5.1.</p>
+</section>
+
+<!-- ===================== 4. METHOD ===================== -->
+<section id="method">
+  <h2>4&ensp;Method</h2>
+
+  <figure class="wide">
+    <img src="figures/fig_system.png" alt="Architecture of the per-line particle filter: inputs, the four recursive stages, and the gaze output.">
+    <figcaption><span class="fignum">Figure 1.</span> <strong>Per-line particle filter.</strong> The recent
+    SLO frame supplies the appearance atlas; each observed line and the slow 2-D anchor enter the recursion. One
+    step per line: (1) the interacting-multiple-model prior propagates every particle; (2) the frozen decoder
+    renders each particle&rsquo;s predicted line; (3) particles are reweighted by a multimodal appearance term
+    combined with the trusted along measurement and a saccade-direction coupling; (4) an alias-robust estimate
+    is read out, with effective-sample-size resampling and observation-quality-gated reseeding from the anchor.
+    The state recurs to the next line.</figcaption>
+  </figure>
+
+  <p>
+  We approximate the filtering posterior \(p(x_t \mid z_{1:t})\) by a weighted particle set
+  \(\{(x_t^{(i)}, w_t^{(i)})\}_{i=1}^{N}\) with state
+  \(x_t = (p, a, v_p, v_a, m)\): perp and along positions, their velocities, and a discrete mode
+  \(m \in \{\textsf{pursuit}, \textsf{saccade}\}\). One step implements the recursion</p>
+  \[
+    p(x_t \mid z_{1:t}) \;\propto\; p(z_t \mid x_t)\!\int p(x_t \mid x_{t-1})\, p(x_{t-1}\mid z_{1:t-1})\,dx_{t-1}.
+  \]
+
+  <h3>4.1&ensp;Dynamics: an oculomotor prior, not a smoothness penalty</h3>
+  <p>
+  The transition \(p(x_t \mid x_{t-1})\) is an interacting-multiple-model prior. In pursuit mode, velocity
+  follows a band-limited Ornstein&ndash;Uhlenbeck process with a hard acceleration cap, modeling drift and
+  smooth pursuit. In saccade mode, onset draws an amplitude \(A\) and direction and emits a ballistic
+  minimum-jerk velocity pulse whose peak obeys the measured main sequence,
+  \(V_{\text{peak}}(A) = V_{\max}\,(1 - e^{-A/A_0})\); peak velocity is thus tied to amplitude by construction,
+  with no free process-noise scale. Modes switch under a fixed hazard (a \(2\times2\) transition matrix). We
+  deliberately exclude a large-variance random-walk mode: it admits envelope-following solutions that correlate
+  with the stimulus but not with true motion.</p>
+
+  <h3>4.2&ensp;Observation model: multimodal appearance, kept multimodal</h3>
+  <p>The likelihood factors into three conditionally independent terms,</p>
+  \[
+    p\!\left(z_t \mid x_t^{(i)}\right) \;=\;
+    \underbrace{\exp\!\big(\beta\,[\,\text{NCC}_i - \textstyle\max_j \text{NCC}_j\,]\big)}_{\text{appearance (perp), multimodal}}
+    \;\cdot\;
+    \underbrace{\exp\!\Big(-\tfrac{1}{2}\big(\tfrac{a^{(i)}-\tilde a}{\sigma_a}\big)^2\Big)}_{\text{trusted along}}
+    \;\cdot\;
+    \underbrace{w^{(i)}_{\text{couple}}}_{\text{saccade direction}} .
+  \]
+  <p>
+  Here \(\text{NCC}_i\) is the normalized cross-correlation between the high-passed, z-scored observation
+  \(z_t\) and the particle&rsquo;s rendered line \(g(p_i, a_i; \mathcal{A})\). Subtracting the running maximum
+  before exponentiation keeps the belief multimodal: particles on rival alias peaks retain non-negligible
+  weight rather than being annihilated. The second term injects the trusted along measurement \(\tilde a\) as a
+  tight Gaussian (\(\sigma_a \approx 2\) px). For saccade-mode particles, \(w^{(i)}_{\text{couple}}\) enforces a
+  straight-trajectory constraint that ties perp displacement to the along displacement, so the trusted axis
+  helps disambiguate saccade direction on the aliased axis.</p>
+
+  <h3>4.3&ensp;Estimation, resampling, and reacquisition</h3>
+  <p>
+  We read out an alias-robust point estimate by restricting the weighted mean to particles within half an alias
+  spacing of the maximum-weight particle \(i^\star\):</p>
+  \[
+    \hat p_t = \frac{\sum_{i \in \mathcal{N}} w^{(i)} p^{(i)}}{\sum_{i \in \mathcal{N}} w^{(i)}},
+    \qquad
+    \mathcal{N} = \big\{\, i : |p^{(i)} - p^{(i^\star)}| \lt \tfrac{1}{2}\Delta \,\big\},
+    \qquad
+    \text{ESS} = \Big(\textstyle\sum_i (w^{(i)})^2\Big)^{-1},
+  \]
+  <p>
+  preventing a distant alias cluster from biasing the estimate. Two corrective mechanisms are kept separate
+  (Figure&nbsp;2b). <em>Resampling</em> (systematic, with roughening) fires whenever \(\text{ESS} \lt N/2\); the
+  sharp true peak drives this on nearly every healthy step, so it is ordinary maintenance. <em>Reacquisition</em>
+  is gated on observation quality, not ESS: if the best NCC stays below a threshold for a short window (or a hard
+  coast cap is reached), all particles are redrawn around the slow absolute anchor. The anchor enters as an
+  absolute measurement, not a veto, which bounds the worst-case coast and guarantees recovery.</p>
+
+  <p class="note">
+  Unless noted, the configuration is \(N = 300\) particles, \(\beta = 20\), line length \(200\), with the
+  physics appearance likelihood; an optional learned likelihood (&sect;5.3) replaces only the appearance term.
+  The slow anchor is the median of per-strip registration shifts, following the strip-tracking method of [1].</p>
+</section>
+
+<!-- ===================== 5. EXPERIMENTS ===================== -->
+<section id="results">
+  <h2>5&ensp;Experiments</h2>
+
+  <p>
+  We evaluate three questions in turn: (i) under ideal conditions, where does per-line passive reconstruction
+  succeed and where does it fail (&sect;5.1)? (ii) on real data, how does the filter compare to strong baselines
+  (&sect;5.2)? and (iii) which components matter (&sect;5.3)? We first verify the forward model itself: sampling
+  the atlas at the registered gaze reconstructs held-out real lines at correlation \(0.829\) against a noise
+  floor of \(0.873\) (error \(1.35\times\) the floor, within a pre-registered \(1.6\times\) gate), so a mismatch
+  the filter observes reflects gaze, not decoder error.</p>
+
+  <figure class="wide">
+    <img src="figures/fig_alias.png" alt="Left: a single line produces a multimodal match score with alias peaks. Right: the particle cloud spreads across modes and the estimate is read from the dominant mode.">
+    <figcaption><span class="fignum">Figure 2.</span> <strong>The aliasing problem and the multimodal belief
+    (schematic).</strong> (a) One line matches the reference at the true offset and at alias offsets spaced by
+    \(\Delta\); an argmax estimator can select the wrong peak. (b) The particle cloud retains every mode; the
+    estimate is the weighted mean of the dominant mode (shaded), so off-branch clusters do not bias it.</figcaption>
+  </figure>
+
+  <h3>5.1&ensp;Controlled benchmark: where passive reconstruction works</h3>
+  <p>
+  We render synthetic line streams from a known atlas with known gaze trajectories (drift, microsaccades, and
+  main-sequence saccades) at the real per-column timing and measured per-rate noise, and sweep the effective
+  rate through the predicted gate \(f^\star = 826\) Hz. Because the generating atlas is the decoder, this isolates
+  the estimator from forward-model error. Two results stand out (Figure&nbsp;3, Table&nbsp;1).</p>
+
+  <p>
+  First, fixation and smooth-pursuit error decreases monotonically with rate and crosses sub-\(0.1^\circ\)
+  above the gate, reaching \(0.86'\) at \(12\) kHz. Second, the persistence of gross errors&mdash;the worst
+  run-length of large-error samples, measured in time so rates are comparable&mdash;collapses across the gate,
+  from \(500\) ms below it to \(\le 10\) ms above it. This confirms the prediction of &sect;3: above
+  \(f^\star\) a saccade cannot jump a full alias period in one step, so persistent mislocks cannot form, and the
+  residual gross errors are brief blur transients. Through-saccade accuracy, by contrast, does not reach
+  sub-\(0.1^\circ\) at any rate: during the fast phase, motion blur drives the appearance match below lock, so
+  the passive observation is genuinely uninformative about perp&mdash;a sensor limit, present even with exact
+  physics.</p>
+
+  <figure class="wide">
+    <img src="figures/fig_ratesweep.png" alt="Accuracy versus rate and persistence versus rate, both with the aliasing gate marked.">
+    <figcaption><span class="fignum">Figure 3.</span> <strong>Rate sweep on the controlled benchmark</strong>
+    (exact physics, known labels; \(400\) particles, \(6\) seeds/rate). (a) Fixation/pursuit error crosses
+    sub-\(0.1^\circ\) above the gate while through-saccade error remains blur-limited. (b) The worst gross-error
+    run-length collapses across the gate, confirming the per-sample-displacement argument. Shaded region: below
+    the aliasing gate \(f^\star = V_{\max}/\Delta\).</figcaption>
+  </figure>
+
+  <table>
+    <caption><span class="fignum">Table 1.</span> Controlled rate sweep, per-rate metrics. RMS in arcmin;
+    persistence is the worst gross-error run-length; lock fractions are the share of steps above the NCC lock
+    threshold. Fixation crosses sub-\(0.1^\circ\) (\(\lt 6'\)) above the gate; saccades remain blur-limited.</caption>
+    <thead>
+      <tr><th>Rate</th><th>Fix RMS</th><th>Sac RMS</th><th>Fix gross</th><th>Sac gross</th><th>Persist&nbsp;max</th><th>Lock fix</th><th>Lock sac</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>60 Hz</td><td>54.22'</td><td>121.2'</td><td>0.197</td><td>0.500</td><td>500.0 ms</td><td>0.70</td><td>0.12</td></tr>
+      <tr><td>344 Hz</td><td>12.28'</td><td>62.9'</td><td>0.028</td><td>0.426</td><td>26.2 ms</td><td>0.94</td><td>0.26</td></tr>
+      <tr><td>820 Hz</td><td>6.85'</td><td>51.7'</td><td>0.007</td><td>0.231</td><td>15.9 ms</td><td>0.97</td><td>0.42</td></tr>
+      <tr class="hl"><td>1500 Hz</td><td>1.57'</td><td>35.9'</td><td>0.001</td><td>0.281</td><td>10.0 ms</td><td>1.00</td><td>0.48</td></tr>
+      <tr><td>2000 Hz</td><td>1.09'</td><td>53.1'</td><td>0.000</td><td>0.286</td><td>4.5 ms</td><td>1.00</td><td>0.49</td></tr>
+      <tr><td>4000 Hz</td><td>1.70'</td><td>46.7'</td><td>0.000</td><td>0.296</td><td>4.8 ms</td><td>1.00</td><td>0.50</td></tr>
+      <tr class="hl"><td>12000 Hz</td><td>0.86'</td><td>38.4'</td><td>0.000</td><td>0.204</td><td>1.7 ms</td><td>1.00</td><td>0.70</td></tr>
+    </tbody>
+  </table>
+
+  <h3>5.2&ensp;Real data: comparison against baselines</h3>
+  <p>
+  We compare six methods on a real pursuit raster under an identical evaluation protocol (\(2\) ms smoothing,
+  drift removal, per-axis affine calibration to the stimulus, then correlation, RMS, and a precision measure
+  equal to the RMS of \({>}25\) ms detail). The stimulus is the pursuit <em>target</em>, not the eye, so target
+  correlation saturates near a pursuit-lag ceiling of \(r \approx 0.9\) and does not separate methods;
+  fine-motion <em>precision</em> is the discriminating metric. The baselines span the natural alternatives:
+  frame registration only (M0), strip tracking (M1) [1], a constant-velocity Kalman filter (M2), an offline
+  Viterbi decode of the perp likelihood (M3), and a batch maximum-a-posteriori smoother (M5).</p>
+
+  <p>
+  The particle filter attains the best fine-motion precision on the aliased axis&mdash;\(1.76'\) at the line
+  rate, roughly \(1.6\times\) better than the strongest baseline&mdash;while matching the absolute accuracy of
+  frame registration, since the slow anchor pins every method (Figure&nbsp;4, Table&nbsp;2). Two independent
+  checks establish that the kilohertz content is real rather than interpolated frame motion. In the
+  \(8\)&ndash;\(300\) Hz band, above the frame chain&rsquo;s \(7.3\) Hz Nyquist, two independent reconstructions
+  (strip tracking and Viterbi) agree at \(r = 0.574\) (\(n = 90{,}346\)) while each correlates with the
+  interpolated frame chain at only \(r \approx 0.01\)&ndash;\(0.02\). And the filter recovers \(1018\)
+  microsaccades (\(20.9\)/s, median amplitude \(3.4'\)) with a main-sequence log-log slope of \(0.68\)
+  (correlation \(0.72\)); frame registration alone recovers none.</p>
+
+  <figure class="wide">
+    <img src="figures/fig_methods.png" alt="Horizontal detail precision by method; the particle filter is best.">
+    <figcaption><span class="fignum">Figure 4.</span> <strong>Fine-motion precision on the aliased axis</strong>
+    (real raster, \(11.8\) kHz; lower is better). The proposed filter, with the physics or the learned appearance
+    likelihood, outperforms strip tracking, Kalman fusion, Viterbi decoding, and the batch MAP smoother.</figcaption>
+  </figure>
+
+  <table>
+    <caption><span class="fignum">Table 2.</span> Real raster benchmark. \(r\) is Pearson correlation with the
+    pursuit target (ceiling \({\approx}0.9\)); precision is the RMS of \({>}25\) ms detail (lower is better). The
+    particle filter (M4) gives the best precision while matching the frame-registration accuracy.</caption>
+    <thead>
+      <tr><th>Method</th><th>Rate (Hz)</th><th>r&nbsp;x</th><th>r&nbsp;y</th><th>RMS&nbsp;x</th><th>Prec&nbsp;x</th><th>Prec&nbsp;y</th><th>valid</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>M0 &middot; frame registration</td><td>15</td><td>0.906</td><td>0.739</td><td>16.0'</td><td>&mdash;</td><td>&mdash;</td><td>72%</td></tr>
+      <tr><td>M1 &middot; strip tracking [1]</td><td>1478</td><td>0.878</td><td>0.737</td><td>19.8'</td><td>4.39'</td><td>1.25'</td><td>72%</td></tr>
+      <tr><td>M2 &middot; Kalman fusion</td><td>11823</td><td>0.893</td><td>0.742</td><td>17.3'</td><td>3.20'</td><td>1.21'</td><td>73%</td></tr>
+      <tr><td>M3 &middot; Viterbi decode</td><td>11823</td><td>0.902</td><td>0.748</td><td>16.5'</td><td>2.87'</td><td>1.20'</td><td>72%</td></tr>
+      <tr><td>M5 &middot; batch MAP</td><td>11823</td><td>0.901</td><td>0.747</td><td>16.5'</td><td>2.88'</td><td>1.20'</td><td>72%</td></tr>
+      <tr class="hl"><td>M4 &middot; particle filter (ours)</td><td>11823</td><td>0.906</td><td>0.752</td><td>16.0'</td><td><strong>1.76'</strong></td><td>1.06'</td><td>70%</td></tr>
+    </tbody>
+  </table>
+
+  <h3>5.3&ensp;Ablations and deployment</h3>
+  <p>
+  <strong>Learned appearance likelihood.</strong> The §5.1 analysis identifies blur as the saccade bottleneck,
+  which motivates replacing the physics appearance term with a small learned, blur-aware calibration head
+  (trained only on labeled synthetic; disjoint train/validation seeds). It leaves fixation unchanged
+  (sub-\(0.1^\circ\) preserved) and reduces held-out saccade gross error from \(0.222\) to \(0.049\) and RMS
+  from \(78.5\) to \(22.6\) atlas rows, while remaining above \(0.1^\circ\)&mdash;blur is a genuine physical limit,
+  not a modeling artifact. On real data the learned head reaches \(1.88'\) precision, comparable to the physics
+  model.</p>
+  <p>
+  <strong>Online deployment without a co-registered raster.</strong> On a true line-scan capture with only
+  \(20\) Hz absolute anchors, the per-line channel adds sub-anchor content on the discriminating vertical axis:
+  correlation with an independent pupil tracker rises from \(r = 0.031\) (anchors only) to \(0.259\) (full
+  reconstruction). Because the tracker is an independent measurement path, this rise is evidence of genuine
+  sub-anchor gaze content. A diagnostic attributes the residual vertical gap to physiology and field-of-view
+  loss, not the estimator: a frame-only control reaches the same vertical ceiling (\(r = 0.74\)), and in-field
+  coverage drops from \(98\%\) on left gaze to \(32\%\) on temporal gaze for this eye&mdash;a centration limit,
+  addressable in hardware.</p>
+  <p class="note">
+  This deployment is validated by self-consistency and independent-path agreement, which are necessary but not
+  sufficient: without a co-registered ground truth, these numbers bound rather than prove correctness. Closing
+  this gap is the first item of &sect;7.</p>
+</section>
+
+<!-- ===================== 6. LIMITATIONS ===================== -->
+<section id="limitations">
+  <h2>6&ensp;Limitations</h2>
+  <ul class="tight">
+    <li><strong>Through-saccade blur.</strong> Even with exact physics, the passive appearance score cannot
+    localize the aliased axis during a blurred saccade. The learned likelihood and the direction coupling
+    mitigate but do not remove this; it is the principal accuracy ceiling for the fast phase.</li>
+    <li><strong>Validation without ground truth.</strong> Absolute scale rests on a noisy \({\sim}32.5\) Hz
+    tracker (\(\approx\!\pm 30\%\)); rate trends and the controlled-benchmark numbers are scale-robust, but the
+    real-data accuracy is bounded, not proven.</li>
+    <li><strong>Field of view.</strong> About a quarter of strips fall outside the field on temporal gaze and
+    are masked; this is a centration limit of the capture, not of the method.</li>
+    <li><strong>Compute.</strong> \(N=300\) batched renders per line is millions of renders per second&mdash;
+    practical offline, but a closed-loop real-time deployment requires an explicit latency budget.</li>
+  </ul>
+</section>
+
+<!-- ===================== 7. CONCLUSION / ROADMAP ===================== -->
+<section id="roadmap">
+  <h2>7&ensp;Conclusion and Next Steps</h2>
+  <p>
+  We showed that scan-line gaze estimation is best posed as multimodal Bayesian filtering: keeping the aliased
+  appearance likelihood intact and resolving it with an oculomotor prior and a slow anchor yields the best
+  fine-motion precision among strong baselines and a clean, predictable failure boundary. The path to a
+  frontier result is a change of substrate and of validation rather than further tuning.</p>
+  <ol class="tight">
+    <li><strong>Adaptive-optics substrate.</strong> On cone-resolved imagery the per-line signal-to-noise rises
+    sharply (pushing precision toward sub-arcmin) while aliasing sharpens to the photoreceptor pitch&mdash;the
+    regime where a multimodal filter should most clearly beat argmax. Hardware and method reinforce each other.</li>
+    <li><strong>Artificial-eye ground truth.</strong> A programmable model eye supplies known trajectories for
+    true accuracy. Programming saccades that deviate from the main sequence directly tests whether the estimate
+    is carried by the data or by the prior, settling the circularity question.</li>
+    <li><strong>Head-to-head against argmax.</strong> On identical data, demonstrate a regime&mdash;high velocity,
+    low SNR, fine aliasing, or through-saccade&mdash;where the multimodal filter strictly outperforms strip
+    registration. The defensible claim is matched accuracy at higher rate and robustness, not a new accuracy
+    record.</li>
+    <li><strong>Real-time engineering.</strong> Quantify the particle/decoder budget for closed-loop
+    stabilization, where reduced per-line latency is the concrete benefit over per-strip reporting.</li>
+  </ol>
+</section>
+
+<!-- ===================== VIDEO / CODE / BIBTEX ===================== -->
+<section id="video">
+  <h2>Reconstruction video</h2>
+  <p>The reconstructed gaze trajectory at \(11.8\) kHz overlaid on the raster is available at
+  <code>results/animations/gaze2d_m4_dpf_11823.mp4</code> (and \(1.18\) kHz at
+  <code>gaze2d_m4_dpf_1182.mp4</code>). Embed or link these on the published page.</p>
+</section>
+
+<section id="code">
+  <h2>Code and reproduction</h2>
+  <p>The method is implemented in <code>filter.py</code> (particle filter), <code>dynamics.py</code> (IMM
+  prior), <code>decoder.py</code> (differentiable renderer), and is driven for this benchmark by
+  <code>khz2d_methods.py</code>. Figures on this page are produced by <code>docs/make_figures.py</code> from the
+  numbers in <code>results/</code>.</p>
+</section>
+
+<section id="bibtex">
+  <h2>BibTeX</h2>
+<pre class="bibtex">@misc{perlroth2026scanline,
+  title  = {Gaze Tracking at the Scan-Line Rate with a Multimodal Particle Filter},
+  author = {Perlroth, Ashton},
+  year   = {2026},
+  note   = {Preprint, Kodiak gaze-model project}
+}</pre>
+</section>
+
+<!-- ===================== REFERENCES ===================== -->
+<section id="refs">
+  <h2>References</h2>
+  <ol class="references">
+    <li>C. K. Sheehy, Q. Yang, D. W. Arathorn, P. Tiruveedhula, J. F. de Boer, A. Roorda. High-speed,
+    image-based eye tracking with a scanning laser ophthalmoscope. <em>Biomedical Optics Express</em>,
+    3(10):2611&ndash;2622, 2012.</li>
+    <li>Q. Yang, J. Zhang, K. Nozato, K. Saito, D. R. Williams, A. Roorda, E. A. Rossi. Closed-loop optical
+    stabilization and digital image registration in adaptive optics scanning light ophthalmoscopy.
+    <em>Biomedical Optics Express</em>, 5(9):3174&ndash;3191, 2014.</li>
+    <li>Strip-based digital image registration for distortion minimization and robust eye-motion measurement
+    from scanned ophthalmic imaging systems. <em>Biomedical Optics Express</em>, 2020.</li>
+    <li>Particle-filter alignment of 3-D optical coherence tomography volumes for reference-free eye-motion
+    correction. <em>IEEE Transactions on Biomedical Engineering</em>, 2012.</li>
+    <li>K. Bartuzel et&nbsp;al. High-resolution, ultrafast, wide-field retinal eye-tracking for enhanced
+    quantification of fixational and saccadic motion. <em>Biomedical Optics Express</em>,
+    11(6):3164&ndash;3180, 2020.</li>
+  </ol>
+  <p class="note">Reference details are provided for orientation and should be verified against the primary
+  sources before submission.</p>
+</section>
+
+<footer class="paper-foot">
+  <p>Preprint &middot; Kodiak gaze-model project &middot; June 2026. Figures generated from
+  <code>results/</code> by <code>docs/make_figures.py</code>.</p>
+</footer>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,31 @@
+# --- heavy data / caches (GBs; never committed) ---
+cache/
+calibration/
+normal/
+octraw/
+stimuli/
+__pycache__/
+.pytest_cache/
+*.pyc
+
+# --- raw captures & large binaries ---
+*.tiff
+*.tif
+*.npz
+*.npy
+
+# --- result videos (too large for git; keep figures/CS/ md) ---
+*.mp4
+*.gif
+*.avi
+results/animations/
+
+# --- local tool/session state ---
+.omc/
+.claude/
+
+# --- OS / editor noise ---
+.DS_Store
+.idea/
+.vscode/
+*.swp
