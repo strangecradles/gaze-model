@@ -467,7 +467,7 @@
 
   <h3>5.4&ensp;Design-space ablation and real-data optimization</h3>
   <p>
-  We ran the runnable subset of the Section&nbsp;7 design space (Figure&nbsp;7) as a one-lever-at-a-time
+  We ran the runnable subset of the Section&nbsp;7 design space (Figure&nbsp;8) as a one-lever-at-a-time
   ablation, first on the controlled synthetic benchmark with ground truth, then directly on the real test1
   raster. On synthetic, the picture is sharp: the <em>learned, blur-aware likelihood</em> is the only lever
   that moves through-saccade accuracy at the line rate (saccade RMS \(43.7' \to 24.8'\), gross
@@ -550,6 +550,45 @@
   adaptive-optics sub-arcminute regime; the point is the <em>relative</em> margin under a matched comparison.
   The optimization gains over our own prior best are real but incremental (a few percent, held-out-confirmed),
   whereas the margin over the SOTA strip baseline is large (37&ndash;64%).</p>
+
+  <h3>5.6&ensp;Cross-dataset validation on public AOSLO ground truth</h3>
+  <p>
+  Our own captures lack a high-rate ground truth, so to measure <em>absolute</em> accuracy we turned to a public
+  dataset from another lab: the UC&nbsp;Davis adaptive-optics SLO sequences released with Azimipour
+  <em>et&nbsp;al.</em> [3], which include <strong>simulated cone-resolved frames with a known per-line
+  ground-truth eye trace</strong> (and real frames without). We ran two estimators on the same data under the
+  same conditions&mdash;our particle filter and a faithful reimplementation of the authors&rsquo; own strip
+  registration&mdash;and scored both against the ground-truth trace (scale \(0.234'\)/px; \(3840\) lines/s;
+  fixational drift and tremor only). Adapting our filter required only re-mapping the axes (the AOSLO fast scan
+  is horizontal, so here the trusted axis is horizontal and the aliased axis is vertical) and recalibrating the
+  dynamics units; the decoder reproduces the dataset&rsquo;s rendered lines to machine precision.</p>
+  <p>
+  On this dataset our filter <strong>more than halves the absolute error of the SOTA</strong>: 2-D RMS
+  <strong>\(0.055'\)</strong> versus the strip method&rsquo;s \(0.123'\) with sub-pixel peak fitting (\(0.155'\)
+  as the original integer-lag script reports)&mdash;a \(2.2\times\) reduction&mdash;and the advantage holds on
+  the aliased vertical axis specifically (Figure&nbsp;7). This is an absolute-accuracy result, against ground
+  truth, on another group&rsquo;s data and image format, and it is exactly the cone-aliasing regime
+  Section&nbsp;7.6 predicts as the method&rsquo;s strongest case: analysis-by-synthesis renders a sub-pixel line
+  and the multimodal cloud resolves the cone-lattice ambiguity, whereas argmax strip correlation is
+  integer-lag-quantized and must average \({\sim}13\) rows for SNR, smoothing out the fast tremor the filter
+  tracks per row.</p>
+
+  <figure class="wide">
+    <img src="figures/fig_aoslo.png" alt="Bar chart: absolute RMS error vs ground truth on public AOSLO simulated data, per axis; our particle filter is 2.2x lower than the SOTA strip method.">
+    <figcaption><span class="fignum">Figure 7.</span> <strong>Absolute accuracy on public AOSLO ground truth.</strong>
+    RMS error vs. the known eye trace on the Azimipour <em>et&nbsp;al.</em> [3] simulated cone-resolved set, per
+    axis and 2-D, for the SOTA strip registration (integer-lag and sub-pixel) and our particle filter. Our
+    method is \(2.2\times\) more accurate, including on the aliased vertical axis.</figcaption>
+  </figure>
+
+  <p class="note">
+  Two honest caveats. (i) The simulated frames are <em>noiseless</em> samples of a clean shared mosaic, so this
+  measures the algorithmic ceiling (sub-pixel multimodal synthesis vs. integer-lag strip correlation), where our
+  method is genuinely better; real photon/speckle noise will narrow the gap. (ii) On the <em>real</em> frames
+  (no ground truth) the two methods recover the same trajectory (\(r = 0.94\) horizontal, \(0.88\) vertical), but
+  our single-row estimate is noisier than the strip method&rsquo;s \({\sim}13\)-row average, so we claim no
+  precision win there. The decisive, fair next step is to add calibrated noise and/or retrain the likelihood on
+  this dataset&mdash;an instance of the substrate program in Section&nbsp;7.6.</p>
 </section>
 
 <!-- ===================== 6. LIMITATIONS ===================== -->
@@ -577,14 +616,14 @@
   module is a fixed, interpretable choice. That made it a strong, debuggable baseline&mdash;but each choice is
   also a hypothesis, and the modern toolkit gives a concrete way to relax almost all of them. This section
   enumerates the load-bearing assumptions and, for each, the classical and learned levers that could break it,
-  weighting recent work. Figure&nbsp;7 maps the design space; Section&nbsp;7.7 turns it into an ablation study.
+  weighting recent work. Figure&nbsp;8 maps the design space; Section&nbsp;7.7 turns it into an ablation study.
   The thesis is that on a cone-resolved AOSLO substrate with artificial-eye ground truth, replacing these
   modules one at a time is a credible route to state of the art on accuracy <em>and</em> rate
   simultaneously&mdash;not just the rate/robustness frontier we already occupy.</p>
 
   <figure class="wide">
     <img src="figures/fig_agenda.png" alt="Design-space map: each pipeline stage with its current baseline and candidate ML and classical upgrades.">
-    <figcaption><span class="fignum">Figure 7.</span> <strong>The design space.</strong> Each pipeline stage
+    <figcaption><span class="fignum">Figure 8.</span> <strong>The design space.</strong> Each pipeline stage
     (top, current baseline in oxblood) admits multiple upgrades: learned/ML levers (blue) and classical levers
     (grey). The ablation in Section&nbsp;7.7 walks this grid one column at a time against artificial-eye ground
     truth.</figcaption>
@@ -693,7 +732,7 @@
   These levers compose, so the study is a structured sweep, not a single comparison. We propose: (i) fix the
   AOSLO + artificial-eye benchmark and the metrics (perp/along RMS, gross-error persistence, lock-rate vs.
   velocity, latency); (ii) establish the current hand-built filter and a strip-argmax baseline as the two
-  anchors; (iii) swap in <em>one column of Figure&nbsp;7 at a time</em>&mdash;learned dynamics, flow proposal,
+  anchors; (iii) swap in <em>one column of Figure&nbsp;8 at a time</em>&mdash;learned dynamics, flow proposal,
   learned/rendered likelihood, differentiable resampling, score/diffusion posterior&mdash;measuring marginal
   effect and interaction; (iv) then train the best combination end-to-end with a FIVO/VSMC objective; (v) report
   on- and off-manifold trajectories separately to keep learned priors honest. The deliverable is a quantified
@@ -711,7 +750,7 @@
   deliberately classical, hand-built filter. Its value is as much as a <em>baseline and a scaffold</em> as a
   result in itself: every module is a fixed choice with a modern, learnable replacement, and the controlled
   benchmark gives the ground truth to test each one. On a cone-resolved substrate with artificial-eye
-  validation, walking the design space of Figure&nbsp;7 is, we argue, a credible path to state of the art on
+  validation, walking the design space of Figure&nbsp;8 is, we argue, a credible path to state of the art on
   rate, dynamic range, <em>and</em> accuracy at once.</p>
 </section>
 

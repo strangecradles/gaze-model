@@ -1,3 +1,6 @@
+# --- external reference repos (cloned datasets/code; never committed) ---
+external/
+
 # --- heavy data / caches (GBs; never committed) ---
 cache/
 calibration/

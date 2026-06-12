@@ -430,6 +430,41 @@ def fig_sota():
     _save(fig, "fig_sota.png")
 
 
+# --------------------------------------------------------------------------- #
+# Figure 7 — Absolute accuracy on public AOSLO ground truth (Azimipour 2018)
+#   numbers from results/aoslo_headtohead.md
+# --------------------------------------------------------------------------- #
+def fig_aoslo():
+    groups = ["along (x)", "perp (y)\n[aliased]", "2-D"]
+    sota_int = [0.110, 0.109, 0.155]   # integer-lag (as their script reports)
+    sota_sub = [0.087, 0.087, 0.123]   # + sub-pixel parabolic peak (fair best-case)
+    ours = [0.039, 0.040, 0.055]
+    x = np.arange(len(groups))
+    w = 0.26
+    fig, ax = plt.subplots(figsize=(7.2, 3.4))
+    ax.bar(x - w, sota_int, w, color="#cfcabd", label="SOTA strip (integer lag)", zorder=3)
+    ax.bar(x, sota_sub, w, color=MUTED, label="SOTA strip (sub-pixel)", zorder=3)
+    ax.bar(x + w, ours, w, color=ACCENT, label="ours: particle filter", zorder=3)
+    for xi, vals in zip((x - w, x, x + w), (sota_int, sota_sub, ours)):
+        for xj, v in zip(xi, vals):
+            ax.text(xj, v + 0.003, f"{v:.3f}", ha="center", va="bottom", fontsize=6.6,
+                    color=INK)
+    # 2.2x annotation on the 2-D group
+    ax.annotate("2.2× lower\nerror", xy=(x[2] + w, ours[2]), xytext=(x[2] + w, sota_sub[2]),
+                ha="center", va="bottom", fontsize=7.2, color=ACCENT,
+                arrowprops=dict(arrowstyle="<->", color=ACCENT, lw=0.9))
+    ax.set_xticks(x); ax.set_xticklabels(groups)
+    ax.set_ylabel("absolute RMS vs. ground truth (arcmin)")
+    ax.set_ylim(0, 0.18)
+    ax.set_title("Absolute accuracy on public AOSLO ground truth "
+                 "(simulated, cone-resolved; Azimipour et al. 2018)", loc="left", fontsize=9)
+    ax.legend(loc="upper left", fontsize=7.6)
+    ax.grid(axis="y", color=GRID, lw=0.7, zorder=0)
+    ax.set_axisbelow(True)
+    fig.tight_layout()
+    _save(fig, "fig_aoslo.png")
+
+
 if __name__ == "__main__":
     fig_system()
     fig_alias()
@@ -437,4 +472,5 @@ if __name__ == "__main__":
     fig_methods()
     fig_agenda()
     fig_sota()
+    fig_aoslo()
     print("all figures written to", OUT)
