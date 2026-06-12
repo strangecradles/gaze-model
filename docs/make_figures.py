@@ -380,10 +380,61 @@ def fig_agenda():
     _save(fig, "fig_agenda.png")
 
 
+# --------------------------------------------------------------------------- #
+# Figure 6 — Head-to-head vs the SOTA strip-registration baseline (real test1)
+#   numbers from results/sota_comparison.md + results/real_eye_optimization.md
+# --------------------------------------------------------------------------- #
+def fig_sota():
+    # (label, prec_x arcmin, colour)   — lower is better
+    tiers = [
+        ("(a)  ~1.5 kHz tier", [
+            ("SOTA strip\n(composite ref)", 3.00, MUTED),
+            ("strip\n(incremental)", 4.39, "#b7b2a6"),
+            ("ours: physics\nPF", 2.05, BLUE),
+            ("ours: best\nPF", 1.90, ACCENT),
+        ]),
+        ("(b)  11.8 kHz line rate", [
+            ("SOTA strip\n(composite ref)", 4.38, MUTED),
+            ("strip\n(incremental)", 5.94, "#b7b2a6"),
+            ("ours: physics\nPF", 1.66, BLUE),
+            ("ours: best\nPF", 1.57, ACCENT),
+        ]),
+    ]
+    fig, axes = plt.subplots(1, 2, figsize=(7.2, 3.3))
+    for ax, (title, rows) in zip(axes, tiers):
+        labels = [r[0] for r in rows]
+        vals = [r[1] for r in rows]
+        cols = [r[2] for r in rows]
+        x = np.arange(len(rows))
+        ax.bar(x, vals, color=cols, width=0.66, zorder=3)
+        for xi, v in zip(x, vals):
+            ax.text(xi, v + 0.08, f"{v:.2f}'", ha="center", va="bottom",
+                    fontsize=7.6, color=INK)
+        # SOTA reference line + improvement arrow to best PF
+        sota = vals[0]; best = vals[-1]
+        ax.axhline(sota, color=MUTED, lw=0.8, ls=(0, (3, 2)), zorder=1)
+        pct = 100.0 * (sota - best) / sota
+        ax.annotate(f"{pct:.0f}% better", xy=(len(rows) - 1, best),
+                    xytext=(len(rows) - 1, sota), ha="center", va="bottom",
+                    fontsize=7.2, color=ACCENT,
+                    arrowprops=dict(arrowstyle="<->", color=ACCENT, lw=0.9))
+        ax.set_xticks(x); ax.set_xticklabels(labels, fontsize=7)
+        ax.set_ylabel("horizontal precision (arcmin, lower = better)")
+        ax.set_ylim(0, max(vals) * 1.25)
+        ax.set_title(title, loc="left")
+        ax.grid(axis="y", color=GRID, lw=0.7, zorder=0)
+        ax.set_axisbelow(True)
+    fig.suptitle("Per-line precision on real test1: our particle filter vs the SOTA "
+                 "strip-registration baseline", fontsize=10, fontweight="bold")
+    fig.tight_layout(rect=(0, 0, 1, 0.95))
+    _save(fig, "fig_sota.png")
+
+
 if __name__ == "__main__":
     fig_system()
     fig_alias()
     fig_ratesweep()
     fig_methods()
     fig_agenda()
+    fig_sota()
     print("all figures written to", OUT)

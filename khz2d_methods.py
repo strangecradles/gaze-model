@@ -325,7 +325,13 @@ def m3_viterbi(beta: float = 8.0, trans_gamma: float = 0.05,
 def m4_dpf(eff_rate: float = 1182.0, dur_s: float | None = None,
            likelihood: str = "physics", n_particles: int = 300,
            padw: int = 100, line_len: int = 200, seed: int = 0,
-           rebuild: bool = False):
+           beta: float | None = None, rebuild: bool = False,
+           hp_sigma: float | None = None, sigma_along: float | None = None,
+           ess_frac: float | None = None, roughen_perp: float | None = None,
+           roughen_along: float | None = None, ncc_loss_thr: float | None = None,
+           ncc_loss_window: int | None = None,
+           reseed_perp_sigma: float = 30.0, couple_sigma: float | None = None,
+           tag_extra: str = ""):
     """Run filter.py's ParticleFilter per effective line.
 
     Per-step atlas = a (2*padw+1)-column window of the chain-aligned PREVIOUS
@@ -338,7 +344,41 @@ def m4_dpf(eff_rate: float = 1182.0, dur_s: float | None = None,
     the slow 2D SLO.
     """
     import filter as flt
+    # Tag encodes the config; defaults (N=300, module BETA) keep the original
+    # tags so existing caches remain valid.
     tag = f"m4_dpf_{int(eff_rate)}" + ("" if likelihood == "physics" else "_learned")
+    if n_particles != 300:
+        tag += f"_n{n_particles}"
+    if beta is not None and float(beta) != flt.BETA:
+        tag += f"_b{int(beta)}"
+    # extra lever overrides — only tag the ones actually changed from the m4
+    # defaults so the existing caches (which used these defaults) stay valid.
+    if hp_sigma is not None and float(hp_sigma) != flt.HP_SIGMA:
+        tag += f"_hp{hp_sigma:g}"
+    if sigma_along is not None and float(sigma_along) != flt.SIGMA_ALONG:
+        tag += f"_sa{sigma_along:g}"
+    if ess_frac is not None and float(ess_frac) != flt.ESS_FRAC:
+        tag += f"_ess{ess_frac:g}"
+    if roughen_perp is not None and float(roughen_perp) != flt.ROUGHEN_PERP:
+        tag += f"_rp{roughen_perp:g}"
+    if roughen_along is not None and float(roughen_along) != flt.ROUGHEN_ALONG:
+        tag += f"_ra{roughen_along:g}"
+    if ncc_loss_thr is not None and float(ncc_loss_thr) != flt.NCC_LOCK_LOSS_THR:
+        tag += f"_nt{ncc_loss_thr:g}"
+    if ncc_loss_window is not None and int(ncc_loss_window) != flt.NCC_LOSS_WINDOW:
+        tag += f"_nw{int(ncc_loss_window)}"
+    if float(reseed_perp_sigma) != 30.0:   # m4's historical default
+        tag += f"_rs{reseed_perp_sigma:g}"
+    if couple_sigma is not None and float(couple_sigma) != flt.COUPLE_SIGMA_ROWS:
+        tag += f"_cs{couple_sigma:g}"
+    if padw != 100:
+        tag += f"_pw{padw}"
+    if line_len != 200:
+        tag += f"_ll{line_len}"
+    if tag_extra:
+        tag += f"_{tag_extra}"
+    if dur_s is not None:
+        tag += f"_d{int(dur_s)}"   # timing/partial runs never pollute full-run caches
     c = khz2d.load_method(tag)
     if c is not None and not rebuild:
         return c
@@ -404,9 +444,28 @@ def m4_dpf(eff_rate: float = 1182.0, dur_s: float | None = None,
                     a0 = float(np.median(lam))
                     st = flt.init_filter(n_particles, padw + d0, a0, 15.0, 4.0, rng=rng)
                     win = atlasT[max(0, int(cmid) - padw): int(cmid) + padw + 1]
+                    _pfkw = dict(reseed_perp_sigma=float(reseed_perp_sigma))
+                    if hp_sigma is not None:
+                        _pfkw["hp_sigma"] = float(hp_sigma)
+                    if sigma_along is not None:
+                        _pfkw["sigma_along"] = float(sigma_along)
+                    if ess_frac is not None:
+                        _pfkw["ess_frac"] = float(ess_frac)
+                    if roughen_perp is not None:
+                        _pfkw["roughen_perp"] = float(roughen_perp)
+                    if roughen_along is not None:
+                        _pfkw["roughen_along"] = float(roughen_along)
+                    if ncc_loss_thr is not None:
+                        _pfkw["ncc_loss_thr"] = float(ncc_loss_thr)
+                    if ncc_loss_window is not None:
+                        _pfkw["ncc_loss_window"] = int(ncc_loss_window)
+                    if couple_sigma is not None:
+                        _pfkw["couple_sigma"] = float(couple_sigma)
                     pf = flt.ParticleFilter(st, win, line_len, col_step=col_step,
-                                            reseed_perp_sigma=30.0,
-                                            likelihood=likelihood, learned_head=head)
+                                            beta=(flt.BETA if beta is None
+                                                  else float(beta)),
+                                            likelihood=likelihood, learned_head=head,
+                                            **_pfkw)
                 T_.append(tline); X_.append(np.nan); Y_.append(np.nan)
                 V_.append(False); NCC_.append(0.0)
                 continue
@@ -520,6 +579,8 @@ if __name__ == "__main__":
     ap.add_argument("--rate", type=float, default=1182.0)
     ap.add_argument("--dur", type=float, default=None)
     ap.add_argument("--likelihood", default="physics")
+    ap.add_argument("--n", type=int, default=300)
+    ap.add_argument("--beta", type=float, default=None)
     ap.add_argument("--rebuild", action="store_true")
     a = ap.parse_args()
     if a.method == "m0":
@@ -531,7 +592,8 @@ if __name__ == "__main__":
     elif a.method == "m3":
         r = m3_viterbi(rebuild=a.rebuild)
     elif a.method == "m4":
-        r = m4_dpf(a.rate, dur_s=a.dur, likelihood=a.likelihood, rebuild=a.rebuild)
+        r = m4_dpf(a.rate, dur_s=a.dur, likelihood=a.likelihood,
+                   n_particles=a.n, beta=a.beta, rebuild=a.rebuild)
     elif a.method == "m5":
         r = m5_map(rebuild=a.rebuild)
     else:

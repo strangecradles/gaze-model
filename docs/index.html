@@ -464,6 +464,92 @@
   This deployment is validated by self-consistency and independent-path agreement, which are necessary but not
   sufficient: without a co-registered ground truth, these numbers bound rather than prove correctness. Closing
   this gap is the first item of &sect;7.</p>
+
+  <h3>5.4&ensp;Design-space ablation and real-data optimization</h3>
+  <p>
+  We ran the runnable subset of the Section&nbsp;7 design space (Figure&nbsp;7) as a one-lever-at-a-time
+  ablation, first on the controlled synthetic benchmark with ground truth, then directly on the real test1
+  raster. On synthetic, the picture is sharp: the <em>learned, blur-aware likelihood</em> is the only lever
+  that moves through-saccade accuracy at the line rate (saccade RMS \(43.7' \to 24.8'\), gross
+  \(0.249 \to 0.087\)); particle count sets fixation precision and robustness (a knee near \(N=400\), with
+  \(N=100\) catastrophic); and resampling, reacquisition window, and roughening are stability knobs near
+  their defaults. On the real raster the leverage shifts, as expected for noisier lines: faster
+  reacquisition (reseed after 3 rather than 5 low-quality steps) and heavier resampling are the dominant
+  knobs, while extra particles do <em>not</em> help real-data precision. A search over the configuration
+  space&mdash;held to a strict guardrail that a precision gain counts only if it preserves correlation with the
+  pursuit target, correlation with the independent tracker, and validity&mdash;yields a best configuration
+  (learned likelihood, \(N=1000\), faster reacquisition, heavier resampling) that improves horizontal
+  precision to <strong>\(1.57'\) at the line rate</strong> and <strong>\(1.90'\) at \(1.18\) kHz</strong>,
+  a few percent over the prior best, confirmed on a held-out time segment and with the tracker correlation
+  preserved or improved (so the gain is not over-smoothing). Notably, a physics-only variant with just the
+  faster reacquisition reaches \(1.59'\) at roughly a tenth of the compute.</p>
+
+  <h3>5.5&ensp;Head-to-head against the state-of-the-art baseline</h3>
+  <p>
+  To quantify what the approach buys concretely, we implemented the dominant retinal-tracking algorithm&mdash;
+  <strong>Stevenson &amp; Roorda strip registration to a composite reference frame</strong> [1,&nbsp;3], the
+  refined offline variant with blink/distortion rejection and a synthetic reference&mdash;and ran it on the same
+  test1 raster under the identical evaluation. This is a faithful build (composite reference, sub-pixel NCC,
+  rejection), not a strawman; we give it the same coarse anchor every method uses, so the comparison isolates
+  the high-rate per-strip estimator. Because both run on the same non-AO video-rate raster, this is a true
+  apples-to-apples test (the literature&rsquo;s sub-arcminute strip numbers are on cone-resolved adaptive-optics
+  imagery, a different substrate).</p>
+  <p>
+  The result is decisive on the discriminating metric (Figure&nbsp;5, Table&nbsp;3). At the \({\sim}1.5\) kHz
+  tier our particle filter reaches \(1.90'\) horizontal precision versus the SOTA&rsquo;s \(3.00'\) at matched
+  validity (<strong>37% better</strong>); at the \(11.8\) kHz line rate, \(1.57'\) versus \(4.38'\)
+  (<strong>64% better</strong>), while also winning the independent-tracker correlation
+  (\(0.559\) vs \(0.501\)). The composite-reference SOTA does beat the incremental strip variant
+  (\(3.00'\) vs \(4.39'\)), validating its central idea&mdash;but a multimodal filter with an oculomotor prior is
+  substantially better still on this substrate, because per-strip argmax registration against an averaged,
+  speckle-limited mosaic is exactly the low-SNR aliased regime the filter is built for.</p>
+
+  <figure class="wide">
+    <img src="figures/fig_sota.png" alt="Bar chart: horizontal precision of the SOTA strip baselines vs our particle filter at two rate tiers; our method is 37% and 64% better.">
+    <figcaption><span class="fignum">Figure 5.</span> <strong>Per-line precision vs the SOTA on the same data.</strong>
+    Horizontal precision (RMS of \({>}25\) ms detail; lower is better) of the composite-reference SOTA strip
+    registration, the incremental strip variant, and our physics and best particle filter, at the
+    \({\sim}1.5\) kHz tier (a) and the \(11.8\) kHz line rate (b). Dashed line marks the SOTA; our best filter is
+    37% / 64% better while preserving the independent-tracker correlation.</figcaption>
+  </figure>
+
+  <table>
+    <caption><span class="fignum">Table 3.</span> Head-to-head on real test1 (same evaluation protocol). Precision
+    and \(r\)-vs-tracker are the discriminating metrics (\(r\)-vs-dot is a pursuit-lag ceiling). SOTA precision is
+    at validity matched to the comparator.</caption>
+    <thead>
+      <tr><th>Method</th><th>Rate (Hz)</th><th>Prec&nbsp;x (&prime;)</th><th>r&nbsp;trk&nbsp;x</th><th>r&nbsp;dot&nbsp;x</th><th>valid</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>SOTA strip, composite reference [1,&nbsp;3]</td><td>1478</td><td>3.00</td><td>0.562</td><td>0.776</td><td>71%</td></tr>
+      <tr><td>strip, incremental (prev-frame)</td><td>1478</td><td>4.39</td><td>0.642</td><td>0.878</td><td>72%</td></tr>
+      <tr><td>ours: physics PF</td><td>1182</td><td>2.05</td><td>0.550</td><td>0.901</td><td>70%</td></tr>
+      <tr class="hl"><td>ours: best PF (learned)</td><td>1182</td><td><strong>1.90</strong></td><td>0.547</td><td>0.905</td><td>71%</td></tr>
+      <tr><td>SOTA strip, composite reference [1,&nbsp;3]</td><td>11823</td><td>4.38</td><td>0.501</td><td>0.840</td><td>60%</td></tr>
+      <tr><td>strip, incremental (prev-frame)</td><td>11823</td><td>5.94</td><td>0.651</td><td>0.850</td><td>66%</td></tr>
+      <tr><td>ours: physics PF</td><td>11823</td><td>1.66</td><td>0.553</td><td>0.797</td><td>60%</td></tr>
+      <tr class="hl"><td>ours: best PF (learned)</td><td>11823</td><td><strong>1.57</strong></td><td>0.559</td><td>0.796</td><td>60%</td></tr>
+    </tbody>
+  </table>
+
+  <p>
+  For completeness, Figure&nbsp;6 overlays every method&rsquo;s calibrated trajectory on the pursuit dot over a
+  horizontally-active window: all methods track the target, but the particle-filter traces are visibly the
+  cleanest and the incremental strip method the jitteriest&mdash;the qualitative read of the precision numbers.</p>
+
+  <figure class="wide">
+    <img src="figures/fig_methods_traj.png" alt="Small-multiples: calibrated horizontal gaze of each method overlaid on the pursuit dot over a 4-14 s window.">
+    <figcaption><span class="fignum">Figure 6.</span> <strong>Per-method trajectories on real data.</strong>
+    Calibrated horizontal gaze (coloured) vs the pursuit dot (grey) over a horizontally-active window, one panel
+    per method, annotated with target correlation and precision. Gaps are the known temporal-field-of-view
+    dropouts. The particle filter tracks the target with the least high-frequency jitter.</figcaption>
+  </figure>
+
+  <p class="note">
+  Honest read: on this non-AO substrate every method is SNR-limited, so the absolute numbers are far from the
+  adaptive-optics sub-arcminute regime; the point is the <em>relative</em> margin under a matched comparison.
+  The optimization gains over our own prior best are real but incremental (a few percent, held-out-confirmed),
+  whereas the margin over the SOTA strip baseline is large (37&ndash;64%).</p>
 </section>
 
 <!-- ===================== 6. LIMITATIONS ===================== -->
@@ -491,14 +577,14 @@
   module is a fixed, interpretable choice. That made it a strong, debuggable baseline&mdash;but each choice is
   also a hypothesis, and the modern toolkit gives a concrete way to relax almost all of them. This section
   enumerates the load-bearing assumptions and, for each, the classical and learned levers that could break it,
-  weighting recent work. Figure&nbsp;5 maps the design space; Section&nbsp;7.7 turns it into an ablation study.
+  weighting recent work. Figure&nbsp;7 maps the design space; Section&nbsp;7.7 turns it into an ablation study.
   The thesis is that on a cone-resolved AOSLO substrate with artificial-eye ground truth, replacing these
   modules one at a time is a credible route to state of the art on accuracy <em>and</em> rate
   simultaneously&mdash;not just the rate/robustness frontier we already occupy.</p>
 
   <figure class="wide">
     <img src="figures/fig_agenda.png" alt="Design-space map: each pipeline stage with its current baseline and candidate ML and classical upgrades.">
-    <figcaption><span class="fignum">Figure 5.</span> <strong>The design space.</strong> Each pipeline stage
+    <figcaption><span class="fignum">Figure 7.</span> <strong>The design space.</strong> Each pipeline stage
     (top, current baseline in oxblood) admits multiple upgrades: learned/ML levers (blue) and classical levers
     (grey). The ablation in Section&nbsp;7.7 walks this grid one column at a time against artificial-eye ground
     truth.</figcaption>
@@ -506,7 +592,7 @@
 
   <h3>7.1&ensp;The assumptions, and how to break them</h3>
   <table class="dense">
-    <caption><span class="fignum">Table 3.</span> Load-bearing assumptions and candidate replacements. &ldquo;Lever&rdquo;
+    <caption><span class="fignum">Table 4.</span> Load-bearing assumptions and candidate replacements. &ldquo;Lever&rdquo;
     marks whether the most promising route is primarily learned (ML) or classical (C).</caption>
     <colgroup>
       <col style="width:24%"><col style="width:28%"><col style="width:40%"><col style="width:8%">
@@ -607,7 +693,7 @@
   These levers compose, so the study is a structured sweep, not a single comparison. We propose: (i) fix the
   AOSLO + artificial-eye benchmark and the metrics (perp/along RMS, gross-error persistence, lock-rate vs.
   velocity, latency); (ii) establish the current hand-built filter and a strip-argmax baseline as the two
-  anchors; (iii) swap in <em>one column of Figure&nbsp;5 at a time</em>&mdash;learned dynamics, flow proposal,
+  anchors; (iii) swap in <em>one column of Figure&nbsp;7 at a time</em>&mdash;learned dynamics, flow proposal,
   learned/rendered likelihood, differentiable resampling, score/diffusion posterior&mdash;measuring marginal
   effect and interaction; (iv) then train the best combination end-to-end with a FIVO/VSMC objective; (v) report
   on- and off-manifold trajectories separately to keep learned priors honest. The deliverable is a quantified
@@ -625,7 +711,7 @@
   deliberately classical, hand-built filter. Its value is as much as a <em>baseline and a scaffold</em> as a
   result in itself: every module is a fixed choice with a modern, learnable replacement, and the controlled
   benchmark gives the ground truth to test each one. On a cone-resolved substrate with artificial-eye
-  validation, walking the design space of Figure&nbsp;5 is, we argue, a credible path to state of the art on
+  validation, walking the design space of Figure&nbsp;7 is, we argue, a credible path to state of the art on
   rate, dynamic range, <em>and</em> accuracy at once.</p>
 </section>
 
