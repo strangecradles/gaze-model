@@ -244,6 +244,12 @@ tbody tr:last-child td { border-bottom: 2px solid var(--rule-strong); }
 tbody tr.hl td { background: var(--accent-soft); }
 tbody tr.hl td strong { color: var(--accent); }
 
+/* dense, text-heavy tables: let every cell wrap, shrink type */
+table.dense { font-size: 0.78rem; table-layout: fixed; }
+table.dense th, table.dense td { white-space: normal; vertical-align: top; text-align: left; }
+table.dense th { text-align: left; }
+table.dense col.lever, table.dense td:last-child, table.dense th:last-child { text-align: center; }
+
 /* ---------- Notes ---------- */
 .note {
   font-size: 0.93rem;
@@ -275,9 +281,18 @@ pre.bibtex {
 }
 pre.bibtex { white-space: pre; }
 
+/* ---------- Citations ---------- */
+a.cite {
+  font-variant-numeric: tabular-nums;
+  border-bottom: none;
+  font-weight: 500;
+}
+a.cite:hover { border-bottom: 1px solid var(--accent); }
+
 /* ---------- References ---------- */
 .references { font-size: 0.92rem; line-height: 1.5; }
-.references li { margin: 0.5rem 0; }
+.references li { margin: 0.5rem 0; padding: 0.1rem 0.3rem; border-radius: 3px; scroll-margin-top: 1.5rem; }
+.references li:target { background: var(--accent-soft); }
 
 /* ---------- Footer ---------- */
 .paper-foot {

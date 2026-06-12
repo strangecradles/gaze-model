@@ -140,31 +140,78 @@
 <section id="related">
   <h2>2&ensp;Related Work</h2>
 
+  <h3>2.1&ensp;Retinal-image eye tracking</h3>
   <p>
-  <strong>Retinal-image eye tracking.</strong> Strip-based registration of scanning-laser-ophthalmoscope
-  (SLO) imagery is the dominant approach: each frame is divided into strips parallel to the fast scanner and
-  each strip is cross-correlated against a reference, yielding sub-frame motion at up to roughly a kilohertz
-  [1,&nbsp;3]. With adaptive optics and a curated reference frame, digital registration reaches residual motion
-  of \(0.04\)&ndash;\(0.06'\) [2], the most accurate eye tracking reported. These methods are accurate but
-  rely on the argmax of the strip correlation, which presumes the correct peak dominates; they avoid aliasing
-  by making strips tall enough to be locally unique, which bounds their temporal resolution.</p>
+  Strip-based registration of scanning-laser-ophthalmoscope (SLO) imagery is the dominant approach: each frame
+  is split into strips parallel to the fast scanner and each strip is cross-correlated against a reference,
+  giving sub-frame motion at up to roughly a kilohertz [1]. With adaptive optics and a curated reference
+  frame, digital registration reaches residual motion of \(0.04\)&ndash;\(0.06'\) [2], the most accurate eye
+  tracking reported, and strip methods underpin most modern AOSLO motion correction [3]. A 2D-MEMS confocal
+  tracker reaches \(0.039'\) resolution at \(1.24\) kHz using generic kinematic limits rather than an
+  oculomotor model [4]. These systems are accurate but take the <span class="smallcaps">argmax</span> of the
+  strip correlation, presuming the true peak dominates; they suppress aliasing by making strips tall enough to
+  be locally unique, which caps their temporal resolution. A parallel, very active line replaces hand-crafted
+  correlation with learned descriptors&mdash;contrastive keypoint descriptors for retinal registration [5] and
+  weakly/Self-supervised retinal-tracking pipelines that do not rely on visible vasculature [6]&mdash;but these
+  target frame-to-frame registration, not per-line Bayesian decoding.</p>
 
+  <h3>2.2&ensp;Differentiable and neural particle filters</h3>
   <p>
-  <strong>Probabilistic tracking and analysis-by-synthesis.</strong> Particle filters are standard for
-  nonlinear, non-Gaussian state estimation and have been applied to retinal motion offline for optical-coherence-tomography
-  volume alignment [4], but not, to our knowledge, as an online per-line gaze estimator with an explicitly
-  multimodal appearance likelihood. Our observation model follows the analysis-by-synthesis principle&mdash;score
-  a hypothesis by rendering its predicted observation through a differentiable forward model and comparing to
-  the measurement&mdash;which is widely used in model-based tracking and inverse rendering. The novelty here is
-  to retain the full multimodal likelihood induced by aliasing rather than collapse it, and to disambiguate it
-  with oculomotor dynamics.</p>
+  The particle filter [7,&nbsp;8] is the standard tool for nonlinear, non-Gaussian sequential inference; our
+  estimator is, at its core, a bootstrap filter whose belief is kept multimodal by design. The decisive recent
+  development is the <em>differentiable</em> particle filter (DPF): Jonschkowski et&nbsp;al. [9] and the
+  Particle Filter Network [10] embed the filter in a neural network and learn its dynamics and measurement
+  models end-to-end, demonstrating large gains on visual localization. The central technical obstacle is that
+  resampling is not differentiable; the literature now offers a menu of solutions&mdash;soft resampling [10],
+  learned/transformer resamplers [11], entropy-regularized optimal-transport resampling via Sinkhorn [12], and
+  stop-gradient estimators that leave the forward pass intact [13]&mdash;surveyed comprehensively in [15].
+  More recent DPFs use conditional normalizing flows to parameterize the dynamics, proposal, and measurement
+  densities so that all three are both expressive and admit valid likelihoods [14]. Our filter is, in this
+  taxonomy, a hand-built non-differentiable instance: every component (Section&nbsp;4) is a candidate for
+  replacement by its learned, end-to-end-trained counterpart, which is the premise of our research agenda
+  (Section&nbsp;7).</p>
 
+  <h3>2.3&ensp;Variational SMC and deep state-space models</h3>
   <p>
-  <strong>Oculomotor priors.</strong> The saccadic main sequence (a tight peak-velocity&ndash;amplitude
-  relation) and the drift/microsaccade structure of fixation are well characterized and have been used as
-  kinematic constraints in prior high-rate trackers [5]. We encode them as an interacting-multiple-model prior
-  with a pursuit mode and a ballistic saccade mode, and use the prior only to break alias ties and bridge brief
-  dropouts&mdash;never as a smoothness penalty, which we found rewards stimulus-envelope following.</p>
+  Treating the filter&rsquo;s marginal-likelihood estimate as a training objective connects DPFs to variational
+  sequential Monte Carlo: filtering variational objectives [16] and variational SMC [17] give tighter,
+  resampling-aware bounds than the ELBO for sequential latent-variable models, and are the natural objective
+  for learning our components without trajectory labels. On the dynamics side, deep Markov models [18], neural
+  ODEs [19], and structured/selective state-space models (S4 [20], Mamba [21]) provide learnable continuous-time
+  priors that could replace our hand-specified interacting-multiple-model (IMM) transition&mdash;a direct lever
+  on the dynamics assumption.</p>
+
+  <h3>2.4&ensp;Diffusion, flow matching, and trajectory priors</h3>
+  <p>
+  Denoising diffusion [22] and score-based SDE models [23], together with flow matching [24], have become the
+  default for high-dimensional generative modeling, and a striking thread reframes <em>planning and trajectory
+  generation as conditional sampling</em> from a learned trajectory distribution: Diffuser [25], the Decision
+  Diffuser [26], multi-agent MotionDiffuser [27], and Motion Planning Diffusion [28] all denoise whole
+  trajectories under guidance/constraints rather than rolling out step-by-step. Crucially for us, diffusion has
+  also entered <em>filtering</em> directly: score-based data assimilation [29] and the ensemble score filter
+  [30] store the filtering density in a score function and sample it by reverse diffusion, an alternative to the
+  weighted-particle representation. Section&nbsp;7.3 argues there is a concrete diffusion model hiding inside our
+  trajectory prior.</p>
+
+  <h3>2.5&ensp;Generative models of eye movements</h3>
+  <p>
+  The oculomotor prior we hand-specify has well-developed learned analogues. The main sequence [31] and the
+  self-avoiding-random-walk account of drift and microsaccades [32] are the classical models; on the ML side,
+  gazeNet [33] detects fixations/saccades end-to-end from raw gaze, deep Markov scanpath models (ScanDMM [34])
+  and drift-diffusion scanpath models (ScanDDM [35]) generate goal-directed gaze, and very recent diffusion
+  models generate <em>continuous</em> eye-movement trajectories rather than discrete fixations (ScanDiff [36],
+  DiffEye [37]). These operate at the behavioral scale of natural-image viewing; adapting them to the
+  arcminute, kilohertz regime of fixational dynamics is, to our knowledge, open, and is the substance of
+  Section&nbsp;7.2.</p>
+
+  <h3>2.6&ensp;Differentiable rendering</h3>
+  <p>
+  Our observation model is analysis-by-synthesis: score a hypothesis by rendering its predicted measurement and
+  comparing to the data. Neural radiance fields [38] and 3D Gaussian splatting [39] have made differentiable
+  rendering fast and high-fidelity, and inverse-rendering variants recover geometry and appearance from images
+  [40]; self-supervised representation learning (e.g. masked autoencoders [41]) offers learned features for the
+  match. Our decoder is a deliberately minimal bilinear atlas sampler&mdash;Section&nbsp;7.4 treats it as the
+  most upgradable component.</p>
 </section>
 
 <!-- ===================== 3. PROBLEM FORMULATION ===================== -->
@@ -222,7 +269,7 @@
   </figure>
 
   <p>
-  We approximate the filtering posterior \(p(x_t \mid z_{1:t})\) by a weighted particle set
+  We approximate the filtering posterior \(p(x_t \mid z_{1:t})\) by a weighted particle set [7,&nbsp;8]
   \(\{(x_t^{(i)}, w_t^{(i)})\}_{i=1}^{N}\) with state
   \(x_t = (p, a, v_p, v_a, m)\): perp and along positions, their velocities, and a discrete mode
   \(m \in \{\textsf{pursuit}, \textsf{saccade}\}\). One step implements the recursion</p>
@@ -235,7 +282,7 @@
   The transition \(p(x_t \mid x_{t-1})\) is an interacting-multiple-model prior. In pursuit mode, velocity
   follows a band-limited Ornstein&ndash;Uhlenbeck process with a hard acceleration cap, modeling drift and
   smooth pursuit. In saccade mode, onset draws an amplitude \(A\) and direction and emits a ballistic
-  minimum-jerk velocity pulse whose peak obeys the measured main sequence,
+  minimum-jerk velocity pulse whose peak obeys the measured main sequence [31],
   \(V_{\text{peak}}(A) = V_{\max}\,(1 - e^{-A/A_0})\); peak velocity is thus tied to amplitude by construction,
   with no free process-noise scale. Modes switch under a fixed hazard (a \(2\times2\) transition matrix). We
   deliberately exclude a large-variance random-walk mode: it admits envelope-following solutions that correlate
@@ -436,28 +483,150 @@
   </ul>
 </section>
 
-<!-- ===================== 7. CONCLUSION / ROADMAP ===================== -->
+<!-- ===================== 7. RESEARCH AGENDA ===================== -->
 <section id="roadmap">
-  <h2>7&ensp;Conclusion and Next Steps</h2>
+  <h2>7&ensp;A Research Agenda: Breaking Every Assumption</h2>
   <p>
-  We showed that scan-line gaze estimation is best posed as multimodal Bayesian filtering: keeping the aliased
-  appearance likelihood intact and resolving it with an oculomotor prior and a slow anchor yields the best
-  fine-motion precision among strong baselines and a clean, predictable failure boundary. The path to a
-  frontier result is a change of substrate and of validation rather than further tuning.</p>
-  <ol class="tight">
-    <li><strong>Adaptive-optics substrate.</strong> On cone-resolved imagery the per-line signal-to-noise rises
-    sharply (pushing precision toward sub-arcmin) while aliasing sharpens to the photoreceptor pitch&mdash;the
-    regime where a multimodal filter should most clearly beat argmax. Hardware and method reinforce each other.</li>
+  The filter of Section&nbsp;4 is, by design, a 2018-era differentiable particle filter built by hand: every
+  module is a fixed, interpretable choice. That made it a strong, debuggable baseline&mdash;but each choice is
+  also a hypothesis, and the modern toolkit gives a concrete way to relax almost all of them. This section
+  enumerates the load-bearing assumptions and, for each, the classical and learned levers that could break it,
+  weighting recent work. Figure&nbsp;5 maps the design space; Section&nbsp;7.7 turns it into an ablation study.
+  The thesis is that on a cone-resolved AOSLO substrate with artificial-eye ground truth, replacing these
+  modules one at a time is a credible route to state of the art on accuracy <em>and</em> rate
+  simultaneously&mdash;not just the rate/robustness frontier we already occupy.</p>
+
+  <figure class="wide">
+    <img src="figures/fig_agenda.png" alt="Design-space map: each pipeline stage with its current baseline and candidate ML and classical upgrades.">
+    <figcaption><span class="fignum">Figure 5.</span> <strong>The design space.</strong> Each pipeline stage
+    (top, current baseline in oxblood) admits multiple upgrades: learned/ML levers (blue) and classical levers
+    (grey). The ablation in Section&nbsp;7.7 walks this grid one column at a time against artificial-eye ground
+    truth.</figcaption>
+  </figure>
+
+  <h3>7.1&ensp;The assumptions, and how to break them</h3>
+  <table class="dense">
+    <caption><span class="fignum">Table 3.</span> Load-bearing assumptions and candidate replacements. &ldquo;Lever&rdquo;
+    marks whether the most promising route is primarily learned (ML) or classical (C).</caption>
+    <colgroup>
+      <col style="width:24%"><col style="width:28%"><col style="width:40%"><col style="width:8%">
+    </colgroup>
+    <thead>
+      <tr><th>Assumption (current choice)</th><th>Why it may bind</th><th>Candidate replacements</th><th>Lever</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Hand-built IMM dynamics (pursuit OU + main-sequence saccade)</td><td>Mis-specified kinematics bias the alias tie-break and through-saccade prediction</td><td>Deep Markov model [18], neural ODE [19], selective state-space (Mamba) [21]; learned generative oculomotor prior (&sect;7.2)</td><td>ML</td></tr>
+      <tr><td>Bootstrap proposal (prior = proposal)</td><td>Wastes particles when the observation is sharp; slow reacquisition</td><td>Conditional normalizing-flow proposal [14]; observation-aware amortized proposal [9,&nbsp;10]</td><td>ML</td></tr>
+      <tr><td>Fine-band NCC appearance likelihood</td><td>Collapses under saccadic blur; not calibrated; hand-chosen band</td><td>Learned calibrated head; splatting/neural-field decoder [39,&nbsp;40]; self-supervised features [41]; explicit blur forward model (&sect;7.4)</td><td>ML</td></tr>
+      <tr><td>Non-differentiable systematic resampling</td><td>Blocks end-to-end training of every other module</td><td>Entropy-OT resampling [12]; stop-gradient [13]; soft/learned resampler [10,&nbsp;11]</td><td>ML</td></tr>
+      <tr><td>Hand-tuned, modular components</td><td>No joint optimization; constants set by grid search</td><td>End-to-end DPF training with FIVO/VSMC objectives [16,&nbsp;17] (&sect;7.5)</td><td>ML</td></tr>
+      <tr><td>Weighted-particle posterior</td><td>Particle depletion on the sharp peak; fixed \(N\)</td><td>Score-based filter / data assimilation [29,&nbsp;30]; diffusion posterior (&sect;7.3)</td><td>ML</td></tr>
+      <tr><td>Slow strip-registration anchor</td><td>Argmax anchor can itself mislock; caps absolute accuracy</td><td>Learned descriptor registration [5,&nbsp;6]; multi-hypothesis anchor</td><td>ML</td></tr>
+      <tr><td>Video-rate non-AO substrate</td><td>Low per-line SNR sets the precision floor</td><td>AOSLO cone-resolved imaging (&sect;7.6)</td><td>C</td></tr>
+      <tr><td>Validation vs. target + pupil tracker</td><td>Self-consistency is necessary, not sufficient</td><td>Artificial-eye ground truth; off-prior trajectories (&sect;7.6)</td><td>C</td></tr>
+    </tbody>
+  </table>
+
+  <h3>7.2&ensp;Learned dynamics: from a fixed IMM to a generative oculomotor prior</h3>
+  <p>
+  The dynamics prior does two jobs: break alias ties and bridge blur dropouts. Both are only as good as the
+  kinematics it encodes, and our IMM is a deliberate caricature (two modes, a single main-sequence curve, an OU
+  drift). The question the user-facing roadmap raises&mdash;<em>can microsaccade dynamics be modeled with ML, and
+  how?</em>&mdash;has a rich and recent answer. Classical models already go beyond ours: the integrated
+  self-avoiding-random-walk model unifies drift and microsaccades under one activation field [32], and the main
+  sequence itself is the saccade constraint [31]. On the learned side, gazeNet shows raw-gaze event structure is
+  learnable end-to-end [33]; deep Markov [34] and drift-diffusion [35] scanpath models generate goal-directed
+  gaze; and 2025 diffusion models (ScanDiff [36], DiffEye [37]) generate <em>continuous</em> trajectories rather
+  than discrete fixations. Three concrete routes, in increasing ambition:</p>
+  <ul class="tight">
+    <li><strong>Continuous-time neural prior.</strong> Replace the IMM transition with a neural ODE [19] or a
+    selective state-space model [21] trained on real fixational traces (from a DPI or high-rate AOSLO), giving a
+    learned, irregular-time \(p(x_t\mid x_{t-1})\) with the main sequence emergent rather than imposed. A deep
+    Markov model [18] keeps the latent-variable structure the filter already assumes.</li>
+    <li><strong>Generative microsaccade model.</strong> Train a small conditional generator of drift+microsaccade
+    segments at arcminute/kHz scale&mdash;the regime existing scanpath models do not target&mdash;and use its
+    one-step conditional as the prior. This is where the field is genuinely open: behavioral models live at the
+    degree/fixation scale, not the arcminute/line scale our sensor resolves.</li>
+    <li><strong>Identifiability guard.</strong> Any learned prior reintroduces the circularity worry. The
+    artificial-eye protocol (&sect;7.6) with deliberately off-manifold saccades is the test: a prior that helps
+    only on-manifold and an estimate that the data term still recovers off-manifold separates &ldquo;modeled&rdquo;
+    from &ldquo;hallucinated.&rdquo;</li>
+  </ul>
+
+  <h3>7.3&ensp;The diffusion model hiding in the trajectory prior</h3>
+  <p>
+  There is a diffusion idea latent in this architecture, along two distinct axes. First, <em>diffusion as the
+  trajectory prior</em>: planning-as-inference work treats a whole trajectory as a sample from a learned
+  denoiser and conditions it by guidance or inpainting [25,&nbsp;26,&nbsp;27,&nbsp;28]. A trajectory diffusion
+  model trained on real oculomotor data is exactly a learned, sample-able prior over gaze paths; the slow anchor
+  and the trusted along channel become inpainting/guidance constraints, and a smoothing pass over a window of
+  lines becomes guided denoising&mdash;our batch-MAP smoother (M5) is the crude, Gaussian special case of this.
+  Second, <em>diffusion as the posterior representation</em>: score-based data assimilation [29] and the ensemble
+  score filter [30] store the filtering density in a score network and sample it by reverse diffusion, sidestepping
+  particle depletion on our razor-sharp peak. The aliased, multimodal perp posterior is precisely the setting
+  where a score model&rsquo;s unlimited sampling could beat a fixed-\(N\) cloud. A concrete hybrid: keep the
+  particle filter for the trusted, unimodal along axis, and use a conditional diffusion/score model for the
+  multimodal perp posterior, guided by the appearance likelihood&mdash;a multimodal analogue of the
+  Rao-Blackwellized filter.</p>
+
+  <h3>7.4&ensp;Learned observation models and differentiable rendering</h3>
+  <p>
+  The decoder is the most upgradable module. Our bilinear atlas sampler is a fixed, low-capacity forward model;
+  the appearance score is a hand-chosen high-pass NCC that collapses under blur (the measured saccade
+  bottleneck, &sect;5.1). Modern differentiable rendering&mdash;neural fields [38], 3D Gaussian splatting [39],
+  and inverse-rendering variants [40]&mdash;offers fast, high-fidelity, fully differentiable decoders that could
+  render cone-resolved lines and back-propagate to gaze. A learned calibrated likelihood head (our ablation,
+  &sect;5.3) is the minimal version; a blur-aware forward model that integrates the atlas over intra-line motion
+  is the physically principled version; and self-supervised features [41] could supply a match metric robust to
+  the SNR and contrast changes that defeat raw NCC. The key property to preserve is multimodality: whatever
+  replaces NCC must yield a likelihood over <em>all</em> alias offsets, not a single regressed position.</p>
+
+  <h3>7.5&ensp;End-to-end and amortized inference</h3>
+  <p>
+  Today the modules are tuned separately and the constants set by grid search. Making resampling differentiable
+  [12,&nbsp;13] turns the whole filter into a single trainable network [9,&nbsp;10] optimizable end-to-end
+  against the FIVO/VSMC bound [16,&nbsp;17] on labeled synthetic and (self-supervised) on real streams, so the
+  proposal, dynamics, and likelihood are learned <em>for the filter&rsquo;s own loss</em> rather than in
+  isolation. A more radical option is to amortize inference entirely&mdash;a transformer or state-space model
+  [21] that maps a window of lines plus the anchor to a posterior&mdash;trading the explicit belief for speed,
+  which matters for closed-loop latency.</p>
+
+  <h3>7.6&ensp;Substrate and validation</h3>
+  <ul class="tight">
+    <li><strong>Adaptive-optics substrate.</strong> Cone-resolved AOSLO raises per-line SNR sharply (pushing
+    precision toward sub-arcmin) while sharpening aliasing to the photoreceptor pitch&mdash;exactly where a
+    multimodal filter should beat argmax. Method and hardware reinforce each other.</li>
     <li><strong>Artificial-eye ground truth.</strong> A programmable model eye supplies known trajectories for
-    true accuracy. Programming saccades that deviate from the main sequence directly tests whether the estimate
-    is carried by the data or by the prior, settling the circularity question.</li>
-    <li><strong>Head-to-head against argmax.</strong> On identical data, demonstrate a regime&mdash;high velocity,
-    low SNR, fine aliasing, or through-saccade&mdash;where the multimodal filter strictly outperforms strip
-    registration. The defensible claim is matched accuracy at higher rate and robustness, not a new accuracy
-    record.</li>
-    <li><strong>Real-time engineering.</strong> Quantify the particle/decoder budget for closed-loop
-    stabilization, where reduced per-line latency is the concrete benefit over per-strip reporting.</li>
-  </ol>
+    true accuracy and, with off-main-sequence saccades, settles the circularity question for any learned prior.</li>
+    <li><strong>Head-to-head vs. argmax.</strong> On identical data, show a regime&mdash;high velocity, low SNR,
+    fine aliasing, through-saccade&mdash;where the principled filter strictly beats strip registration.</li>
+  </ul>
+
+  <h3>7.7&ensp;A proposed ablation study</h3>
+  <p>
+  These levers compose, so the study is a structured sweep, not a single comparison. We propose: (i) fix the
+  AOSLO + artificial-eye benchmark and the metrics (perp/along RMS, gross-error persistence, lock-rate vs.
+  velocity, latency); (ii) establish the current hand-built filter and a strip-argmax baseline as the two
+  anchors; (iii) swap in <em>one column of Figure&nbsp;5 at a time</em>&mdash;learned dynamics, flow proposal,
+  learned/rendered likelihood, differentiable resampling, score/diffusion posterior&mdash;measuring marginal
+  effect and interaction; (iv) then train the best combination end-to-end with a FIVO/VSMC objective; (v) report
+  on- and off-manifold trajectories separately to keep learned priors honest. The deliverable is a quantified
+  map of which modern component actually moves which metric&mdash;the empirical core of the claim that the field
+  can be broken open.</p>
+</section>
+
+<!-- ===================== 8. CONCLUSION ===================== -->
+<section id="conclusion">
+  <h2>8&ensp;Conclusion</h2>
+  <p>
+  Scan-line gaze estimation is best posed as multimodal Bayesian filtering: keeping the aliased appearance
+  likelihood intact and resolving it with an oculomotor prior and a slow anchor gives the best fine-motion
+  precision among strong baselines and a clean, predictable failure boundary. That result was obtained with a
+  deliberately classical, hand-built filter. Its value is as much as a <em>baseline and a scaffold</em> as a
+  result in itself: every module is a fixed choice with a modern, learnable replacement, and the controlled
+  benchmark gives the ground truth to test each one. On a cone-resolved substrate with artificial-eye
+  validation, walking the design space of Figure&nbsp;5 is, we argue, a credible path to state of the art on
+  rate, dynamic range, <em>and</em> accuracy at once.</p>
 </section>
 
 <!-- ===================== VIDEO / CODE / BIBTEX ===================== -->
@@ -490,22 +659,95 @@
 <section id="refs">
   <h2>References</h2>
   <ol class="references">
-    <li>C. K. Sheehy, Q. Yang, D. W. Arathorn, P. Tiruveedhula, J. F. de Boer, A. Roorda. High-speed,
+    <li id="ref-1">C. K. Sheehy, Q. Yang, D. W. Arathorn, P. Tiruveedhula, J. F. de Boer, A. Roorda. High-speed,
     image-based eye tracking with a scanning laser ophthalmoscope. <em>Biomedical Optics Express</em>,
     3(10):2611&ndash;2622, 2012.</li>
-    <li>Q. Yang, J. Zhang, K. Nozato, K. Saito, D. R. Williams, A. Roorda, E. A. Rossi. Closed-loop optical
-    stabilization and digital image registration in adaptive optics scanning light ophthalmoscopy.
+    <li id="ref-2">Q. Yang, J. Zhang, K. Nozato, K. Saito, D. R. Williams, A. Roorda, E. A. Rossi. Closed-loop
+    optical stabilization and digital image registration in adaptive optics scanning light ophthalmoscopy.
     <em>Biomedical Optics Express</em>, 5(9):3174&ndash;3191, 2014.</li>
-    <li>Strip-based digital image registration for distortion minimization and robust eye-motion measurement
-    from scanned ophthalmic imaging systems. <em>Biomedical Optics Express</em>, 2020.</li>
-    <li>Particle-filter alignment of 3-D optical coherence tomography volumes for reference-free eye-motion
-    correction. <em>IEEE Transactions on Biomedical Engineering</em>, 2012.</li>
-    <li>K. Bartuzel et&nbsp;al. High-resolution, ultrafast, wide-field retinal eye-tracking for enhanced
-    quantification of fixational and saccadic motion. <em>Biomedical Optics Express</em>,
+    <li id="ref-3">M. Azimipour, R. J. Zawadzki, et&nbsp;al. Strip-based digital image registration for
+    distortion minimization and robust eye-motion measurement from scanned ophthalmic imaging systems.
+    <em>Biomedical Optics Express</em>, 11(7), 2020.</li>
+    <li id="ref-4">K. Bartuzel et&nbsp;al. High-resolution, ultrafast, wide-field retinal eye-tracking for
+    enhanced quantification of fixational and saccadic motion. <em>Biomedical Optics Express</em>,
     11(6):3164&ndash;3180, 2020.</li>
+    <li id="ref-5">D. Rivas-Villar, &Aacute;. S. Hervella, J. Rouco, J. Novo. ConKeD: multiview contrastive
+    descriptor learning for keypoint-based retinal image registration. <em>Medical &amp; Biological Engineering
+    &amp; Computing</em>, 2024.</li>
+    <li id="ref-6">Establishing robust retinal eye tracking: a weakly supervised algorithmic framework.
+    <em>arXiv preprint</em>, 2026.</li>
+    <li id="ref-7">N. J. Gordon, D. J. Salmond, A. F. M. Smith. Novel approach to nonlinear/non-Gaussian
+    Bayesian state estimation. <em>IEE Proceedings F</em>, 140(2):107&ndash;113, 1993.</li>
+    <li id="ref-8">M. S. Arulampalam, S. Maskell, N. Gordon, T. Clapp. A tutorial on particle filters for
+    online nonlinear/non-Gaussian Bayesian tracking. <em>IEEE Trans. Signal Processing</em>,
+    50(2):174&ndash;188, 2002.</li>
+    <li id="ref-9">R. Jonschkowski, D. Rastogi, O. Brock. Differentiable particle filters: end-to-end learning
+    with algorithmic priors. <em>Robotics: Science and Systems (RSS)</em>, 2018.</li>
+    <li id="ref-10">P. Karkus, D. Hsu, W. S. Lee. Particle filter networks with application to visual
+    localization. <em>Conference on Robot Learning (CoRL)</em>, 2018.</li>
+    <li id="ref-11">M. Zhu, K. Murphy, R. Jonschkowski. Towards differentiable resampling.
+    <em>arXiv:2004.11938</em>, 2020.</li>
+    <li id="ref-12">A. Corenflos, J. Thornton, A. Doucet, G. Deligiannidis. Differentiable particle filtering
+    via entropy-regularized optimal transport. <em>ICML</em>, 2021.</li>
+    <li id="ref-13">A. &Sacute;cibior, F. Wood. Differentiable particle filtering without modifying the forward
+    pass. <em>arXiv:2106.10314</em>, 2021.</li>
+    <li id="ref-14">X. Chen, Y. Li. Normalising flow-based differentiable particle filters.
+    <em>arXiv:2403.01499</em>, 2024.</li>
+    <li id="ref-15">X. Chen, Y. Li. An overview of differentiable particle filters for data-adaptive
+    sequential Bayesian inference. <em>Foundations of Data Science</em>, 2023.</li>
+    <li id="ref-16">C. J. Maddison, D. Lawson, G. Tucker, N. Heess, M. Norouzi, A. Mnih, A. Doucet, Y. W. Teh.
+    Filtering variational objectives. <em>NeurIPS</em>, 2017.</li>
+    <li id="ref-17">C. A. Naesseth, S. W. Linderman, R. Ranganath, D. M. Blei. Variational sequential Monte
+    Carlo. <em>AISTATS</em>, 2018.</li>
+    <li id="ref-18">R. G. Krishnan, U. Shalit, D. Sontag. Structured inference networks for nonlinear state
+    space models (deep Markov models). <em>AAAI</em>, 2017.</li>
+    <li id="ref-19">R. T. Q. Chen, Y. Rubanova, J. Bettencourt, D. Duvenaud. Neural ordinary differential
+    equations. <em>NeurIPS</em>, 2018.</li>
+    <li id="ref-20">A. Gu, K. Goel, C. R&eacute;. Efficiently modeling long sequences with structured state
+    spaces (S4). <em>ICLR</em>, 2022.</li>
+    <li id="ref-21">A. Gu, T. Dao. Mamba: linear-time sequence modeling with selective state spaces.
+    <em>arXiv:2312.00752</em>, 2023.</li>
+    <li id="ref-22">J. Ho, A. Jain, P. Abbeel. Denoising diffusion probabilistic models. <em>NeurIPS</em>, 2020.</li>
+    <li id="ref-23">Y. Song, J. Sohl-Dickstein, D. P. Kingma, A. Kumar, S. Ermon, B. Poole. Score-based
+    generative modeling through stochastic differential equations. <em>ICLR</em>, 2021.</li>
+    <li id="ref-24">Y. Lipman, R. T. Q. Chen, H. Ben-Hamu, M. Nickel, M. Le. Flow matching for generative
+    modeling. <em>ICLR</em>, 2023.</li>
+    <li id="ref-25">M. Janner, Y. Du, J. B. Tenenbaum, S. Levine. Planning with diffusion for flexible behavior
+    synthesis (Diffuser). <em>ICML</em>, 2022.</li>
+    <li id="ref-26">A. Ajay, Y. Du, A. Gupta, J. Tenenbaum, T. Jaakkola, P. Agrawal. Is conditional generative
+    modeling all you need for decision-making? (Decision Diffuser). <em>ICLR</em>, 2023.</li>
+    <li id="ref-27">C. Jiang et&nbsp;al. MotionDiffuser: controllable multi-agent motion prediction using
+    diffusion. <em>CVPR</em>, 2023.</li>
+    <li id="ref-28">J. Carvalho, A. T. Le, M. Baierl, D. Koert, J. Peters. Motion planning diffusion: learning
+    and planning of robot motions with diffusion models. <em>IROS</em>, 2023.</li>
+    <li id="ref-29">F. Rozet, G. Louppe. Score-based data assimilation. <em>NeurIPS</em>, 2023.</li>
+    <li id="ref-30">F. Bao, Z. Zhang, G. Zhang. An ensemble score filter for tracking high-dimensional
+    nonlinear dynamical systems. <em>arXiv:2309.00983</em>, 2023.</li>
+    <li id="ref-31">A. T. Bahill, M. R. Clark, L. Stark. The main sequence, a tool for studying human eye
+    movements. <em>Mathematical Biosciences</em>, 24(3&ndash;4):191&ndash;204, 1975.</li>
+    <li id="ref-32">R. Engbert, K. Mergenthaler, P. Sinn, A. Pikovsky. An integrated model of fixational eye
+    movements and microsaccades. <em>PNAS</em>, 108(39):E765&ndash;E770, 2011.</li>
+    <li id="ref-33">R. Zemblys, D. C. Niehorster, K. Holmqvist. gazeNet: end-to-end eye-movement event
+    detection with deep neural networks. <em>Behavior Research Methods</em>, 51:840&ndash;864, 2019.</li>
+    <li id="ref-34">X. Sui, Y. Fang, H. Zhu, S. Wang, Z. Wang. ScanDMM: a deep Markov model of scanpath
+    prediction for 360&deg; images. <em>CVPR</em>, 2023.</li>
+    <li id="ref-35">A. D&rsquo;Amelio, M. Lucchi, G. Boccignone. ScanDDM: generalised zero-shot neuro-dynamical
+    modelling of goal-directed attention. <em>ECCV Workshops</em>, 2024.</li>
+    <li id="ref-36">Modeling human gaze behavior with diffusion models for unified scanpath prediction
+    (ScanDiff). <em>arXiv:2507.23021</em>, 2025.</li>
+    <li id="ref-37">DiffEye: diffusion-based continuous eye-tracking data generation conditioned on natural
+    images. <em>arXiv:2509.16767</em>, 2025.</li>
+    <li id="ref-38">B. Mildenhall, P. P. Srinivasan, M. Tancik, J. T. Barron, R. Ramamoorthi, R. Ng. NeRF:
+    representing scenes as neural radiance fields for view synthesis. <em>ECCV</em>, 2020.</li>
+    <li id="ref-39">B. Kerbl, G. Kopanas, T. Leimk&uuml;hler, G. Drettakis. 3D Gaussian splatting for real-time
+    radiance field rendering. <em>ACM Trans. Graphics</em>, 42(4), 2023.</li>
+    <li id="ref-40">Z. Liang, Q. Zhang, Y. Feng, Y. Shan, K. Jia. GS-IR: 3D Gaussian splatting for inverse
+    rendering. <em>CVPR</em>, 2024.</li>
+    <li id="ref-41">K. He, X. Chen, S. Xie, Y. Li, P. Doll&aacute;r, R. Girshick. Masked autoencoders are
+    scalable vision learners. <em>CVPR</em>, 2022.</li>
   </ol>
-  <p class="note">Reference details are provided for orientation and should be verified against the primary
-  sources before submission.</p>
+  <p class="note">Reference details are provided for orientation; author lists and venues should be verified
+  against the primary sources before submission.</p>
 </section>
 
 <footer class="paper-foot">
@@ -514,5 +756,55 @@
 </footer>
 
 </div>
+
+<script>
+  // Linkify bracketed citation numbers, e.g. [12] or [16, 17], to the reference list.
+  (function () {
+    var refs = document.getElementById('refs');
+    var walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, {
+      acceptNode: function (n) {
+        if (!n.nodeValue || n.nodeValue.indexOf('[') === -1) return NodeFilter.FILTER_REJECT;
+        // skip the references list and code/pre/equations
+        var p = n.parentNode;
+        while (p) {
+          if (p === refs) return NodeFilter.FILTER_REJECT;
+          var tag = p.nodeName;
+          if (tag === 'PRE' || tag === 'CODE' || tag === 'A' ||
+              (p.classList && (p.classList.contains('bibtex')))) return NodeFilter.FILTER_REJECT;
+          if (p.tagName && p.tagName.toLowerCase().indexOf('mjx') === 0) return NodeFilter.FILTER_REJECT;
+          p = p.parentNode;
+        }
+        return NodeFilter.FILTER_ACCEPT;
+      }
+    });
+    var targets = [], node;
+    while ((node = walker.nextNode())) targets.push(node);
+    var rx = /\[(\d+(?:\s*,\s*\d+)*)\]/g;
+    targets.forEach(function (t) {
+      var s = t.nodeValue;
+      if (!rx.test(s)) return;
+      rx.lastIndex = 0;
+      var frag = document.createDocumentFragment(), last = 0, m;
+      while ((m = rx.exec(s))) {
+        if (m.index > last) frag.appendChild(document.createTextNode(s.slice(last, m.index)));
+        frag.appendChild(document.createTextNode('['));
+        var nums = m[1].split(',');
+        nums.forEach(function (numRaw, i) {
+          var num = numRaw.trim();
+          var a = document.createElement('a');
+          a.href = '#ref-' + num;
+          a.className = 'cite';
+          a.textContent = num;
+          frag.appendChild(a);
+          if (i < nums.length - 1) frag.appendChild(document.createTextNode(', '));
+        });
+        frag.appendChild(document.createTextNode(']'));
+        last = m.index + m[0].length;
+      }
+      if (last < s.length) frag.appendChild(document.createTextNode(s.slice(last)));
+      t.parentNode.replaceChild(frag, t);
+    });
+  })();
+</script>
 </body>
 </html>

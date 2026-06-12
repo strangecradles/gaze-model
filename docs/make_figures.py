@@ -288,9 +288,102 @@ def fig_methods():
     _save(fig, "fig_methods.png")
 
 
+# --------------------------------------------------------------------------- #
+# Figure 5 — Design space: each pipeline stage and its candidate upgrades
+# --------------------------------------------------------------------------- #
+def fig_agenda():
+    stages = [
+        ("Dynamics prior",
+         "IMM: pursuit OU\n+ saccade main seq.",
+         [("Neural ODE / deep\nMarkov model", "ml"),
+          ("Learned generative\noculomotor prior", "ml"),
+          ("Diffusion trajectory\nprior (denoiser)", "ml"),
+          ("Richer hand model\n(tremor, PSO)", "cl")]),
+        ("Proposal",
+         "Bootstrap\n(prior = proposal)",
+         [("Cond. normalizing-\nflow proposal", "ml"),
+          ("Observation-aware\namortized proposal", "ml"),
+          ("Guided / twisted\nproposal", "cl")]),
+        ("Observation\nlikelihood",
+         "Fine-band NCC\n(physics render)",
+         [("Learned calibrated\nlikelihood head", "ml"),
+          ("Splatting / neural\nfield decoder", "ml"),
+          ("Self-supervised\nfeature match", "ml"),
+          ("Blur-forward\nmodel", "cl")]),
+        ("Resampling",
+         "Systematic +\nroughening",
+         [("Entropy-OT\n(Sinkhorn)", "ml"),
+          ("Stop-gradient\nreparam.", "ml"),
+          ("Soft / learned\nresampler", "ml")]),
+        ("Inference &\ntraining",
+         "Hand-tuned,\nmodular",
+         [("End-to-end DPF\n(FIVO / VSMC)", "ml"),
+          ("Score-based filter\n/ assimilation", "ml"),
+          ("Amortized /\ntransformer filter", "ml")]),
+    ]
+
+    fig, ax = plt.subplots(figsize=(7.2, 3.7))
+    ax.set_xlim(0, 100)
+    ax.set_ylim(14, 100)
+    ax.axis("off")
+
+    n = len(stages)
+    col_w = 100.0 / n
+    pad = 1.6
+    ML = "#eef2f6"; ML_E = BLUE
+    CL = "#f4f1ea"; CL_E = MUTED
+
+    for i, (title, current, ups) in enumerate(stages):
+        x0 = i * col_w + pad
+        w = col_w - 2 * pad
+        cx = x0 + w / 2
+        # stage title
+        ax.text(cx, 96, title, ha="center", va="center", fontsize=8.4,
+                weight="bold", color=INK, linespacing=1.15)
+        # current choice (oxblood, the established baseline)
+        p = FancyBboxPatch((x0, 80), w, 9,
+                           boxstyle="round,pad=0.3,rounding_size=1.2",
+                           linewidth=1.1, edgecolor=ACCENT, facecolor="#f7eef0",
+                           zorder=2)
+        ax.add_patch(p)
+        ax.text(cx, 84.5, current, ha="center", va="center", fontsize=6.7,
+                color=INK, linespacing=1.15)
+        # downward arrow + label beside it
+        ax.add_patch(FancyArrowPatch((cx, 79.4), (cx, 73.0), arrowstyle="-|>",
+                     mutation_scale=9, lw=1.0, color=MUTED, zorder=1))
+        ax.text(cx, 75.8, "upgrades", ha="center", va="center",
+                fontsize=5.8, style="italic", color=MUTED,
+                bbox=dict(boxstyle="round,pad=0.1", fc="white", ec="none"))
+        # candidate upgrades stacked
+        y = 70.5
+        bh = 8.2
+        gap = 1.7
+        for label, kind in ups:
+            fc, ec = (ML, ML_E) if kind == "ml" else (CL, CL_E)
+            p = FancyBboxPatch((x0, y - bh), w, bh,
+                               boxstyle="round,pad=0.3,rounding_size=1.0",
+                               linewidth=1.0, edgecolor=ec, facecolor=fc, zorder=2)
+            ax.add_patch(p)
+            ax.text(cx, y - bh / 2, label, ha="center", va="center",
+                    fontsize=6.3, color=INK, linespacing=1.12)
+            y -= (bh + gap)
+
+    # legend
+    leg = [Line2D([0], [0], marker="s", color="none", markerfacecolor="#f7eef0",
+                  markeredgecolor=ACCENT, markersize=11, label="current baseline"),
+           Line2D([0], [0], marker="s", color="none", markerfacecolor=ML,
+                  markeredgecolor=BLUE, markersize=11, label="ML / learned lever"),
+           Line2D([0], [0], marker="s", color="none", markerfacecolor=CL,
+                  markeredgecolor=MUTED, markersize=11, label="classical lever")]
+    ax.legend(handles=leg, loc="lower center", ncol=3, fontsize=7,
+              bbox_to_anchor=(0.5, 0.0), handletextpad=0.4, columnspacing=1.4)
+    _save(fig, "fig_agenda.png")
+
+
 if __name__ == "__main__":
     fig_system()
     fig_alias()
     fig_ratesweep()
     fig_methods()
+    fig_agenda()
     print("all figures written to", OUT)
