@@ -1,0 +1,15 @@
+  [Igor multiref] frame 200
+  [Igor multiref] frame 400
+  [Igor multiref] frame 600
+  [Igor multiref] frame 800
+  [Igor multiref] frame 1000
+  [Igor multiref] frame 1200
+[multiref Igor] C1 = 3.907' (n_valid=518512/1011616, K=3)
+  [Ashton3 multiref] frame 200
+  [Ashton3 multiref] frame 400
+  [Ashton3 multiref] frame 600
+  [Ashton3 multiref] frame 800
+  [Ashton3 multiref] frame 1000
+  [Ashton3 multiref] frame 1200
+[multiref Ashton3] C1 = 3.617' (n_valid=903065/1038280, K=3)
+-> results/floor_multiref.json

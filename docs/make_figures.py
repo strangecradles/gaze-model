@@ -12,6 +12,12 @@ professional figures):
 The two data figures are re-rendered from the numbers in results/*.md; the two
 schematics are explicitly conceptual (labelled as such in the captions).
 
+The empirical companion fig_alias_real.png (Figure 3 — the aliasing problem and the
+multimodal belief MEASURED on real retinal lines, the empirical counterpart of the
+fig_alias schematic) is heavier (it loads the atlas and runs the filter) and lives in
+the companion script make_fig_alias_real.py, which reuses this module's style:
+    python docs/make_fig_alias_real.py
+
 Run:  python docs/make_figures.py
 """
 from __future__ import annotations

@@ -1,0 +1,153 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kodiak.local/gaze-model/sync_alignment.schema.json",
+  "title": "Epistemic decoder session sync alignment",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "session_id",
+    "timebase",
+    "streams",
+    "sync_events",
+    "alignment",
+    "pass_fail"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "sync-alignment-v1"
+    },
+    "session_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "captured_at_utc": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "timebase": {
+      "type": "object",
+      "required": ["reference_clock", "units"],
+      "additionalProperties": false,
+      "properties": {
+        "reference_clock": {
+          "type": "string",
+          "description": "Clock to which all other streams are aligned."
+        },
+        "units": {
+          "const": "seconds"
+        }
+      }
+    },
+    "streams": {
+      "type": "object",
+      "required": ["display", "task_log", "gaze", "pupil", "photodiode"],
+      "additionalProperties": false,
+      "properties": {
+        "display": { "$ref": "#/$defs/stream" },
+        "task_log": { "$ref": "#/$defs/stream" },
+        "gaze": { "$ref": "#/$defs/stream" },
+        "pupil": { "$ref": "#/$defs/stream" },
+        "photodiode": { "$ref": "#/$defs/stream" },
+        "ttl": { "$ref": "#/$defs/stream" }
+      }
+    },
+    "sync_events": {
+      "type": "array",
+      "minItems": 2,
+      "items": {
+        "type": "object",
+        "required": ["event_id", "display_frame_id", "reference_time_s"],
+        "additionalProperties": false,
+        "properties": {
+          "event_id": { "type": "string" },
+          "trial_id": { "type": "string" },
+          "frame_in_trial": { "type": "integer", "minimum": 0 },
+          "display_frame_id": { "type": "integer", "minimum": 0 },
+          "reference_time_s": { "type": "number" },
+          "display_time_s": { "type": "number" },
+          "task_time_s": { "type": "number" },
+          "gaze_time_s": { "type": "number" },
+          "pupil_time_s": { "type": "number" },
+          "photodiode_time_s": { "type": "number" },
+          "ttl_time_s": { "type": "number" }
+        }
+      }
+    },
+    "alignment": {
+      "type": "object",
+      "required": ["method", "models", "residuals"],
+      "additionalProperties": false,
+      "properties": {
+        "method": {
+          "type": "string",
+          "description": "Example: photodiode_edges_plus_ttl_affine_clock_fit."
+        },
+        "models": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/alignment_model" }
+        },
+        "residuals": {
+          "type": "object",
+          "required": [
+            "rms_ms",
+            "p99_abs_ms",
+            "max_abs_ms",
+            "residuals_file"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "rms_ms": { "type": "number", "minimum": 0 },
+            "p99_abs_ms": { "type": "number", "minimum": 0 },
+            "max_abs_ms": { "type": "number", "minimum": 0 },
+            "residuals_file": { "type": "string" }
+          }
+        }
+      }
+    },
+    "pass_fail": {
+      "type": "object",
+      "required": ["verified_le_1ms", "notes"],
+      "additionalProperties": false,
+      "properties": {
+        "verified_le_1ms": { "type": "boolean" },
+        "notes": { "type": "string" }
+      }
+    }
+  },
+  "$defs": {
+    "stream": {
+      "type": "object",
+      "required": ["clock_id", "source_file", "timestamp_column"],
+      "additionalProperties": false,
+      "properties": {
+        "clock_id": { "type": "string" },
+        "source_file": { "type": "string" },
+        "timestamp_column": { "type": "string" },
+        "sample_rate_hz": { "type": "number", "exclusiveMinimum": 0 },
+        "id_column": { "type": "string" }
+      }
+    },
+    "alignment_model": {
+      "type": "object",
+      "required": [
+        "from_clock",
+        "to_clock",
+        "offset_s",
+        "drift_ppm",
+        "rms_ms",
+        "max_abs_ms"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "from_clock": { "type": "string" },
+        "to_clock": { "type": "string" },
+        "offset_s": { "type": "number" },
+        "drift_ppm": { "type": "number" },
+        "rms_ms": { "type": "number", "minimum": 0 },
+        "max_abs_ms": { "type": "number", "minimum": 0 }
+      }
+    }
+  }
+}

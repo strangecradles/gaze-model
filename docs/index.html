@@ -352,12 +352,63 @@
     estimate is the weighted mean of the dominant mode (shaded), so off-branch clusters do not bias it.</figcaption>
   </figure>
 
+  <p>
+  <strong>The aliasing is real, and it is the typical case.</strong> Figure&nbsp;2 is a schematic, so we test its
+  premise directly on real retinal lines with ground truth (Figure&nbsp;3). We lift real measured lines from
+  held-out SLO frames and match them against the registered atlas at the native scale (alias spacing
+  \(\Delta \approx 1^\circ = 60'\)). Because registration places a given frame row at a known atlas row, every
+  line carries a known true perp offset, and we can score an estimator without ever rendering the line we are
+  trying to locate. The match is genuinely hard: a real line never resembles the atlas as closely as a line
+  re-rendered from it would, so the best correlation is only \({\approx}0.4\) and the true peak barely outranks
+  its alias rivals&mdash;across the sequence the median peak-to-secondary ratio is \(1.09\) with \({\sim}20\)
+  significant modes (Figure&nbsp;3a). The comb is not a worst-case cartoon; it is the ordinary shape of the
+  per-line appearance likelihood.</p>
+
+  <figure class="wide">
+    <img src="figures/fig_alias_real.png" alt="Three panels on real retinal data. (a) The fine-band match score of one real line is a comb of near-equal peaks and the argmax picks an alias one spacing from truth. (b) The per-line particle belief keeps every mode, including the true one the argmax discards. (c) Over a real sequence with known truth, the per-line argmax scatters onto the alias rails while the particle filter holds the true branch.">
+    <figcaption><span class="fignum">Figure 3.</span> <strong>The aliasing problem and the multimodal belief,
+    measured on real retinal lines.</strong> Real lines lifted from held-out SLO frames are matched against the
+    registered atlas at native scale; ground truth is the registered position
+    (\(\Delta \approx 1^\circ = 60'\)). <em>(a)</em> The fine-band match score \(s(p)\) of one representative line
+    is a comb of near-equal peaks (max NCC \(0.40\), peak-to-secondary ratio \(1.01\), \(21\) modes): the true
+    peak (red) ties an alias one spacing away, and the \(\arg\max\) (open circle) takes the wrong one.
+    <em>(b)</em> The per-line belief \(\propto e^{\beta(\text{NCC}-\max\text{NCC})}\) keeps every
+    mode&mdash;including the true one that \(\arg\max\) discards. <em>(c)</em> On a \(0.8\,\)s real sequence with
+    known truth (short \(128\)-sample lines, \(1.5\) kHz), the per-line \(\arg\max\) (pink) scatters onto the
+    \(\pm\Delta,\,\pm2\Delta\) alias rails&mdash;\(55\%\) of estimates land more than \(\tfrac{1}{2}\Delta\) from
+    truth (RMS \(70'\))&mdash;while the recursive filter (blue), which carries the whole comb plus the oculomotor
+    prior, the trusted along axis, and the slow anchor, holds the true branch (\(8\%\) gross, RMS \(25'\)).
+    Right: the two error distributions. The atlas average contains the source frame (\(1/20\) weight), which
+    eases the match equally for both estimators, so the comparison is unbiased.</figcaption>
+  </figure>
+
+  <p>
+  The consequence for a single-hypothesis estimator is both severe and <em>structured</em>. With a short
+  \(128\)-sample window&mdash;about a tenth of the along field, the short-context regime that high temporal
+  resolution forces&mdash;the per-line \(\arg\max\) lands more than half an alias spacing from the truth on
+  \(55\%\) of lines, and the misplaced estimates pile onto the \(\pm\Delta\) and \(\pm 2\Delta\) rails
+  (\({\approx}15\%\) and \({\approx}10\%\)) rather than scattering uniformly: the empirical fingerprint of
+  aliasing (Figure&nbsp;3c, pink). The multimodal belief throws none of this away&mdash;the same line that fools
+  \(\arg\max\) still places substantial weight on the true mode (Figure&nbsp;3b)&mdash;so the recursive filter,
+  which carries the whole comb and adds the oculomotor prior, the trusted along measurement, and the slow
+  absolute anchor, recovers the correct branch, cutting the gross-mislock rate from \(55\%\) to \(8\%\) and the
+  per-line RMS from \(70'\) to \(25'\) on identical lines. Three qualifications keep this honest. <em>(i)</em>
+  These are raw per-line and per-step errors before any temporal precision smoothing, so the absolute RMS sits
+  far above the sub-arcminute detail precision of &sect;5.2; the comparison isolates branch <em>selection</em>,
+  not final precision. <em>(ii)</em> We use a short window deliberately&mdash;more along context thins the comb
+  (the \(\arg\max\) mislock rate falls to \({\sim}35\%\) at \(200\) samples), but making strips long enough to be
+  locally unique is exactly the temporal-resolution sacrifice that defines strip methods (&sect;2.1).
+  <em>(iii)</em> The filter is, by construction, given more than \(\arg\max\)&mdash;the trusted axis and the slow
+  anchor&mdash;which is the point: one short line cannot resolve the aliased axis alone, and the contribution is
+  the machinery that fuses the comb with dynamics and an absolute fix. This real-line aliasing is the structure
+  the controlled benchmark next dissects against rate.</p>
+
   <h3>5.1&ensp;Controlled benchmark: where passive reconstruction works</h3>
   <p>
   We render synthetic line streams from a known atlas with known gaze trajectories (drift, microsaccades, and
   main-sequence saccades) at the real per-column timing and measured per-rate noise, and sweep the effective
   rate through the predicted gate \(f^\star = 826\) Hz. Because the generating atlas is the decoder, this isolates
-  the estimator from forward-model error. Two results stand out (Figure&nbsp;3, Table&nbsp;1).</p>
+  the estimator from forward-model error. Two results stand out (Figure&nbsp;4, Table&nbsp;1).</p>
 
   <p>
   First, fixation and smooth-pursuit error decreases monotonically with rate and crosses sub-\(0.1^\circ\)
@@ -372,7 +423,7 @@
 
   <figure class="wide">
     <img src="figures/fig_ratesweep.png" alt="Accuracy versus rate and persistence versus rate, both with the aliasing gate marked.">
-    <figcaption><span class="fignum">Figure 3.</span> <strong>Rate sweep on the controlled benchmark</strong>
+    <figcaption><span class="fignum">Figure 4.</span> <strong>Rate sweep on the controlled benchmark</strong>
     (exact physics, known labels; \(400\) particles, \(6\) seeds/rate). (a) Fixation/pursuit error crosses
     sub-\(0.1^\circ\) above the gate while through-saccade error remains blur-limited. (b) The worst gross-error
     run-length collapses across the gate, confirming the per-sample-displacement argument. Shaded region: below
@@ -410,7 +461,7 @@
   <p>
   The particle filter attains the best fine-motion precision on the aliased axis&mdash;\(1.76'\) at the line
   rate, roughly \(1.6\times\) better than the strongest baseline&mdash;while matching the absolute accuracy of
-  frame registration, since the slow anchor pins every method (Figure&nbsp;4, Table&nbsp;2). Two independent
+  frame registration, since the slow anchor pins every method (Figure&nbsp;5, Table&nbsp;2). Two independent
   checks establish that the kilohertz content is real rather than interpolated frame motion. In the
   \(8\)&ndash;\(300\) Hz band, above the frame chain&rsquo;s \(7.3\) Hz Nyquist, two independent reconstructions
   (strip tracking and Viterbi) agree at \(r = 0.574\) (\(n = 90{,}346\)) while each correlates with the
@@ -420,7 +471,7 @@
 
   <figure class="wide">
     <img src="figures/fig_methods.png" alt="Horizontal detail precision by method; the particle filter is best.">
-    <figcaption><span class="fignum">Figure 4.</span> <strong>Fine-motion precision on the aliased axis</strong>
+    <figcaption><span class="fignum">Figure 5.</span> <strong>Fine-motion precision on the aliased axis</strong>
     (real raster, \(11.8\) kHz; lower is better). The proposed filter, with the physics or the learned appearance
     likelihood, outperforms strip tracking, Kalman fusion, Viterbi decoding, and the batch MAP smoother.</figcaption>
   </figure>
@@ -467,7 +518,7 @@
 
   <h3>5.4&ensp;Design-space ablation and real-data optimization</h3>
   <p>
-  We ran the runnable subset of the Section&nbsp;7 design space (Figure&nbsp;8) as a one-lever-at-a-time
+  We ran the runnable subset of the Section&nbsp;7 design space (Figure&nbsp;9) as a one-lever-at-a-time
   ablation, first on the controlled synthetic benchmark with ground truth, then directly on the real test1
   raster. On synthetic, the picture is sharp: the <em>learned, blur-aware likelihood</em> is the only lever
   that moves through-saccade accuracy at the line rate (saccade RMS \(43.7' \to 24.8'\), gross
@@ -495,7 +546,7 @@
   apples-to-apples test (the literature&rsquo;s sub-arcminute strip numbers are on cone-resolved adaptive-optics
   imagery, a different substrate).</p>
   <p>
-  The result is decisive on the discriminating metric (Figure&nbsp;5, Table&nbsp;3). At the \({\sim}1.5\) kHz
+  The result is decisive on the discriminating metric (Figure&nbsp;6, Table&nbsp;3). At the \({\sim}1.5\) kHz
   tier our particle filter reaches \(1.90'\) horizontal precision versus the SOTA&rsquo;s \(3.00'\) at matched
   validity (<strong>37% better</strong>); at the \(11.8\) kHz line rate, \(1.57'\) versus \(4.38'\)
   (<strong>64% better</strong>), while also winning the independent-tracker correlation
@@ -506,7 +557,7 @@
 
   <figure class="wide">
     <img src="figures/fig_sota.png" alt="Bar chart: horizontal precision of the SOTA strip baselines vs our particle filter at two rate tiers; our method is 37% and 64% better.">
-    <figcaption><span class="fignum">Figure 5.</span> <strong>Per-line precision vs the SOTA on the same data.</strong>
+    <figcaption><span class="fignum">Figure 6.</span> <strong>Per-line precision vs the SOTA on the same data.</strong>
     Horizontal precision (RMS of \({>}25\) ms detail; lower is better) of the composite-reference SOTA strip
     registration, the incremental strip variant, and our physics and best particle filter, at the
     \({\sim}1.5\) kHz tier (a) and the \(11.8\) kHz line rate (b). Dashed line marks the SOTA; our best filter is
@@ -533,13 +584,13 @@
   </table>
 
   <p>
-  For completeness, Figure&nbsp;6 overlays every method&rsquo;s calibrated trajectory on the pursuit dot over a
+  For completeness, Figure&nbsp;7 overlays every method&rsquo;s calibrated trajectory on the pursuit dot over a
   horizontally-active window: all methods track the target, but the particle-filter traces are visibly the
   cleanest and the incremental strip method the jitteriest&mdash;the qualitative read of the precision numbers.</p>
 
   <figure class="wide">
     <img src="figures/fig_methods_traj.png" alt="Small-multiples: calibrated horizontal gaze of each method overlaid on the pursuit dot over a 4-14 s window.">
-    <figcaption><span class="fignum">Figure 6.</span> <strong>Per-method trajectories on real data.</strong>
+    <figcaption><span class="fignum">Figure 7.</span> <strong>Per-method trajectories on real data.</strong>
     Calibrated horizontal gaze (coloured) vs the pursuit dot (grey) over a horizontally-active window, one panel
     per method, annotated with target correlation and precision. Gaps are the known temporal-field-of-view
     dropouts. The particle filter tracks the target with the least high-frequency jitter.</figcaption>
@@ -566,7 +617,7 @@
   On this dataset our filter <strong>more than halves the absolute error of the SOTA</strong>: 2-D RMS
   <strong>\(0.055'\)</strong> versus the strip method&rsquo;s \(0.123'\) with sub-pixel peak fitting (\(0.155'\)
   as the original integer-lag script reports)&mdash;a \(2.2\times\) reduction&mdash;and the advantage holds on
-  the aliased vertical axis specifically (Figure&nbsp;7). This is an absolute-accuracy result, against ground
+  the aliased vertical axis specifically (Figure&nbsp;8). This is an absolute-accuracy result, against ground
   truth, on another group&rsquo;s data and image format, and it is exactly the cone-aliasing regime
   Section&nbsp;7.6 predicts as the method&rsquo;s strongest case: analysis-by-synthesis renders a sub-pixel line
   and the multimodal cloud resolves the cone-lattice ambiguity, whereas argmax strip correlation is
@@ -575,7 +626,7 @@
 
   <figure class="wide">
     <img src="figures/fig_aoslo.png" alt="Bar chart: absolute RMS error vs ground truth on public AOSLO simulated data, per axis; our particle filter is 2.2x lower than the SOTA strip method.">
-    <figcaption><span class="fignum">Figure 7.</span> <strong>Absolute accuracy on public AOSLO ground truth.</strong>
+    <figcaption><span class="fignum">Figure 8.</span> <strong>Absolute accuracy on public AOSLO ground truth.</strong>
     RMS error vs. the known eye trace on the Azimipour <em>et&nbsp;al.</em> [3] simulated cone-resolved set, per
     axis and 2-D, for the SOTA strip registration (integer-lag and sub-pixel) and our particle filter. Our
     method is \(2.2\times\) more accurate, including on the aliased vertical axis.</figcaption>
@@ -616,14 +667,14 @@
   module is a fixed, interpretable choice. That made it a strong, debuggable baseline&mdash;but each choice is
   also a hypothesis, and the modern toolkit gives a concrete way to relax almost all of them. This section
   enumerates the load-bearing assumptions and, for each, the classical and learned levers that could break it,
-  weighting recent work. Figure&nbsp;8 maps the design space; Section&nbsp;7.7 turns it into an ablation study.
+  weighting recent work. Figure&nbsp;9 maps the design space; Section&nbsp;7.7 turns it into an ablation study.
   The thesis is that on a cone-resolved AOSLO substrate with artificial-eye ground truth, replacing these
   modules one at a time is a credible route to state of the art on accuracy <em>and</em> rate
   simultaneously&mdash;not just the rate/robustness frontier we already occupy.</p>
 
   <figure class="wide">
     <img src="figures/fig_agenda.png" alt="Design-space map: each pipeline stage with its current baseline and candidate ML and classical upgrades.">
-    <figcaption><span class="fignum">Figure 8.</span> <strong>The design space.</strong> Each pipeline stage
+    <figcaption><span class="fignum">Figure 9.</span> <strong>The design space.</strong> Each pipeline stage
     (top, current baseline in oxblood) admits multiple upgrades: learned/ML levers (blue) and classical levers
     (grey). The ablation in Section&nbsp;7.7 walks this grid one column at a time against artificial-eye ground
     truth.</figcaption>
@@ -732,7 +783,7 @@
   These levers compose, so the study is a structured sweep, not a single comparison. We propose: (i) fix the
   AOSLO + artificial-eye benchmark and the metrics (perp/along RMS, gross-error persistence, lock-rate vs.
   velocity, latency); (ii) establish the current hand-built filter and a strip-argmax baseline as the two
-  anchors; (iii) swap in <em>one column of Figure&nbsp;8 at a time</em>&mdash;learned dynamics, flow proposal,
+  anchors; (iii) swap in <em>one column of Figure&nbsp;9 at a time</em>&mdash;learned dynamics, flow proposal,
   learned/rendered likelihood, differentiable resampling, score/diffusion posterior&mdash;measuring marginal
   effect and interaction; (iv) then train the best combination end-to-end with a FIVO/VSMC objective; (v) report
   on- and off-manifold trajectories separately to keep learned priors honest. The deliverable is a quantified
@@ -750,7 +801,7 @@
   deliberately classical, hand-built filter. Its value is as much as a <em>baseline and a scaffold</em> as a
   result in itself: every module is a fixed choice with a modern, learnable replacement, and the controlled
   benchmark gives the ground truth to test each one. On a cone-resolved substrate with artificial-eye
-  validation, walking the design space of Figure&nbsp;8 is, we argue, a credible path to state of the art on
+  validation, walking the design space of Figure&nbsp;9 is, we argue, a credible path to state of the art on
   rate, dynamic range, <em>and</em> accuracy at once.</p>
 </section>
 

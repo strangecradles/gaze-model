@@ -322,6 +322,64 @@ def m3_viterbi(beta: float = 8.0, trans_gamma: float = 0.05,
 # ---------------------------------------------------------------------------
 
 
+def _m4_pfkw(*, hp_sigma, sigma_along, ess_frac, roughen_perp, roughen_along,
+             ncc_loss_thr, ncc_loss_window, reseed_perp_sigma, couple_sigma,
+             resample_enabled, lock_gated_gain, beta_cool, roughen_perp_cool,
+             roughen_along_cool, beta_hot, roughen_perp_hot, roughen_along_hot,
+             quality_scaled_along=False, along_sigma_max=None,
+             along_quality_model=None,
+             multi_hypothesis=False, hypothesis_top_k=None,
+             hypothesis_cluster_rows=None):
+    """Build ParticleFilter kwargs for m4_dpf (only non-default overrides)."""
+    import filter as flt
+    kw = dict(reseed_perp_sigma=float(reseed_perp_sigma))
+    if hp_sigma is not None:
+        kw["hp_sigma"] = float(hp_sigma)
+    if sigma_along is not None:
+        kw["sigma_along"] = float(sigma_along)
+    if ess_frac is not None:
+        kw["ess_frac"] = float(ess_frac)
+    if roughen_perp is not None:
+        kw["roughen_perp"] = float(roughen_perp)
+    if roughen_along is not None:
+        kw["roughen_along"] = float(roughen_along)
+    if ncc_loss_thr is not None:
+        kw["ncc_loss_thr"] = float(ncc_loss_thr)
+    if ncc_loss_window is not None:
+        kw["ncc_loss_window"] = int(ncc_loss_window)
+    if couple_sigma is not None:
+        kw["couple_sigma"] = float(couple_sigma)
+    if not resample_enabled:
+        kw["resample_enabled"] = False
+    if lock_gated_gain:
+        kw["lock_gated_gain"] = True
+        if beta_cool is not None and float(beta_cool) != flt.BETA_COOL:
+            kw["beta_cool"] = float(beta_cool)
+        if roughen_perp_cool is not None and float(roughen_perp_cool) != flt.ROUGHEN_PERP_COOL:
+            kw["roughen_perp_cool"] = float(roughen_perp_cool)
+        if roughen_along_cool is not None and float(roughen_along_cool) != flt.ROUGHEN_ALONG_COOL:
+            kw["roughen_along_cool"] = float(roughen_along_cool)
+        if beta_hot is not None and float(beta_hot) != flt.BETA_HOT:
+            kw["beta_hot"] = float(beta_hot)
+        if roughen_perp_hot is not None and float(roughen_perp_hot) != flt.ROUGHEN_PERP_HOT:
+            kw["roughen_perp_hot"] = float(roughen_perp_hot)
+        if roughen_along_hot is not None and float(roughen_along_hot) != flt.ROUGHEN_ALONG_HOT:
+            kw["roughen_along_hot"] = float(roughen_along_hot)
+    if quality_scaled_along:
+        kw["quality_scaled_along"] = True
+        if along_sigma_max is not None and float(along_sigma_max) != flt.ALONG_SIGMA_MAX:
+            kw["along_sigma_max"] = float(along_sigma_max)
+    if along_quality_model is not None:
+        kw["along_quality_model"] = along_quality_model
+    if multi_hypothesis:
+        kw["multi_hypothesis"] = True
+        if hypothesis_top_k is not None and int(hypothesis_top_k) != flt.HYPOTHESIS_TOP_K:
+            kw["hypothesis_top_k"] = int(hypothesis_top_k)
+        if hypothesis_cluster_rows is not None and float(hypothesis_cluster_rows) != flt.HYPOTHESIS_CLUSTER_ROWS:
+            kw["hypothesis_cluster_rows"] = float(hypothesis_cluster_rows)
+    return kw
+
+
 def m4_dpf(eff_rate: float = 1182.0, dur_s: float | None = None,
            likelihood: str = "physics", n_particles: int = 300,
            padw: int = 100, line_len: int = 200, seed: int = 0,
@@ -331,6 +389,25 @@ def m4_dpf(eff_rate: float = 1182.0, dur_s: float | None = None,
            roughen_along: float | None = None, ncc_loss_thr: float | None = None,
            ncc_loss_window: int | None = None,
            reseed_perp_sigma: float = 30.0, couple_sigma: float | None = None,
+           resample_enabled: bool = True, lock_gated_gain: bool = False,
+           beta_cool: float | None = None, roughen_perp_cool: float | None = None,
+           roughen_along_cool: float | None = None, beta_hot: float | None = None,
+           roughen_perp_hot: float | None = None, roughen_along_hot: float | None = None,
+           quality_scaled_along: bool = False, along_sigma_max: float | None = None,
+           along_quality_model=None,
+           multi_hypothesis: bool = False, lag_ms: float | None = None,
+           hypothesis_top_k: int | None = None,
+           hypothesis_cluster_rows: float | None = None,
+           hypothesis_transition_sigma_rows: float | None = None,
+           hypothesis_obs_weight: float | None = None,
+           hypothesis_velocity_cost: float | None = None,
+           hypothesis_velocity_sigma_deg_s: float | None = None,
+           hypothesis_acceleration_cost: float | None = None,
+           hypothesis_acceleration_sigma_deg_s2: float | None = None,
+           slew_gate: bool = False,
+           slew_max_deg_s: float | None = None,
+           slew_gate_cost: float | None = None,
+           slew_gate_saccade_p: float | None = None,
            tag_extra: str = ""):
     """Run filter.py's ParticleFilter per effective line.
 
@@ -375,6 +452,27 @@ def m4_dpf(eff_rate: float = 1182.0, dur_s: float | None = None,
         tag += f"_pw{padw}"
     if line_len != 200:
         tag += f"_ll{line_len}"
+    if lock_gated_gain:
+        tag += "_lg"
+    if quality_scaled_along:
+        tag += "_qsa"
+    if multi_hypothesis:
+        tag += "_mh"
+        if lag_ms is not None and float(lag_ms) != flt.HYPOTHESIS_LAG_MS:
+            tag += f"_lag{lag_ms:g}"
+        if (hypothesis_transition_sigma_rows is not None
+                and float(hypothesis_transition_sigma_rows) != flt.HYPOTHESIS_TRANSITION_SIGMA_ROWS):
+            tag += f"_ht{hypothesis_transition_sigma_rows:g}"
+        if (hypothesis_velocity_cost is not None
+                and float(hypothesis_velocity_cost) != flt.HYPOTHESIS_VEL_COST):
+            tag += f"_vc{hypothesis_velocity_cost:g}"
+        if (hypothesis_acceleration_cost is not None
+                and float(hypothesis_acceleration_cost) != flt.HYPOTHESIS_ACCEL_COST):
+            tag += f"_ac{hypothesis_acceleration_cost:g}"
+    if slew_gate:
+        tag += f"_sg{(flt.SLEW_GATE_MAX_DEG_S if slew_max_deg_s is None else float(slew_max_deg_s)):g}"
+    if not resample_enabled:
+        tag += "_nr"
     if tag_extra:
         tag += f"_{tag_extra}"
     if dur_s is not None:
@@ -393,9 +491,57 @@ def m4_dpf(eff_rate: float = 1182.0, dur_s: float | None = None,
     ch = khz2d.chain()
     con_med = np.median(lm["con"])
 
-    T_, X_, Y_, V_, NCC_ = [], [], [], [], []
+    T_, X_, Y_, V_, NCC_, ESS_, PSACC_ = [], [], [], [], [], [], []
+    XRAW_, YRAW_, RSLV_ = [], [], []
+    _pfkw = _m4_pfkw(
+        hp_sigma=hp_sigma, sigma_along=sigma_along, ess_frac=ess_frac,
+        roughen_perp=roughen_perp, roughen_along=roughen_along,
+        ncc_loss_thr=ncc_loss_thr, ncc_loss_window=ncc_loss_window,
+        reseed_perp_sigma=reseed_perp_sigma, couple_sigma=couple_sigma,
+        resample_enabled=resample_enabled, lock_gated_gain=lock_gated_gain,
+        beta_cool=beta_cool, roughen_perp_cool=roughen_perp_cool,
+        roughen_along_cool=roughen_along_cool, beta_hot=beta_hot,
+        roughen_perp_hot=roughen_perp_hot, roughen_along_hot=roughen_along_hot,
+        quality_scaled_along=quality_scaled_along, along_sigma_max=along_sigma_max,
+        along_quality_model=along_quality_model,
+        multi_hypothesis=multi_hypothesis,
+        hypothesis_top_k=hypothesis_top_k,
+        hypothesis_cluster_rows=hypothesis_cluster_rows)
     rng = np.random.default_rng(seed)
     pf = None
+    lag_ms_eff = flt.HYPOTHESIS_LAG_MS if lag_ms is None else float(lag_ms)
+    hyp_transition_eff = (flt.HYPOTHESIS_TRANSITION_SIGMA_ROWS
+                          if hypothesis_transition_sigma_rows is None
+                          else float(hypothesis_transition_sigma_rows))
+    hyp_obs_eff = (flt.HYPOTHESIS_OBS_WEIGHT if hypothesis_obs_weight is None
+                   else float(hypothesis_obs_weight))
+    hyp_vel_cost_eff = (flt.HYPOTHESIS_VEL_COST if hypothesis_velocity_cost is None
+                        else float(hypothesis_velocity_cost))
+    hyp_vel_sigma_eff = (flt.HYPOTHESIS_VEL_SIGMA_DEG_S
+                         if hypothesis_velocity_sigma_deg_s is None
+                         else float(hypothesis_velocity_sigma_deg_s))
+    hyp_accel_cost_eff = (flt.HYPOTHESIS_ACCEL_COST if hypothesis_acceleration_cost is None
+                          else float(hypothesis_acceleration_cost))
+    hyp_accel_sigma_eff = (flt.HYPOTHESIS_ACCEL_SIGMA_DEG_S2
+                           if hypothesis_acceleration_sigma_deg_s2 is None
+                           else float(hypothesis_acceleration_sigma_deg_s2))
+    slew_max_eff = (flt.SLEW_GATE_MAX_DEG_S if slew_max_deg_s is None
+                    else float(slew_max_deg_s))
+    slew_cost_eff = (flt.SLEW_GATE_COST if slew_gate_cost is None
+                     else float(slew_gate_cost))
+    slew_sacc_eff = (flt.SLEW_GATE_SACCADE_P if slew_gate_saccade_p is None
+                     else float(slew_gate_saccade_p))
+    resolver: flt.FixedLagHypothesisResolver | None = None
+    resolve_out_idx: list[int] = []
+    resolve_chain_x: list[float] = []
+    resolve_chain_y: list[float] = []
+
+    def _apply_resolved(est: flt.FixedLagEstimate) -> None:
+        out_i = resolve_out_idx[est.index]
+        X_[out_i] = resolve_chain_x[est.index] + (est.est_perp - padw)
+        Y_[out_i] = resolve_chain_y[est.index] + est.est_along
+        RSLV_[out_i] = True
+
     prev_db = None
     H = None
     t_start = time.time()
@@ -444,30 +590,28 @@ def m4_dpf(eff_rate: float = 1182.0, dur_s: float | None = None,
                     a0 = float(np.median(lam))
                     st = flt.init_filter(n_particles, padw + d0, a0, 15.0, 4.0, rng=rng)
                     win = atlasT[max(0, int(cmid) - padw): int(cmid) + padw + 1]
-                    _pfkw = dict(reseed_perp_sigma=float(reseed_perp_sigma))
-                    if hp_sigma is not None:
-                        _pfkw["hp_sigma"] = float(hp_sigma)
-                    if sigma_along is not None:
-                        _pfkw["sigma_along"] = float(sigma_along)
-                    if ess_frac is not None:
-                        _pfkw["ess_frac"] = float(ess_frac)
-                    if roughen_perp is not None:
-                        _pfkw["roughen_perp"] = float(roughen_perp)
-                    if roughen_along is not None:
-                        _pfkw["roughen_along"] = float(roughen_along)
-                    if ncc_loss_thr is not None:
-                        _pfkw["ncc_loss_thr"] = float(ncc_loss_thr)
-                    if ncc_loss_window is not None:
-                        _pfkw["ncc_loss_window"] = int(ncc_loss_window)
-                    if couple_sigma is not None:
-                        _pfkw["couple_sigma"] = float(couple_sigma)
                     pf = flt.ParticleFilter(st, win, line_len, col_step=col_step,
                                             beta=(flt.BETA if beta is None
                                                   else float(beta)),
                                             likelihood=likelihood, learned_head=head,
                                             **_pfkw)
+                    if multi_hypothesis and resolver is None:
+                        resolver = flt.FixedLagHypothesisResolver(
+                            eff, lag_ms=lag_ms_eff,
+                            transition_sigma_rows=hyp_transition_eff,
+                            obs_weight=hyp_obs_eff,
+                            velocity_cost=hyp_vel_cost_eff,
+                            velocity_sigma_deg_s=hyp_vel_sigma_eff,
+                            acceleration_cost=hyp_accel_cost_eff,
+                            acceleration_sigma_deg_s2=hyp_accel_sigma_eff,
+                            slew_gate=slew_gate,
+                            slew_max_deg_s=slew_max_eff,
+                            slew_gate_cost=slew_cost_eff,
+                            slew_gate_saccade_p=slew_sacc_eff)
                 T_.append(tline); X_.append(np.nan); Y_.append(np.nan)
+                XRAW_.append(np.nan); YRAW_.append(np.nan); RSLV_.append(False)
                 V_.append(False); NCC_.append(0.0)
+                ESS_.append(0.0); PSACC_.append(0.0)
                 continue
             line = gc[:, c0:c1].mean(1)
             obs = np.interp(np.arange(line_len) * col_step,
@@ -479,21 +623,52 @@ def m4_dpf(eff_rate: float = 1182.0, dur_s: float | None = None,
                 win = np.vstack([padrows, win] if lo < 0 else [win, padrows])
             pf.atlas = win.astype(np.float64)
             along_meas = float(np.median(lam))
-            post = pf.step(obs, along_meas, block / rate, rng, coarse_anchor=float(padw))
+            post = pf.step(obs, along_meas, block / rate, rng,
+                           coarse_anchor=float(padw),
+                           along_quality=float(np.median(qv)))
             d_est = post.est_perp - padw
+            raw_x = float(ch["x"][f]) + d_est
+            raw_y = float(ch["y"][f]) + post.est_along
+            out_i = len(T_)
             T_.append(tline)
-            X_.append(float(ch["x"][f]) + d_est)
-            Y_.append(float(ch["y"][f]) + post.est_along)
+            X_.append(raw_x)
+            Y_.append(raw_y)
+            XRAW_.append(raw_x); YRAW_.append(raw_y); RSLV_.append(False)
             V_.append(post.max_ncc > 0.12)
             NCC_.append(post.max_ncc)
+            ESS_.append(post.ess)
+            PSACC_.append(post.mode_posterior[1])
+            if resolver is not None:
+                resolve_out_idx.append(out_i)
+                resolve_chain_x.append(float(ch["x"][f]))
+                resolve_chain_y.append(float(ch["y"][f]))
+                est = resolver.push(post, dt_s=block / rate)
+                if est is not None:
+                    _apply_resolved(est)
         prev_db = gc
         if f % 100 == 0:
             el = time.time() - t_start
             print(f"  [m4 {int(eff)}Hz {likelihood}] frame {f}/{nfr} ({el:.0f}s)")
+    if resolver is not None:
+        for est in resolver.flush():
+            _apply_resolved(est)
     T_ = np.array(T_); X_ = np.array(X_); Y_ = np.array(Y_)
     V_ = np.array(V_) & np.isfinite(X_) & np.isfinite(Y_)
     return khz2d.save_method(tag, T_, X_, Y_, V_, eff,
-                             extra=dict(max_ncc=np.array(NCC_)))
+                             extra=dict(max_ncc=np.array(NCC_),
+                                        ess=np.array(ESS_),
+                                        p_saccade=np.array(PSACC_),
+                                        x_px_immediate=np.array(XRAW_),
+                                        y_px_immediate=np.array(YRAW_),
+                                        fixed_lag_resolved=np.array(RSLV_, dtype=bool),
+                                        fixed_lag_lines=np.int64(resolver.lag if resolver is not None else 0),
+                                        fixed_lag_ms=np.float64(lag_ms_eff if resolver is not None else 0.0),
+                                        slew_gate=np.bool_(slew_gate if resolver is not None else False),
+                                        slew_max_deg_s=np.float64(slew_max_eff if resolver is not None else 0.0),
+                                        hypothesis_velocity_cost=np.float64(hyp_vel_cost_eff if resolver is not None else 0.0),
+                                        hypothesis_velocity_sigma_deg_s=np.float64(hyp_vel_sigma_eff if resolver is not None else 0.0),
+                                        hypothesis_acceleration_cost=np.float64(hyp_accel_cost_eff if resolver is not None else 0.0),
+                                        hypothesis_acceleration_sigma_deg_s2=np.float64(hyp_accel_sigma_eff if resolver is not None else 0.0)))
 
 
 # ---------------------------------------------------------------------------

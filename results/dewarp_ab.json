@@ -1,0 +1,56 @@
+{
+  "Igor": {
+    "person": "Igor",
+    "capture": "video_playback_Igor_20260615_164216",
+    "scatter_off_arcmin": 4.264286881713357,
+    "scatter_on_arcmin": 4.50655817443167,
+    "fraction_owned": -0.056814022939509774,
+    "fraction_owned_vs_4p33": -0.04077555991493533,
+    "n_lines_common": 582250,
+    "n_frames": 832,
+    "bootstrap": {
+      "off_ci": [
+        4.143550850827571,
+        4.378831361050832
+      ],
+      "on_ci": [
+        4.3851526293572,
+        4.625519681020504
+      ],
+      "frac_ci": [
+        -0.0682196886031512,
+        -0.04611489412584363
+      ],
+      "frac_mean": -0.05693498878411211,
+      "n_boot": 2000
+    },
+    "note": "paired common-mask; fraction_owned=(off-on)/off; bootstrap CI over frames; gaze source = chain within-frame velocity ramp"
+  },
+  "Ashton3": {
+    "person": "Ashton3",
+    "capture": "video_playback_Ashton3_20260615_162658",
+    "scatter_off_arcmin": 4.0931213539251345,
+    "scatter_on_arcmin": 4.603353095754999,
+    "fraction_owned": -0.12465590382278138,
+    "fraction_owned_vs_4p33": -0.06313004520900664,
+    "n_lines_common": 946032,
+    "n_frames": 1215,
+    "bootstrap": {
+      "off_ci": [
+        3.9468598821797243,
+        4.241677449503531
+      ],
+      "on_ci": [
+        4.454109454124486,
+        4.754374808781217
+      ],
+      "frac_ci": [
+        -0.1382062778119869,
+        -0.11238167021099668
+      ],
+      "frac_mean": -0.12476311116787472,
+      "n_boot": 2000
+    },
+    "note": "paired common-mask; fraction_owned=(off-on)/off; bootstrap CI over frames; gaze source = chain within-frame velocity ramp"
+  }
+}

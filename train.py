@@ -72,16 +72,35 @@ class GridDataset:
     label: np.ndarray    # (n_examples,) int — true-row index within each candidate window
     mode: np.ndarray     # (n_examples,) int8 — 0 fixation, 1 saccade
     cand: list           # list of (n_cand,) int candidate-row arrays (for error reporting)
+    stress: np.ndarray | None = None  # (n_examples,) object labels; None for legacy clean sets
 
 
-def _cfg_hash(rate: float, duration: float, seeds, line_len: int) -> str:
-    s = f"{rate:.1f}_{duration:.3f}_{tuple(seeds)}_{line_len}_{WIN_ROWS}_{ANCHOR_SIGMA:.2f}"
+def _stress_sequence(stress_presets) -> list[ss.SDSLOStressConfig | str | None]:
+    if stress_presets is None:
+        return [None]
+    out = []
+    for st in stress_presets:
+        out.append(None if st == "clean" else st)
+    return out
+
+
+def _stress_hash_part(stress_presets) -> str:
+    if stress_presets is None:
+        return ""
+    return "_" + "|".join(ss.stress_tag(st) for st in _stress_sequence(stress_presets))
+
+
+def _cfg_hash(rate: float, duration: float, seeds, line_len: int,
+              stress_presets=None) -> str:
+    s = (f"{rate:.1f}_{duration:.3f}_{tuple(seeds)}_{line_len}_{WIN_ROWS}_"
+         f"{ANCHOR_SIGMA:.2f}{_stress_hash_part(stress_presets)}")
     return hashlib.md5(s.encode()).hexdigest()[:10]
 
 
 def build_dataset(seeds, atlas, rate: float = DEFAULT_RATE,
                   duration: float = DEFAULT_DURATION, line_len: int = LINE_LEN,
-                  seed_offset: int = 0, use_cache: bool = True) -> GridDataset:
+                  seed_offset: int = 0, use_cache: bool = True,
+                  stress_presets=None) -> GridDataset:
     """Build (or load) the labeled candidate-grid dataset for the given seeds.
 
     For each stream line, a candidate window of ``2*WIN_ROWS`` rows is centred on
@@ -92,40 +111,49 @@ def build_dataset(seeds, atlas, rate: float = DEFAULT_RATE,
     A = atlas.ref_map if hasattr(atlas, "ref_map") else np.asarray(atlas)
     H = A.shape[0]
     os.makedirs(CACHE, exist_ok=True)
-    tag = _cfg_hash(rate, duration, seeds, line_len)
+    tag = _cfg_hash(rate, duration, seeds, line_len, stress_presets)
     path = os.path.join(CACHE, f"g14_grid_{tag}.npz")
     if use_cache and os.path.exists(path):
         z = np.load(path, allow_pickle=True)
         feats = [torch.as_tensor(f, dtype=torch.float64) for f in z["feats"]]
         cand = list(z["cand"])
-        return GridDataset(feats=feats, label=z["label"], mode=z["mode"], cand=cand)
+        stress = z["stress"] if "stress" in z.files else None
+        return GridDataset(feats=feats, label=z["label"], mode=z["mode"],
+                           cand=cand, stress=stress)
 
     rng = np.random.default_rng(1234 + seed_offset)
-    feats_list, labels, modes, cands = [], [], [], []
+    feats_list, labels, modes, cands, stress_labels = [], [], [], [], []
+    stresses = _stress_sequence(stress_presets)
     for sd in seeds:
-        stream = ss.make_synthetic(duration, rate, sd, atlas, line_len=line_len)
-        tr = stream.trajectory
-        for i in range(len(tr.t)):
-            tp = float(tr.perp_rows[i])
-            ta = float(tr.along_cols[i])
-            anchor = tp + rng.normal(0.0, ANCHOR_SIGMA)
-            lo = int(np.clip(anchor - WIN_ROWS, 0, H - 1))
-            hi = int(np.clip(anchor + WIN_ROWS, 1, H))
-            cand = np.arange(lo, hi)
-            if len(cand) < 5 or not (lo <= tp < hi):
-                continue
-            f = losses.perp_features(stream.lines[i], cand, ta, A, line_len)
-            feats_list.append(f.to(torch.float64))
-            labels.append(int(np.argmin(np.abs(cand - tp))))
-            modes.append(int(tr.mode[i]))
-            cands.append(cand)
+        for stress in stresses:
+            stream = ss.make_synthetic(duration, rate, sd, atlas,
+                                       line_len=line_len, stress=stress)
+            tr = stream.trajectory
+            st_label = ss.stress_tag(stress)
+            for i in range(len(tr.t)):
+                tp = float(tr.perp_rows[i])
+                ta = float(tr.along_cols[i])
+                anchor = tp + rng.normal(0.0, ANCHOR_SIGMA)
+                lo = int(np.clip(anchor - WIN_ROWS, 0, H - 1))
+                hi = int(np.clip(anchor + WIN_ROWS, 1, H))
+                cand = np.arange(lo, hi)
+                if len(cand) < 5 or not (lo <= tp < hi):
+                    continue
+                f = losses.perp_features(stream.lines[i], cand, ta, A,
+                                          stream.line_len)
+                feats_list.append(f.to(torch.float64))
+                labels.append(int(np.argmin(np.abs(cand - tp))))
+                modes.append(int(tr.mode[i]))
+                cands.append(cand)
+                stress_labels.append(st_label)
     ds = GridDataset(feats=feats_list, label=np.asarray(labels, dtype=np.int64),
-                     mode=np.asarray(modes, dtype=np.int8), cand=cands)
+                     mode=np.asarray(modes, dtype=np.int8), cand=cands,
+                     stress=np.asarray(stress_labels, dtype=object))
     if use_cache:
         np.savez(path,
                  feats=np.array([f.numpy() for f in ds.feats], dtype=object),
                  label=ds.label, mode=ds.mode,
-                 cand=np.array(ds.cand, dtype=object))
+                 cand=np.array(ds.cand, dtype=object), stress=ds.stress)
     return ds
 
 
@@ -229,6 +257,31 @@ def evaluate(head: losses.LearnedPerpLikelihood, ds: GridDataset) -> Comparison:
     )
 
 
+def _subset_dataset(ds: GridDataset, mask: np.ndarray) -> GridDataset:
+    idx = np.where(mask)[0]
+    stress = ds.stress[idx] if ds.stress is not None else None
+    return GridDataset(
+        feats=[ds.feats[i] for i in idx],
+        label=ds.label[idx],
+        mode=ds.mode[idx],
+        cand=[ds.cand[i] for i in idx],
+        stress=stress,
+    )
+
+
+def evaluate_by_stress(head: losses.LearnedPerpLikelihood,
+                       ds: GridDataset) -> dict[str, Comparison]:
+    """Evaluate clean/stress cases separately instead of pooling failures away."""
+    if ds.stress is None:
+        return {"clean": evaluate(head, ds)}
+    out = {}
+    for label in sorted(set(str(x) for x in ds.stress)):
+        mask = np.asarray([str(x) == label for x in ds.stress], dtype=bool)
+        if mask.any():
+            out[label] = evaluate(head, _subset_dataset(ds, mask))
+    return out
+
+
 # ---------------------------------------------------------------------------
 # Checkpoint
 # ---------------------------------------------------------------------------
@@ -329,6 +382,30 @@ def format_report(tr: TrainResult, cmp: Comparison, rate: float) -> str:
     return "\n".join(L)
 
 
+def format_stress_report(by_stress: dict[str, Comparison]) -> str:
+    L = ["## SDSLO stress split\n",
+         "Clean and stressed synthetic cases are reported separately so a home-field "
+         "synthetic win cannot hide SDSLO single-line ambiguity failures.\n",
+         f"{'stress':<34} | {'fix phys/learn RMS':>19} | {'sac phys/learn RMS':>19} | "
+         f"{'fix gross p/l':>13} | {'sac gross p/l':>13}",
+         "-" * 109]
+    for label, cmp in by_stress.items():
+        def rms_pair(a, b):
+            aa = f"{a:.1f}" if np.isfinite(a) else "n/a"
+            bb = f"{b:.1f}" if np.isfinite(b) else "n/a"
+            return f"{aa}/{bb}"
+        def gross_pair(a, b):
+            aa = f"{a:.3f}" if np.isfinite(a) else "n/a"
+            bb = f"{b:.3f}" if np.isfinite(b) else "n/a"
+            return f"{aa}/{bb}"
+        L.append(f"{label:<34} | {rms_pair(cmp.phys_fix_rms, cmp.learned_fix_rms):>19} | "
+                 f"{rms_pair(cmp.phys_sac_rms, cmp.learned_sac_rms):>19} | "
+                 f"{gross_pair(cmp.phys_fix_gross, cmp.learned_fix_gross):>13} | "
+                 f"{gross_pair(cmp.phys_sac_gross, cmp.learned_sac_gross):>13}")
+    L.append("")
+    return "\n".join(L)
+
+
 # disjoint held-out groups (none overlap the train seeds) used for the robustness
 # table — saccades are rare, so several groups are needed to characterise the
 # learned-vs-physics saccade benefit honestly rather than from one lucky split.
@@ -361,14 +438,17 @@ def robustness_table(head: losses.LearnedPerpLikelihood, atlas, rate: float,
 
 
 def run_report(rate: float = DEFAULT_RATE, duration: float = DEFAULT_DURATION,
-               epochs: int = 160, retrain: bool = True) -> tuple[TrainResult, Comparison]:
+               epochs: int = 160, retrain: bool = True,
+               stress_presets=None,
+               val_stress_presets=None) -> tuple[TrainResult, Comparison]:
     atlas = data.load_atlas()
     print(f"[G14] building train dataset (seeds {list(TRAIN_SEEDS)}) @ {rate:.0f} Hz...")
     tr_ds = build_dataset(TRAIN_SEEDS, atlas, rate=rate, duration=duration,
-                          seed_offset=0)
+                          seed_offset=0, stress_presets=stress_presets)
     print(f"[G14] building val dataset   (seeds {list(VAL_SEEDS)})...")
+    val_stress_presets = stress_presets if val_stress_presets is None else val_stress_presets
     va_ds = build_dataset(VAL_SEEDS, atlas, rate=rate, duration=duration,
-                          seed_offset=1)
+                          seed_offset=1, stress_presets=val_stress_presets)
     print(f"[G14] train lines {len(tr_ds.feats)} (sac {int((tr_ds.mode==1).sum())}); "
           f"val lines {len(va_ds.feats)} (sac {int((va_ds.mode==1).sum())})")
     head = None if retrain else load_head()
@@ -383,7 +463,10 @@ def run_report(rate: float = DEFAULT_RATE, duration: float = DEFAULT_DURATION,
     os.makedirs(RESULTS, exist_ok=True)
     print("[G14] evaluating robustness across disjoint held-out groups...")
     robust = robustness_table(tres.head, atlas, rate, duration)
-    report = format_report(tres, cmp, rate) + "\n" + robust
+    report = format_report(tres, cmp, rate)
+    if val_stress_presets is not None:
+        report += "\n" + format_stress_report(evaluate_by_stress(tres.head, va_ds))
+    report += "\n" + robust
     with open(os.path.join(RESULTS, "g14_report.md"), "w") as f:
         f.write(report)
     print("\n" + report)
@@ -400,6 +483,11 @@ if __name__ == "__main__":
     ap.add_argument("--epochs", type=int, default=160)
     ap.add_argument("--no-retrain", action="store_true",
                     help="load cached head instead of retraining")
+    ap.add_argument("--sdslo-stress", action="store_true",
+                    help="train/evaluate on mixed clean + SDSLO-stressed synthetic")
     args = ap.parse_args()
+    stress = ("clean", "noise_x2", "short_noise", "structured") if args.sdslo_stress else None
+    val_stress = ("clean", "noise_x3", "short_noise", "combo_sdslo") if args.sdslo_stress else None
     run_report(rate=args.rate, duration=args.duration, epochs=args.epochs,
-               retrain=not args.no_retrain)
+               retrain=not args.no_retrain, stress_presets=stress,
+               val_stress_presets=val_stress)

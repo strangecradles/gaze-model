@@ -1,0 +1,13 @@
+  [Igor lines] frame 100  qh_med=0.64
+  [Igor lines] frame 200  qh_med=0.57
+  [Igor lines] frame 300  qh_med=0.45
+  [Igor lines] frame 400  qh_med=0.49
+  [Igor lines] frame 500  qh_med=0.57
+  [Igor lines] frame 600  qh_med=0.41
+  [Igor lines] frame 700  qh_med=0.61
+  [Igor lines] frame 800  qh_med=0.55
+  [Igor lines] frame 900  qh_med=0.40
+  [Igor lines] frame 1000  qh_med=0.58
+  [Igor lines] frame 1100  qh_med=0.14
+  [Igor lines] frame 1200  qh_med=0.14
+DONE refavg3 n=1011616 in 26s

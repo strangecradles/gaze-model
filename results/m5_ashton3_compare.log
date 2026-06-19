@@ -1,0 +1,27 @@
+/Users/ashtonperlroth/Kodiak/gaze-model/people_fov_m5.py:206: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+Consider using tensor.detach() first. (Triggered internally at /Users/runner/work/pytorch/pytorch/pytorch/torch/csrc/autograd/generated/python_variable_methods.cpp:837.)
+  print(f"  [m5 {name}] it {it}: data {float(l_data):+.4f} "
+  [m5 Ashton3] it 0: data -2.4386 (0s)
+  [m5 Ashton3] it 50: data -2.4488 (5s)
+  [m5 Ashton3] it 100: data -2.4492 (9s)
+  [m5 Ashton3] it 150: data -2.4493 (14s)
+  [m5 Ashton3] it 200: data -2.4495 (18s)
+  [m5 Ashton3] it 250: data -2.4495 (23s)
+Traceback (most recent call last):
+  File "/Users/ashtonperlroth/Kodiak/gaze-model/people_fov_m5.py", line 264, in <module>
+    main()
+    ~~~~^^
+  File "/Users/ashtonperlroth/Kodiak/gaze-model/people_fov_m5.py", line 260, in main
+    compare_m4_m5(args.person)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/Users/ashtonperlroth/Kodiak/gaze-model/people_fov_m5.py", line 243, in compare_m4_m5
+    m4 = _metrics("M4", m4_path)
+  File "/Users/ashtonperlroth/Kodiak/gaze-model/people_fov_m5.py", line 236, in _metrics
+    p_low, p_hf = pf.psd_band_ratio(hx, rate, valid)
+                  ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/Users/ashtonperlroth/Kodiak/gaze-model/people_fov_pf.py", line 492, in psd_band_ratio
+    p_low = float(np.trapz(p[(f >= low_hz) & (f <= high_hz)], f[(f >= low_hz) & (f <= high_hz)]))
+                  ^^^^^^^^
+  File "/opt/homebrew/lib/python3.14/site-packages/numpy/__init__.py", line 792, in __getattr__
+    raise AttributeError(f"module {__name__!r} has no attribute {attr!r}")
+AttributeError: module 'numpy' has no attribute 'trapz'. Did you mean: 'trace'?

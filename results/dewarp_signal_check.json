@@ -1,0 +1,68 @@
+{
+  "Igor": {
+    "person": "Igor",
+    "baseline": {
+      "r_dot_x": 0.809570098190516,
+      "microsaccades": 751,
+      "crossover_hz": 24.050775676991883,
+      "coh_lowband": 0.5184764513293745
+    },
+    "candidates": {
+      "refavg3": {
+        "r_dot_x": 0.8096441497916527,
+        "delta_r": 7.405160113671538e-05,
+        "gate_r_pass": true,
+        "microsaccades": 742,
+        "gate_microsaccade_pass": true,
+        "crossover_hz": 24.9415451465101,
+        "coh_lowband": 0.5743947751661989,
+        "gate_crossover_pass": true,
+        "PASS": true
+      },
+      "dewarp": {
+        "r_dot_x": 0.81176956067837,
+        "delta_r": 0.002199462487854076,
+        "gate_r_pass": true,
+        "microsaccades": 664,
+        "gate_microsaccade_pass": false,
+        "crossover_hz": 22.26923673795545,
+        "coh_lowband": 0.4463389535460502,
+        "gate_crossover_pass": false,
+        "PASS": false
+      }
+    }
+  },
+  "Ashton3": {
+    "person": "Ashton3",
+    "baseline": {
+      "r_dot_x": 0.9412284315774582,
+      "microsaccades": 936,
+      "crossover_hz": 118.34934227720954,
+      "coh_lowband": 0.725553224491656
+    },
+    "candidates": {
+      "refavg3": {
+        "r_dot_x": 0.9417136985679964,
+        "delta_r": 0.0004852669905381912,
+        "gate_r_pass": true,
+        "microsaccades": 833,
+        "gate_microsaccade_pass": false,
+        "crossover_hz": 63.30313656687952,
+        "coh_lowband": 0.6986894886061984,
+        "gate_crossover_pass": false,
+        "PASS": false
+      },
+      "dewarp": {
+        "r_dot_x": 0.9405798432587946,
+        "delta_r": -0.0006485883186635455,
+        "gate_r_pass": true,
+        "microsaccades": 691,
+        "gate_microsaccade_pass": false,
+        "crossover_hz": 81.6518718036562,
+        "coh_lowband": 0.6948551243531902,
+        "gate_crossover_pass": false,
+        "PASS": false
+      }
+    }
+  }
+}

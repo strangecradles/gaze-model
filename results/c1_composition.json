@@ -1,0 +1,78 @@
+{
+  "Igor": {
+    "person": "Igor",
+    "C1_px": 8.204384389292814,
+    "C1_arcmin": 3.906849709187054,
+    "V_px2": 44.874615471514424,
+    "alias_spacing_px": 6.0,
+    "alias_thresh_px": 3.0,
+    "components": {
+      "alias": {
+        "frac": 0.9795463609493222,
+        "tail_frac_of_Lk": 0.24198025632322234,
+        "rate_vs_motion_r2": 0.1262262542975512,
+        "rate_vs_motion_slope": 0.008601436817807234,
+        "note": ">0.5*alias_spacing |dev| (discrete mosaic-peak flips); rate_vs_motion = per-frame alias rate regressed on |inc| (motion-driven?)"
+      },
+      "distortion": {
+        "frac": 0.0002436752593303155,
+        "r2_dev2_vs_motion": 0.009030698994948128,
+        "slope": 0.027848757113084478,
+        "r2_absdev_vs_motion": 0.01625851606740003,
+        "note": "core |dev| explained by reference frame's own |inc| motion"
+      },
+      "template": {
+        "frac": 0.0019558004873286264,
+        "r2_dev2_vs_inv_qh": 0.0724827195989377,
+        "note": "core dev^2 explained by 1/NCC-peak-height (SNR); motion-independent"
+      },
+      "chain": {
+        "frac": 0.24853749636469658,
+        "var_gap1_px2": 127.16302052221124,
+        "var_gap2_px2": 149.4690696814486,
+        "chain_var_per_hop_px2": 22.306049159237347,
+        "note": "age-gap slope of pairwise disagreement variance"
+      }
+    },
+    "caveat": "fractions are NON-orthogonal (distortion & alias both motion-driven; template & distortion may share variance). Read as attributions, not a partition.",
+    "dominant": "alias"
+  },
+  "Ashton3": {
+    "person": "Ashton3",
+    "C1_px": 7.596576340407142,
+    "C1_arcmin": 3.6174173049557816,
+    "V_px2": 38.47198139708905,
+    "alias_spacing_px": 6.0,
+    "alias_thresh_px": 3.0,
+    "components": {
+      "alias": {
+        "frac": 0.9808276644032158,
+        "tail_frac_of_Lk": 0.17383835419746457,
+        "rate_vs_motion_r2": 0.17191369126184675,
+        "rate_vs_motion_slope": 0.01180785698394933,
+        "note": ">0.5*alias_spacing |dev| (discrete mosaic-peak flips); rate_vs_motion = per-frame alias rate regressed on |inc| (motion-driven?)"
+      },
+      "distortion": {
+        "frac": 0.0004069811755347331,
+        "r2_dev2_vs_motion": 0.017537406333850925,
+        "slope": 0.03549885115517835,
+        "r2_absdev_vs_motion": 0.02597438406673247,
+        "note": "core |dev| explained by reference frame's own |inc| motion"
+      },
+      "template": {
+        "frac": 0.0016660959323409215,
+        "r2_dev2_vs_inv_qh": 0.07179447874523448,
+        "note": "core dev^2 explained by 1/NCC-peak-height (SNR); motion-independent"
+      },
+      "chain": {
+        "frac": 0.32895519354187813,
+        "var_gap1_px2": 106.94430681475578,
+        "var_gap2_px2": 132.2554229875937,
+        "chain_var_per_hop_px2": 25.311116172837927,
+        "note": "age-gap slope of pairwise disagreement variance"
+      }
+    },
+    "caveat": "fractions are NON-orthogonal (distortion & alias both motion-driven; template & distortion may share variance). Read as attributions, not a partition.",
+    "dominant": "alias"
+  }
+}

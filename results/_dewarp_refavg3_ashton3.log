@@ -1,0 +1,13 @@
+  [Ashton3 lines] frame 100  qh_med=0.67
+  [Ashton3 lines] frame 200  qh_med=0.75
+  [Ashton3 lines] frame 300  qh_med=0.67
+  [Ashton3 lines] frame 400  qh_med=0.78
+  [Ashton3 lines] frame 500  qh_med=0.78
+  [Ashton3 lines] frame 600  qh_med=0.69
+  [Ashton3 lines] frame 700  qh_med=0.72
+  [Ashton3 lines] frame 800  qh_med=0.72
+  [Ashton3 lines] frame 900  qh_med=0.62
+  [Ashton3 lines] frame 1000  qh_med=0.45
+  [Ashton3 lines] frame 1100  qh_med=0.51
+  [Ashton3 lines] frame 1200  qh_med=0.56
+DONE ashton3 refavg3

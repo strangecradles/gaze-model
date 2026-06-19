@@ -1,0 +1,38 @@
+{
+  "Igor": {
+    "person": "Igor",
+    "capture": "video_playback_Igor_20260615_164216",
+    "n_lines_common": 586561,
+    "variants": {
+      "single_frame": {
+        "rdx_scatter_arcmin": 4.316433676998484,
+        "reduction_vs_single": 0.0
+      },
+      "refavg3": {
+        "rdx_scatter_arcmin": 3.7963726906413204,
+        "reduction_vs_single": 0.12048395163082826
+      },
+      "refavg5": {
+        "rdx_scatter_arcmin": 4.063457650949104,
+        "reduction_vs_single": 0.05860764811410045
+      }
+    },
+    "note": "ref_frames=1 == committed single-frame baseline; refavgK = K-frame chain-averaged reference. Drop with K => floor is single-frame reference noise, not single-frame intra-frame distortion."
+  },
+  "Ashton3": {
+    "person": "Ashton3",
+    "capture": "video_playback_Ashton3_20260615_162658",
+    "n_lines_common": 948183,
+    "variants": {
+      "single_frame": {
+        "rdx_scatter_arcmin": 4.101859110248611,
+        "reduction_vs_single": 0.0
+      },
+      "refavg3": {
+        "rdx_scatter_arcmin": 3.6681607450357565,
+        "reduction_vs_single": 0.10573214573100453
+      }
+    },
+    "note": "ref_frames=1 == committed single-frame baseline; refavgK = K-frame chain-averaged reference. Drop with K => floor is single-frame reference noise, not single-frame intra-frame distortion."
+  }
+}

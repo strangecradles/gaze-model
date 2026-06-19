@@ -1,0 +1,20 @@
+{
+  "Igor": {
+    "person": "Igor",
+    "K": 3,
+    "n_valid": 518512,
+    "n_total": 1011616,
+    "C1_arcmin": 3.906849709187054,
+    "C1_px": 8.204384389292814,
+    "note": "C1 = RMS over FOV lines of std across refs N-1..N-K (separate, not averaged); slight OVER-estimate (cross-frame content drift). common track saved to lines_multiref cache as rdx mean."
+  },
+  "Ashton3": {
+    "person": "Ashton3",
+    "K": 3,
+    "n_valid": 903065,
+    "n_total": 1038280,
+    "C1_arcmin": 3.6174173049557816,
+    "C1_px": 7.596576340407142,
+    "note": "C1 = RMS over FOV lines of std across refs N-1..N-K (separate, not averaged); slight OVER-estimate (cross-frame content drift). common track saved to lines_multiref cache as rdx mean."
+  }
+}

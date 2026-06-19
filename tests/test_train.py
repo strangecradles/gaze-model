@@ -162,3 +162,26 @@ def test_learned_likelihood_requires_head():
     except ValueError:
         raised = True
     assert raised, "likelihood='learned' without a head must raise ValueError"
+
+
+def test_sdslo_stress_dataset_reports_clean_and_stressed_splits():
+    """Mixed stress training/evaluation must keep clean and SDSLO-stressed cases
+    separate so failures are visible rather than hidden by pooled metrics."""
+    tr_ds = train.build_dataset(
+        (0,), ATLAS, rate=RATE, duration=0.12, line_len=120,
+        seed_offset=20, stress_presets=("clean", "short_noise"))
+    va_ds = train.build_dataset(
+        (4,), ATLAS, rate=RATE, duration=0.12, line_len=120,
+        seed_offset=21, stress_presets=("clean", "short_noise"))
+    assert tr_ds.stress is not None
+    labels = {str(x) for x in tr_ds.stress}
+    assert "clean" in labels
+    assert any(x.startswith("short_noise") for x in labels)
+
+    head = train.train_head(tr_ds, epochs=8, seed=1).head
+    by_stress = train.evaluate_by_stress(head, va_ds)
+    assert "clean" in by_stress
+    assert any(x.startswith("short_noise") for x in by_stress)
+    report = train.format_stress_report(by_stress)
+    assert "SDSLO stress split" in report
+    assert "short_noise" in report

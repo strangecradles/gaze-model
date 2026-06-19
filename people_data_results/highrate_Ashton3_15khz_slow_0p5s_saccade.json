@@ -1,0 +1,22 @@
+{
+  "subject": "Ashton3",
+  "cache": "m4_dpf_physics_aq_constant_sg100_mp_s2_tau3.npz",
+  "cache_path": "/Users/ashtonperlroth/Kodiak/gaze-model/cache/people_fov/Ashton3/m4_dpf_physics_aq_constant_sg100_mp_s2_tau3.npz",
+  "output_mp4": "/Users/ashtonperlroth/Kodiak/gaze-model/people_data_results/highrate_Ashton3_15khz_slow_0p5s_saccade.mp4",
+  "start_s": 2.005051610264307,
+  "end_s": 2.5050089024698337,
+  "real_duration_s": 0.49995729220552665,
+  "samples": 7516,
+  "tracker_rate_hz": 15031.283905967452,
+  "playback_fps": 60.0,
+  "slowdown_factor": 250.52139843279085,
+  "video_duration_s": 125.26666666666667,
+  "uses_every_tracker_sample": true,
+  "position_units": "arcmin, drift-removed and local-window centered",
+  "speed_annotation": "deg/s from 0.5 ms Gaussian-smoothed trace",
+  "valid_fraction": 0.9564928153273018,
+  "speed_deg_s_p50": 4.000243198148562,
+  "speed_deg_s_p99": 332.5741469375067,
+  "speed_deg_s_p999": 435.69118178562695,
+  "p_saccade_max": 1.0
+}

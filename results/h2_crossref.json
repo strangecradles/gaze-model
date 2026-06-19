@@ -1,0 +1,42 @@
+{
+  "Igor": {
+    "person": "Igor",
+    "single_ref_crossref": {
+      "crossover_hz": 21.37846726843723,
+      "coh_0_10hz": 0.2549608826745719,
+      "coh_10_50hz": 0.33660133600758524,
+      "coh_50_200hz": 0.28999452081827626
+    },
+    "avg_ref_crossref": {
+      "crossover_hz": 24.9415451465101,
+      "coh_0_10hz": 0.6780251872540477,
+      "coh_10_50hz": 0.535028857546182,
+      "coh_50_200hz": 0.43996103456447194
+    },
+    "crossover_single_hz": 21.37846726843723,
+    "crossover_avg_hz": 24.9415451465101,
+    "averaging_blurs_real_motion": false,
+    "signal_safe": true,
+    "note": "Valid signal-safety: cross-ref coherence of two STAGGERED averaged references (simultaneous, non-atlas-shared). If avg crossover < single crossover, averaging blurs real HF motion (registration blur)."
+  },
+  "Ashton3": {
+    "person": "Ashton3",
+    "single_ref_crossref": {
+      "crossover_hz": 22.93591904597084,
+      "coh_0_10hz": 0.20930304341989636,
+      "coh_10_50hz": 0.4485177561255833,
+      "coh_50_200hz": 0.35381450962790967
+    },
+    "avg_ref_crossref": {
+      "crossover_hz": 26.605666093326178,
+      "coh_0_10hz": 0.6039170447719762,
+      "coh_10_50hz": 0.6482054326210881,
+      "coh_50_200hz": 0.4962143095284462
+    },
+    "crossover_single_hz": 22.93591904597084,
+    "crossover_avg_hz": 26.605666093326178,
+    "averaging_blurs_real_motion": false,
+    "signal_safe": true,
+    "note": "Valid signal-safety: cross-ref coherence of two STAGGERED averaged references (simultaneous, non-atlas-shared). If avg crossover < single crossover, averaging blurs real HF motion (registration blur)."
+  }
+}

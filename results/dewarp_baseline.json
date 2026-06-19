@@ -1,0 +1,13 @@
+{
+  "person": "Igor",
+  "capture": "video_playback_Igor_20260615_164216",
+  "stimulus": "pursuit_fov",
+  "rdx_scatter_arcmin": 4.333797014355824,
+  "rdx_scatter_px": 9.10097373014723,
+  "arc_per_px": 0.47619047619047616,
+  "n_lines": 590758,
+  "n_frames": 1253,
+  "line_rate_hz": 14594.36698858648,
+  "fps": 18.06233538191396,
+  "note": "residual = rdx - 10ms gaussian(median7); std over FOV mask"
+}

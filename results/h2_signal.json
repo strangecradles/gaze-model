@@ -1,0 +1,36 @@
+{
+  "Igor": {
+    "person": "Igor",
+    "K": 3,
+    "scatter_single": 4.31919007140035,
+    "scatter_refavg": 3.8100159502794324,
+    "reduction": 0.11788648165600076,
+    "block128_crossover_single_hz": NaN,
+    "block128_crossover_refavg_hz": NaN,
+    "block_crossover_informative": false,
+    "microsacc_single": 751,
+    "microsacc_refavg": 742,
+    "microsacc_delta": -0.011984021304926764,
+    "signal_safety": "UNRESOLVED",
+    "signal_safety_reason": "even/odd gate invalid (adjacency); block-interleaved coherence uninformative (non-simultaneous halves -> nan); coincidence microsaccade detector itself uses even/odd (partly confounded). Valid test = cross-reference coherence on a multi-ref-averaged build (next step).",
+    "scatter_reduction_robust": true,
+    "note": "refavg3 scatter reduction is robust; its signal-safety is NOT yet establishable with a valid (simultaneous + non-atlas-shared) coherence test."
+  },
+  "Ashton3": {
+    "person": "Ashton3",
+    "K": 3,
+    "scatter_single": 4.101859110248611,
+    "scatter_refavg": 3.6681607450357565,
+    "reduction": 0.10573214573100453,
+    "block128_crossover_single_hz": NaN,
+    "block128_crossover_refavg_hz": NaN,
+    "block_crossover_informative": false,
+    "microsacc_single": 936,
+    "microsacc_refavg": 833,
+    "microsacc_delta": -0.11004273504273504,
+    "signal_safety": "UNRESOLVED",
+    "signal_safety_reason": "even/odd gate invalid (adjacency); block-interleaved coherence uninformative (non-simultaneous halves -> nan); coincidence microsaccade detector itself uses even/odd (partly confounded). Valid test = cross-reference coherence on a multi-ref-averaged build (next step).",
+    "scatter_reduction_robust": true,
+    "note": "refavg3 scatter reduction is robust; its signal-safety is NOT yet establishable with a valid (simultaneous + non-atlas-shared) coherence test."
+  }
+}

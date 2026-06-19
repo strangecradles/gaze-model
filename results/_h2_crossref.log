@@ -1,0 +1,15 @@
+  [Igor avgrefpair] frame 200
+  [Igor avgrefpair] frame 400
+  [Igor avgrefpair] frame 600
+  [Igor avgrefpair] frame 800
+  [Igor avgrefpair] frame 1000
+  [Igor avgrefpair] frame 1200
+[crossref Igor] single cross=21Hz coh(0-10/10-50)=0.25/0.34 | avg cross=25Hz coh=0.68/0.54 -> signal_safe=True
+  [Ashton3 avgrefpair] frame 200
+  [Ashton3 avgrefpair] frame 400
+  [Ashton3 avgrefpair] frame 600
+  [Ashton3 avgrefpair] frame 800
+  [Ashton3 avgrefpair] frame 1000
+  [Ashton3 avgrefpair] frame 1200
+[crossref Ashton3] single cross=23Hz coh(0-10/10-50)=0.21/0.45 | avg cross=27Hz coh=0.60/0.65 -> signal_safe=True
+-> results/h2_crossref.json

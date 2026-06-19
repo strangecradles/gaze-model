@@ -1,0 +1,44 @@
+{
+  "Igor": {
+    "person": "Igor",
+    "harness_rdx": {
+      "flip_rate": 0.521818820929999,
+      "core_rms_arcmin": 0.5150535640008617,
+      "microsacc_preserved": 0.9114205773877655,
+      "n_flipprone": 238968,
+      "n_clean": 156362,
+      "n_microsacc": 15726
+    },
+    "pf_output": {
+      "flip_rate": 0.39285957330974175,
+      "core_rms_arcmin": 1.1587191870577163,
+      "microsacc_preserved": 0.7704864934896677,
+      "n_flipprone": 235112,
+      "n_clean": 156110,
+      "n_microsacc": 15437
+    },
+    "pf_suppresses_flips": false,
+    "note": "CRUX: pf flip-rate << harness => PF suppresses the flips; pf flip-rate ~ harness => flips survive into the deliverable."
+  },
+  "Ashton3": {
+    "person": "Ashton3",
+    "harness_rdx": {
+      "flip_rate": 0.5182678800870787,
+      "core_rms_arcmin": 0.48285568215322405,
+      "microsacc_preserved": 0.917252952946492,
+      "n_flipprone": 300418,
+      "n_clean": 379725,
+      "n_microsacc": 30986
+    },
+    "pf_output": {
+      "flip_rate": 0.4011496633516795,
+      "core_rms_arcmin": 0.8557741374510659,
+      "microsacc_preserved": 0.7923097130097853,
+      "n_flipprone": 294521,
+      "n_clean": 379434,
+      "n_microsacc": 30454
+    },
+    "pf_suppresses_flips": false,
+    "note": "CRUX: pf flip-rate << harness => PF suppresses the flips; pf flip-rate ~ harness => flips survive into the deliverable."
+  }
+}

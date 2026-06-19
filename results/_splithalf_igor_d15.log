@@ -1,0 +1,17 @@
+  [Igor m4] frame 100/1253 (78s)
+  [Igor m4] frame 200/1253 (158s)
+  [Igor m4] frame 100/1253 (40s)
+  [Igor m4] frame 200/1253 (80s)
+  [Igor m4] frame 100/1253 (39s)
+  [Igor m4] frame 200/1253 (79s)
+[Igor/evenodd:hf] floor_hf=3.382'  split_hf=3.080'  ratio=0.91  all=3.103'  n=109055  (215s)
+  [Igor m4] frame 100/1253 (39s)
+  [Igor m4] frame 200/1253 (78s)
+  [Igor m4] frame 100/1253 (39s)
+  [Igor m4] frame 200/1253 (78s)
+[Igor/block:slow] floor_hf=3.382'  split_slow=3.374'  ratio=1.00  all=6.590'  n=7122  (210s)
+Wrote /Users/ashtonperlroth/Kodiak/gaze-model/results/pf_splithalf_Igor.csv
+Wrote /Users/ashtonperlroth/Kodiak/gaze-model/results/pf_splithalf_Igor.png
+
+VERDICT [Igor]: MEASUREMENT-LIMITED: even/odd halves disagree at HF (split_hf=3.08' vs floor=3.38', ratio=0.91) -> the HF floor is per-line measurement noise, NOT real eye motion. -> Phase D-measurement (observation model). Frame-parity slow disagreement is also large (slow=3.37') -> atlas/decoder REGISTRATION error is a second contributor.
+Wrote /Users/ashtonperlroth/Kodiak/gaze-model/results/pf_splithalf.md

@@ -1,0 +1,29 @@
+{
+  "Igor": {
+    "person": "Igor",
+    "sigma_rows": 3.0,
+    "dur_s": 15.0,
+    "n_lines": 218160,
+    "off": {
+      "flip_rate": 0.4125841679397952,
+      "core_rms": 1.060077147833475,
+      "microsacc_preserved": 0.7977242302543507,
+      "n_flip": 88365,
+      "n_clean": 47192,
+      "n_ms": 7470,
+      "r_dot_x": NaN
+    },
+    "on": {
+      "flip_rate": 0.41227861709953034,
+      "core_rms": 0.9970055949362072,
+      "microsacc_preserved": 0.7956341234766305,
+      "n_flip": 88365,
+      "n_clean": 47183,
+      "n_ms": 7467,
+      "r_dot_x": NaN
+    },
+    "flip_rate_delta": -0.00030555084026484547,
+    "core_rms_delta": -0.06307155289726774,
+    "flip_delta_ci": null
+  }
+}

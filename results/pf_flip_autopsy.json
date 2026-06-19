@@ -1,0 +1,22 @@
+{
+  "Igor": {
+    "n_flipprone_valid": 235112,
+    "reject_clean": 0.39908213957603184,
+    "bimodal_middle": 0.32438582462826226,
+    "followed_flip": 0.2765320357957059,
+    "median_dep_px": 2.1135060013635325,
+    "alias_window_arcmin": 30.0,
+    "flip_arcmin": 2.86,
+    "interpretation": "AVERAGED-IN/FOLLOWED: 2.86 flip << 30 window so robust mean cannot reject; PF tracks or partially averages the flipped peak"
+  },
+  "Ashton3": {
+    "n_flipprone_valid": 294521,
+    "reject_clean": 0.3936866980622774,
+    "bimodal_middle": 0.32282587659284057,
+    "followed_flip": 0.283487425344882,
+    "median_dep_px": 2.1667948944296733,
+    "alias_window_arcmin": 30.0,
+    "flip_arcmin": 2.86,
+    "interpretation": "AVERAGED-IN/FOLLOWED: 2.86 flip << 30 window so robust mean cannot reject; PF tracks or partially averages the flipped peak"
+  }
+}

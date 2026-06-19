@@ -1,0 +1,40 @@
+
+VALIDATE picks @11823 dur=20: ['phys_N300_base', 'learn_N1000', 'learn_nw3_ess0.7', 'learn_nw3', 'phys_nw3_ess0.7_hp16_rp0.25', 'phys_nw3']
+
+=== [1/6] phys_N300_base  (rate=11823.0, dur=20.0) ===
+  prec_x=1.657 r_dot_x=0.797 r_trk_x=0.553 valid=60% PASS (2s)
+
+=== [2/6] learn_N1000  (rate=11823.0, dur=20.0) ===
+  prec_x=1.621 r_dot_x=0.797 r_trk_x=0.553 valid=60% PASS (0s)
+
+=== [3/6] learn_nw3_ess0.7  (rate=11823.0, dur=20.0) ===
+  [m4 11823Hz learned] frame 100/1025 (992s)
+  [m4 11823Hz learned] frame 200/1025 (1508s)
+  prec_x=1.571 r_dot_x=0.796 r_trk_x=0.559 valid=60% PASS (1985s)
+
+=== [4/6] learn_nw3  (rate=11823.0, dur=20.0) ===
+  [m4 11823Hz learned] frame 100/1025 (418s)
+  [m4 11823Hz learned] frame 200/1025 (941s)
+  prec_x=1.596 r_dot_x=0.796 r_trk_x=0.552 valid=60% PASS (1398s)
+
+=== [5/6] phys_nw3_ess0.7_hp16_rp0.25  (rate=11823.0, dur=20.0) ===
+  [m4 11823Hz physics] frame 100/1025 (75s)
+  [m4 11823Hz physics] frame 200/1025 (168s)
+  prec_x=1.630 r_dot_x=0.795 r_trk_x=0.552 valid=60% PASS (253s)
+
+=== [6/6] phys_nw3  (rate=11823.0, dur=20.0) ===
+  [m4 11823Hz physics] frame 100/1025 (42s)
+  [m4 11823Hz physics] frame 200/1025 (94s)
+  prec_x=1.588 r_dot_x=0.795 r_trk_x=0.550 valid=60% PASS (142s)
+
+====================================================================================================
+VALIDATION — 11823 Hz (dur=20 s, matched)
+====================================================================================================
+config                  prec_x  r_dot_x  r_trk_x  prec_y  valid  guard
+----------------------------------------------------------------------
+learn_nw3_ess0.7         1.571    0.796    0.559   0.001    60%   PASS*
+phys_nw3                 1.588    0.795    0.550   0.001    60%   PASS*
+learn_nw3                1.596    0.796    0.552   0.001    60%   PASS*
+learn_N1000              1.621    0.797    0.553   0.001    60%   PASS*
+phys_nw3_ess0.7_hp16_rp0.25   1.630    0.795    0.552   0.000    60%   PASS*
+phys_N300_base           1.657    0.797    0.553   0.001    60%   PASS*

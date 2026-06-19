@@ -1,0 +1,280 @@
+{
+  "person": "Igor",
+  "capture": "video_playback_Igor_20260615_164216",
+  "units": {
+    "residual": "raster px",
+    "arc_per_px": 0.47619047619047616,
+    "col": "slow galvo axis index 0..W-1",
+    "inc_mag": "px per frame (chain increment magnitude)",
+    "lam_v": "vertical/fast-axis localization px"
+  },
+  "a_within_frame_raster_pos": {
+    "pooled": {
+      "slope": 0.0023340327948078933,
+      "intercept": -0.966856067361932,
+      "r2": 0.0034678191594015306,
+      "r": 0.058888192020146016,
+      "n": 590758
+    },
+    "per_frame_detrended": {
+      "slope": 0.0023150154105020145,
+      "intercept": -0.8760155460715124,
+      "r2": 0.0034330441443902737,
+      "r": 0.05859218501123007,
+      "n": 590758
+    },
+    "within_frame_slopes": {
+      "mean_slope": 0.0023751204417986884,
+      "median_slope": 0.001727969395251665,
+      "std_slope": 0.005693422981126352,
+      "frac_positive": 0.6682692307692307,
+      "n_frames": 832,
+      "note": "per-frame OLS slope of residual(px) vs col; H1 -> consistent sign"
+    },
+    "col_bins": [
+      {
+        "col_lo": 0.0,
+        "col_hi": 50.5,
+        "resid_mean_px": -0.8715804637694881,
+        "resid_std_arcmin": 3.047947843697378,
+        "n": 41748
+      },
+      {
+        "col_lo": 50.5,
+        "col_hi": 101.0,
+        "resid_mean_px": -1.3959062112429002,
+        "resid_std_arcmin": 3.538353940890025,
+        "n": 40015
+      },
+      {
+        "col_lo": 101.0,
+        "col_hi": 151.5,
+        "resid_mean_px": -0.3595822930621396,
+        "resid_std_arcmin": 2.497136050420125,
+        "n": 40848
+      },
+      {
+        "col_lo": 151.5,
+        "col_hi": 202.0,
+        "resid_mean_px": -0.025702442707055653,
+        "resid_std_arcmin": 2.46006188836642,
+        "n": 39620
+      },
+      {
+        "col_lo": 202.0,
+        "col_hi": 252.5,
+        "resid_mean_px": 0.1716158490811322,
+        "resid_std_arcmin": 2.1335476737151273,
+        "n": 42150
+      },
+      {
+        "col_lo": 252.5,
+        "col_hi": 303.0,
+        "resid_mean_px": -0.22165463140354894,
+        "resid_std_arcmin": 1.6496027170264556,
+        "n": 41175
+      },
+      {
+        "col_lo": 303.0,
+        "col_hi": 353.5,
+        "resid_mean_px": -0.09391939437328252,
+        "resid_std_arcmin": 1.5081805424197317,
+        "n": 41144
+      },
+      {
+        "col_lo": 353.5,
+        "col_hi": 404.0,
+        "resid_mean_px": -0.07058146064637712,
+        "resid_std_arcmin": 1.846988798289117,
+        "n": 37662
+      },
+      {
+        "col_lo": 404.0,
+        "col_hi": 454.5,
+        "resid_mean_px": 1.2270525420717853,
+        "resid_std_arcmin": 3.2187901520819966,
+        "n": 38960
+      },
+      {
+        "col_lo": 454.5,
+        "col_hi": 505.0,
+        "resid_mean_px": 0.18816839564832732,
+        "resid_std_arcmin": 3.6771946734131817,
+        "n": 40321
+      },
+      {
+        "col_lo": 505.0,
+        "col_hi": 555.5,
+        "resid_mean_px": -1.2925988732148717,
+        "resid_std_arcmin": 5.765920457745397,
+        "n": 37093
+      },
+      {
+        "col_lo": 555.5,
+        "col_hi": 606.0,
+        "resid_mean_px": -3.9003410590317897,
+        "resid_std_arcmin": 6.672920928548934,
+        "n": 32856
+      },
+      {
+        "col_lo": 606.0,
+        "col_hi": 656.5,
+        "resid_mean_px": -1.627791499140904,
+        "resid_std_arcmin": 5.660280212101011,
+        "n": 28377
+      },
+      {
+        "col_lo": 656.5,
+        "col_hi": 707.0,
+        "resid_mean_px": 1.896165748106102,
+        "resid_std_arcmin": 8.53727331612385,
+        "n": 18419
+      },
+      {
+        "col_lo": 707.0,
+        "col_hi": 757.5,
+        "resid_mean_px": 4.689492318139969,
+        "resid_std_arcmin": 7.0756416757067475,
+        "n": 33967
+      },
+      {
+        "col_lo": 757.5,
+        "col_hi": 808.0,
+        "resid_mean_px": 1.0887483453014555,
+        "resid_std_arcmin": 5.76701598624492,
+        "n": 36403
+      }
+    ],
+    "H1_prediction": "R2>0 / consistent within-frame slope"
+  },
+  "b_per_frame_displacement": {
+    "perframe_std_vs_disp": {
+      "slope": 0.2753440233053031,
+      "intercept": 6.79977579460451,
+      "r2": 0.3281460290051256,
+      "r": 0.5728403171959231,
+      "n": 832
+    },
+    "perframe_absres_vs_disp": {
+      "slope": 0.1981927999752525,
+      "intercept": 2.7829485994239915,
+      "r2": 0.3839706487280242,
+      "r": 0.619653652234879,
+      "n": 832
+    },
+    "perline_absres_vs_disp": {
+      "slope": 0.19771597029006185,
+      "intercept": 2.7349775905828495,
+      "r2": 0.02810958397526142,
+      "r": 0.16765913030688287,
+      "n": 590758
+    },
+    "H1_prediction": "positive slope (scatter scales with frame motion)"
+  },
+  "c_control_fast_axis": {
+    "resid_vs_lam_v_position": {
+      "slope": -0.008921108233616106,
+      "intercept": -0.08402979884836376,
+      "r2": 1.682293671478874e-05,
+      "r": -0.004101577344742752,
+      "n": 590758
+    },
+    "lam_position_bins": [
+      {
+        "lam_lo": -60.0,
+        "lam_hi": -2.2234582901000977,
+        "resid_mean_px": 0.3435726686395927,
+        "resid_std_arcmin": 7.674860145397775,
+        "n": 49230
+      },
+      {
+        "lam_lo": -2.2234582901000977,
+        "lam_hi": -1.1484012603759766,
+        "resid_mean_px": 0.04204371833978069,
+        "resid_std_arcmin": 4.517679665982061,
+        "n": 49230
+      },
+      {
+        "lam_lo": -1.1484012603759766,
+        "lam_hi": -0.7336254119873047,
+        "resid_mean_px": -0.06593567544717391,
+        "resid_std_arcmin": 3.606484393882054,
+        "n": 49230
+      },
+      {
+        "lam_lo": -0.7336254119873047,
+        "lam_hi": -0.4010658264160156,
+        "resid_mean_px": -0.11809515849848079,
+        "resid_std_arcmin": 3.102560889507977,
+        "n": 49229
+      },
+      {
+        "lam_lo": -0.4010658264160156,
+        "lam_hi": -0.1675844192504884,
+        "resid_mean_px": -0.17270223950315824,
+        "resid_std_arcmin": 2.9071874057245197,
+        "n": 49230
+      },
+      {
+        "lam_lo": -0.1675844192504884,
+        "lam_hi": -0.000396728515625,
+        "resid_mean_px": -0.11402392163867575,
+        "resid_std_arcmin": 2.6414990372158402,
+        "n": 49218
+      },
+      {
+        "lam_lo": -0.000396728515625,
+        "lam_hi": 0.10231399536132812,
+        "resid_mean_px": -0.07402811834032656,
+        "resid_std_arcmin": 2.0136587343515866,
+        "n": 49241
+      },
+      {
+        "lam_lo": 0.10231399536132812,
+        "lam_hi": 0.3224983215332031,
+        "resid_mean_px": -0.17332851139115674,
+        "resid_std_arcmin": 2.7283408409714953,
+        "n": 49229
+      },
+      {
+        "lam_lo": 0.3224983215332031,
+        "lam_hi": 0.66131591796875,
+        "resid_mean_px": -0.1998014707717595,
+        "resid_std_arcmin": 2.8982622703679963,
+        "n": 49230
+      },
+      {
+        "lam_lo": 0.66131591796875,
+        "lam_hi": 1.0767288208007812,
+        "resid_mean_px": -0.2396216298652454,
+        "resid_std_arcmin": 3.4107619969532417,
+        "n": 49230
+      },
+      {
+        "lam_lo": 1.0767288208007812,
+        "lam_hi": 2.1412601470947266,
+        "resid_mean_px": -0.2697416196442221,
+        "resid_std_arcmin": 4.376190176592537,
+        "n": 49231
+      },
+      {
+        "lam_lo": 2.1412601470947266,
+        "lam_hi": 60.0,
+        "resid_mean_px": 0.037922898084922455,
+        "resid_std_arcmin": 7.566696865841074,
+        "n": 49230
+      }
+    ],
+    "position_bias_ptp_px": 0.6133142882838147,
+    "motion_coupling_absresid_vs_abslam": {
+      "slope": 0.6617401254810914,
+      "intercept": 2.843492719756509,
+      "r2": 0.09598114329313379,
+      "r": 0.3098082363223019,
+      "n": 590758
+    },
+    "requirement": "signed residual vs fast-axis POSITION must be flat (R2~0)",
+    "FLAT": true,
+    "note": "FLAT gate uses signed position-dependence only. motion_coupling_* (|resid| vs |lam|) is an H1-supporting amplitude coupling, NOT a scanner artifact."
+  }
+}

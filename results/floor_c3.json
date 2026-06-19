@@ -1,0 +1,54 @@
+{
+  "Igor": {
+    "person": "Igor",
+    "K": 3,
+    "crossref_coherence": {
+      "rdx1_vs_rdx2": {
+        "crossover_hz": 21.37846726843723,
+        "coh_0_10hz": 0.24144615139610126,
+        "coh_10_50hz": 0.3057427961032341,
+        "coh_50_200hz": 0.2609094072878375
+      },
+      "rdx1_vs_rdx3": {
+        "crossover_hz": 19.596928329400793,
+        "coh_0_10hz": 0.19460052834210637,
+        "coh_10_50hz": 0.23125596749390642,
+        "coh_50_200hz": 0.19216237656561436
+      }
+    },
+    "evenodd_crossover_hz": 6.235386286627525,
+    "block_crossover_hz": {
+      "block8": 5.344616817109308,
+      "block32": 20.48769779891901,
+      "block128": NaN
+    },
+    "common_vs_tracker_r": -0.06301629711942257,
+    "note": "UPPER BOUND on real motion: reference-common geometric systematic (C2) still masquerades as coherent. Block-interleaved splits are temporally non-adjacent (unlike even/odd ~85us). If block crossover << even/odd, the even/odd number was inflated by adjacency-correlated systematic."
+  },
+  "Ashton3": {
+    "person": "Ashton3",
+    "K": 3,
+    "crossref_coherence": {
+      "rdx1_vs_rdx2": {
+        "crossover_hz": 23.853355807809677,
+        "coh_0_10hz": 0.30026842695089606,
+        "coh_10_50hz": 0.4766145386718643,
+        "coh_50_200hz": 0.34154921423652085
+      },
+      "rdx1_vs_rdx3": {
+        "crossover_hz": 2.752310285516501,
+        "coh_0_10hz": 0.4401719429276732,
+        "coh_10_50hz": 0.3545141796251838,
+        "coh_50_200hz": 0.23103324567272626
+      }
+    },
+    "evenodd_crossover_hz": 81.6518718036562,
+    "block_crossover_hz": {
+      "block8": 24.77079256964851,
+      "block32": 22.01848228413201,
+      "block128": 19.26617199861551
+    },
+    "common_vs_tracker_r": -0.10876068232429789,
+    "note": "UPPER BOUND on real motion: reference-common geometric systematic (C2) still masquerades as coherent. Block-interleaved splits are temporally non-adjacent (unlike even/odd ~85us). If block crossover << even/odd, the even/odd number was inflated by adjacency-correlated systematic."
+  }
+}

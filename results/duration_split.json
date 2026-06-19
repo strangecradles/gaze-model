@@ -1,0 +1,254 @@
+{
+  "Igor": {
+    "person": "Igor",
+    "line_rate_hz": 14594.36698858648,
+    "line_ms": 0.06851958709699775,
+    "flip_px": 3.0,
+    "revert_px": 1.5,
+    "maxlag": 80,
+    "classes": {
+      "alias_flip_prone": {
+        "n": 54531,
+        "median_dur_lines": 11.0,
+        "p25": 4.0,
+        "p75": 43.0,
+        "p90": 81.0,
+        "frac_persists": 0.198969393555959,
+        "frac_revert_le2": 0.1755881975390145,
+        "frac_revert_le5": 0.3502594854303057,
+        "median_finite": 7.0,
+        "hist_bins": [
+          1,
+          2,
+          3,
+          4,
+          6,
+          9,
+          15,
+          30,
+          60,
+          "persist"
+        ],
+        "hist": [
+          4809,
+          4766,
+          3756,
+          5769,
+          5545,
+          6259,
+          7276,
+          4225,
+          12126
+        ],
+        "peak_vel_median_degs": 422.8499377997889,
+        "frac_persist_ge88lines_6ms": 0.0
+      },
+      "real_microsaccade": {
+        "n": 1619,
+        "median_dur_lines": 21.0,
+        "p25": 5.0,
+        "p75": 81.0,
+        "p90": 81.0,
+        "frac_persists": 0.352686843730698,
+        "frac_revert_le2": 0.14700432365657815,
+        "frac_revert_le5": 0.27547869054972207,
+        "median_finite": 7.0,
+        "hist_bins": [
+          1,
+          2,
+          3,
+          4,
+          6,
+          9,
+          15,
+          30,
+          60,
+          "persist"
+        ],
+        "hist": [
+          123,
+          115,
+          86,
+          122,
+          116,
+          136,
+          201,
+          115,
+          605
+        ],
+        "peak_vel_median_degs": 450.216614746903,
+        "frac_persist_ge88lines_6ms": 0.0
+      },
+      "clean": {
+        "n": 4222,
+        "median_dur_lines": 10.0,
+        "p25": 3.0,
+        "p75": 58.0,
+        "p90": 81.0,
+        "frac_persists": 0.22027475130270013,
+        "frac_revert_le2": 0.20203694931312174,
+        "frac_revert_le5": 0.36617716721932736,
+        "median_finite": 6.0,
+        "hist_bins": [
+          1,
+          2,
+          3,
+          4,
+          6,
+          9,
+          15,
+          30,
+          60,
+          "persist"
+        ],
+        "hist": [
+          427,
+          426,
+          290,
+          403,
+          436,
+          407,
+          523,
+          266,
+          1044
+        ]
+      }
+    },
+    "best_separation": {
+      "L_lines": 40,
+      "L_ms": 2.74078348387991,
+      "flips_rejected": 0.7437054152683794,
+      "microsacc_clipped": 0.5972822730080296,
+      "separation": 0.1464231422603498
+    },
+    "H4_duration_supported": false,
+    "real_microsacc_among_jumps": 0.0,
+    "redirect_H5_velocity": "Real microsaccades are smooth ramps (0% of >=3px jumps persist >=6ms; jump peak vel >100 deg/s = non-physiological). A per-line VELOCITY/slew-rate clamp rejects flips at near-zero lag and cannot clip real microsaccades (sub-threshold smooth ramps)."
+  },
+  "Ashton3": {
+    "person": "Ashton3",
+    "line_rate_hz": 15031.283905967452,
+    "line_ms": 0.06652791646114793,
+    "flip_px": 3.0,
+    "revert_px": 1.5,
+    "maxlag": 80,
+    "classes": {
+      "alias_flip_prone": {
+        "n": 55510,
+        "median_dur_lines": 12.0,
+        "p25": 4.0,
+        "p75": 81.0,
+        "p90": 81.0,
+        "frac_persists": 0.25033327328409294,
+        "frac_revert_le2": 0.1671230408935327,
+        "frac_revert_le5": 0.32729237975139613,
+        "median_finite": 7.0,
+        "hist_bins": [
+          1,
+          2,
+          3,
+          4,
+          6,
+          9,
+          15,
+          30,
+          60,
+          "persist"
+        ],
+        "hist": [
+          4837,
+          4440,
+          3547,
+          5344,
+          5299,
+          6138,
+          7013,
+          4018,
+          14874
+        ],
+        "peak_vel_median_degs": 512.3100858319499,
+        "frac_persist_ge88lines_6ms": 0.0
+      },
+      "real_microsaccade": {
+        "n": 3659,
+        "median_dur_lines": 15.0,
+        "p25": 4.0,
+        "p75": 81.0,
+        "p90": 81.0,
+        "frac_persists": 0.28423066411587866,
+        "frac_revert_le2": 0.17327138562448757,
+        "frac_revert_le5": 0.3208526919923476,
+        "median_finite": 7.0,
+        "hist_bins": [
+          1,
+          2,
+          3,
+          4,
+          6,
+          9,
+          15,
+          30,
+          60,
+          "persist"
+        ],
+        "hist": [
+          351,
+          283,
+          210,
+          330,
+          308,
+          342,
+          430,
+          281,
+          1124
+        ],
+        "peak_vel_median_degs": 474.78966202965387,
+        "frac_persist_ge88lines_6ms": 0.0
+      },
+      "clean": {
+        "n": 3802,
+        "median_dur_lines": 9.0,
+        "p25": 3.0,
+        "p75": 58.0,
+        "p90": 81.0,
+        "frac_persists": 0.22593371909521304,
+        "frac_revert_le2": 0.23540241977906365,
+        "frac_revert_le5": 0.40031562335612836,
+        "median_finite": 5.0,
+        "hist_bins": [
+          1,
+          2,
+          3,
+          4,
+          6,
+          9,
+          15,
+          30,
+          60,
+          "persist"
+        ],
+        "hist": [
+          510,
+          385,
+          260,
+          367,
+          300,
+          329,
+          426,
+          281,
+          944
+        ]
+      }
+    },
+    "best_separation": {
+      "L_lines": 20,
+      "L_ms": 1.3305583292229586,
+      "flips_rejected": 0.5976400648531796,
+      "microsacc_clipped": 0.5531566001639793,
+      "separation": 0.04448346468920028
+    },
+    "H4_duration_supported": false,
+    "real_microsacc_among_jumps": 0.0,
+    "redirect_H5_velocity": "Real microsaccades are smooth ramps (0% of >=3px jumps persist >=6ms; jump peak vel >100 deg/s = non-physiological). A per-line VELOCITY/slew-rate clamp rejects flips at near-zero lag and cannot clip real microsaccades (sub-threshold smooth ramps)."
+  }
+}

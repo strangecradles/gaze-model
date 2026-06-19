@@ -366,6 +366,10 @@ _CAL = calibrate()
 ROWS_PER_DEG: float = _CAL.rows_per_deg
 ARCMIN_PER_ROW: float = _CAL.arcmin_per_row
 ALIAS_SPACING_ROWS: float = _CAL.alias_spacing_rows
+# Fine photoreceptor-mosaic peak spacing — the ~2.86' alias the COARSE 1deg /
+# ~125-row ALIAS_SPACING_ROWS apparatus cannot resolve. 6 atlas rows; cross-check
+# 6 * ARCMIN_PER_ROW ~= 2.89'. Single source of truth for the fine mosaic scale.
+MOSAIC_SPACING_ROWS: float = 6.0
 
 
 def rows_to_arcmin(rows: np.ndarray | float) -> np.ndarray | float:

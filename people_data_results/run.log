@@ -1,0 +1,223 @@
+Processing 7 subject(s): ['Ashton3', 'Chong', 'Igor', 'John', 'Kathy', 'Pavel', 'Zohre']
+
+=== Ashton3 (video_playback_Ashton3_20260615_162658) ===
+  clock OFF=0.33s (chain-vs-dot r=+0.94)
+  DPF @ 15031 Hz, 1038280 samples, in-FOV 93%
+  r-vs-dot x=0.94 y=0.94; r-vs-tracker x=0.77 y=0.64
+  [Ashton3] wrote /Users/ashtonperlroth/Kodiak/gaze-model/people_data_results/gaze2d_Ashton3_m4_dpf.mp4 (2073 frames @ 30.0 fps)
+
+=== Chong (video_playback_Chong_20260615_163114) ===
+  [Chong chain] frame 200
+  [Chong chain] frame 400
+  [Chong chain] frame 600
+  [Chong chain] frame 800
+  [Chong chain] frame 1000
+  [Chong chain] frame 1200
+  [Chong lines] frame 100  qh_med=0.55
+  [Chong lines] frame 200  qh_med=0.56
+  [Chong lines] frame 300  qh_med=0.50
+  [Chong lines] frame 400  qh_med=0.55
+  [Chong lines] frame 500  qh_med=0.46
+  [Chong lines] frame 600  qh_med=0.29
+  [Chong lines] frame 700  qh_med=0.59
+  [Chong lines] frame 800  qh_med=0.62
+  [Chong lines] frame 900  qh_med=0.49
+  [Chong lines] frame 1000  qh_med=0.36
+  [Chong lines] frame 1100  qh_med=0.49
+  [Chong lines] frame 1200  qh_med=0.46
+  clock OFF=0.55s (chain-vs-dot r=+0.96)
+  [Chong m4] frame 100/1294 (87s)
+  [Chong m4] frame 200/1294 (171s)
+  [Chong m4] frame 300/1294 (249s)
+  [Chong m4] frame 400/1294 (327s)
+  [Chong m4] frame 500/1294 (408s)
+  [Chong m4] frame 600/1294 (493s)
+  [Chong m4] frame 700/1294 (582s)
+  [Chong m4] frame 800/1294 (661s)
+  [Chong m4] frame 900/1294 (742s)
+  [Chong m4] frame 1000/1294 (823s)
+  [Chong m4] frame 1100/1294 (902s)
+  [Chong m4] frame 1200/1294 (982s)
+  DPF @ 15099 Hz, 1044744 samples, in-FOV 94%
+  r-vs-dot x=0.96 y=0.86; r-vs-tracker x=0.74 y=0.53
+  [Chong] wrote /Users/ashtonperlroth/Kodiak/gaze-model/people_data_results/gaze2d_Chong_m4_dpf.mp4 (2078 frames @ 30.0 fps)
+
+=== Igor (video_playback_Igor_20260615_164216) ===
+  [Igor chain] frame 200
+  [Igor chain] frame 400
+  [Igor chain] frame 600
+  [Igor chain] frame 800
+  [Igor chain] frame 1000
+  [Igor chain] frame 1200
+  [Igor lines] frame 100  qh_med=0.57
+  [Igor lines] frame 200  qh_med=0.49
+  [Igor lines] frame 300  qh_med=0.35
+  [Igor lines] frame 400  qh_med=0.45
+  [Igor lines] frame 500  qh_med=0.46
+  [Igor lines] frame 600  qh_med=0.34
+  [Igor lines] frame 700  qh_med=0.53
+  [Igor lines] frame 800  qh_med=0.44
+  [Igor lines] frame 900  qh_med=0.36
+  [Igor lines] frame 1000  qh_med=0.50
+  [Igor lines] frame 1100  qh_med=0.14
+  [Igor lines] frame 1200  qh_med=0.14
+  clock OFF=0.50s (chain-vs-dot r=+0.81)
+  [Igor m4] frame 100/1253 (80s)
+  [Igor m4] frame 200/1253 (159s)
+  [Igor m4] frame 300/1253 (241s)
+  [Igor m4] frame 400/1253 (298s)
+  [Igor m4] frame 500/1253 (356s)
+  [Igor m4] frame 600/1253 (409s)
+  [Igor m4] frame 700/1253 (458s)
+  [Igor m4] frame 800/1253 (510s)
+  [Igor m4] frame 900/1253 (559s)
+  [Igor m4] frame 1000/1253 (610s)
+  [Igor m4] frame 1100/1253 (646s)
+  [Igor m4] frame 1200/1253 (646s)
+  DPF @ 14594 Hz, 1011616 samples, in-FOV 65%
+  r-vs-dot x=0.80 y=0.82; r-vs-tracker x=0.66 y=0.30
+  [Igor] wrote /Users/ashtonperlroth/Kodiak/gaze-model/people_data_results/gaze2d_Igor_m4_dpf.mp4 (2082 frames @ 30.0 fps)
+
+=== John (video_playback_John_20260615_163925) ===
+  [John chain] frame 200
+  [John chain] frame 400
+  [John chain] frame 600
+  [John chain] frame 800
+  [John chain] frame 1000
+  [John chain] frame 1200
+  [John lines] frame 100  qh_med=0.68
+  [John lines] frame 200  qh_med=0.63
+  [John lines] frame 300  qh_med=0.54
+  [John lines] frame 400  qh_med=0.70
+  [John lines] frame 500  qh_med=0.70
+  [John lines] frame 600  qh_med=0.61
+  [John lines] frame 700  qh_med=0.70
+  [John lines] frame 800  qh_med=0.62
+  [John lines] frame 900  qh_med=0.61
+  [John lines] frame 1000  qh_med=0.68
+  [John lines] frame 1100  qh_med=0.72
+  [John lines] frame 1200  qh_med=0.67
+  clock OFF=0.18s (chain-vs-dot r=+0.96)
+  [John m4] frame 100/1270 (78s)
+  [John m4] frame 200/1270 (161s)
+  [John m4] frame 300/1270 (244s)
+  [John m4] frame 400/1270 (327s)
+  [John m4] frame 500/1270 (409s)
+  [John m4] frame 600/1270 (491s)
+  [John m4] frame 700/1270 (573s)
+  [John m4] frame 800/1270 (656s)
+  [John m4] frame 900/1270 (738s)
+  [John m4] frame 1000/1270 (820s)
+  [John m4] frame 1100/1270 (901s)
+  [John m4] frame 1200/1270 (982s)
+  DPF @ 14829 Hz, 1025352 samples, in-FOV 99%
+  r-vs-dot x=0.96 y=0.93; r-vs-tracker x=0.67 y=0.64
+  [John] wrote /Users/ashtonperlroth/Kodiak/gaze-model/people_data_results/gaze2d_John_m4_dpf.mp4 (2076 frames @ 30.0 fps)
+
+=== Kathy (video_playback_Kathy_20260615_163452) ===
+  [Kathy chain] frame 200
+  [Kathy chain] frame 400
+  [Kathy chain] frame 600
+  [Kathy chain] frame 800
+  [Kathy chain] frame 1000
+  [Kathy chain] frame 1200
+  [Kathy lines] frame 100  qh_med=0.58
+  [Kathy lines] frame 200  qh_med=0.55
+  [Kathy lines] frame 300  qh_med=0.54
+  [Kathy lines] frame 400  qh_med=0.70
+  [Kathy lines] frame 500  qh_med=0.59
+  [Kathy lines] frame 600  qh_med=0.58
+  [Kathy lines] frame 700  qh_med=0.54
+  [Kathy lines] frame 800  qh_med=0.47
+  [Kathy lines] frame 900  qh_med=0.51
+  [Kathy lines] frame 1000  qh_med=0.55
+  [Kathy lines] frame 1100  qh_med=0.55
+  [Kathy lines] frame 1200  qh_med=0.46
+  clock OFF=0.38s (chain-vs-dot r=+0.96)
+  [Kathy m4] frame 100/1248 (74s)
+  [Kathy m4] frame 200/1248 (153s)
+  [Kathy m4] frame 300/1248 (231s)
+  [Kathy m4] frame 400/1248 (306s)
+  [Kathy m4] frame 500/1248 (384s)
+  [Kathy m4] frame 600/1248 (461s)
+  [Kathy m4] frame 700/1248 (540s)
+  [Kathy m4] frame 800/1248 (613s)
+  [Kathy m4] frame 900/1248 (689s)
+  [Kathy m4] frame 1000/1248 (771s)
+  [Kathy m4] frame 1100/1248 (847s)
+  [Kathy m4] frame 1200/1248 (925s)
+  DPF @ 14594 Hz, 1007576 samples, in-FOV 97%
+  r-vs-dot x=0.96 y=0.95; r-vs-tracker x=0.72 y=0.61
+  [Kathy] wrote /Users/ashtonperlroth/Kodiak/gaze-model/people_data_results/gaze2d_Kathy_m4_dpf.mp4 (2074 frames @ 30.0 fps)
+
+=== Pavel (video_playback_Pavel_20260615_164642) ===
+  [Pavel chain] frame 200
+  [Pavel chain] frame 400
+  [Pavel chain] frame 600
+  [Pavel chain] frame 800
+  [Pavel chain] frame 1000
+  [Pavel chain] frame 1200
+  [Pavel lines] frame 100  qh_med=0.52
+  [Pavel lines] frame 200  qh_med=0.53
+  [Pavel lines] frame 300  qh_med=0.45
+  [Pavel lines] frame 400  qh_med=0.53
+  [Pavel lines] frame 500  qh_med=0.12
+  [Pavel lines] frame 600  qh_med=0.39
+  [Pavel lines] frame 700  qh_med=0.51
+  [Pavel lines] frame 800  qh_med=0.59
+  [Pavel lines] frame 900  qh_med=0.38
+  [Pavel lines] frame 1000  qh_med=0.14
+  [Pavel lines] frame 1100  qh_med=0.60
+  [Pavel lines] frame 1200  qh_med=0.53
+  clock OFF=0.38s (chain-vs-dot r=+0.97)
+  [Pavel m4] frame 100/1249 (77s)
+  [Pavel m4] frame 200/1249 (183s)
+  [Pavel m4] frame 300/1249 (282s)
+  [Pavel m4] frame 400/1249 (388s)
+  [Pavel m4] frame 500/1249 (489s)
+  [Pavel m4] frame 600/1249 (602s)
+  [Pavel m4] frame 700/1249 (700s)
+  [Pavel m4] frame 800/1249 (794s)
+  [Pavel m4] frame 900/1249 (890s)
+  [Pavel m4] frame 1000/1249 (970s)
+  [Pavel m4] frame 1100/1249 (50250s)
+  [Pavel m4] frame 1200/1249 (50364s)
+  DPF @ 14607 Hz, 1008384 samples, in-FOV 90%
+  r-vs-dot x=0.97 y=0.90; r-vs-tracker x=0.58 y=0.39
+  [Pavel] wrote /Users/ashtonperlroth/Kodiak/gaze-model/people_data_results/gaze2d_Pavel_m4_dpf.mp4 (2071 frames @ 30.0 fps)
+
+=== Zohre (video_playback_Zohre_20260615_163712) ===
+  [Zohre chain] frame 200
+  [Zohre chain] frame 400
+  [Zohre chain] frame 600
+  [Zohre chain] frame 800
+  [Zohre chain] frame 1000
+  [Zohre chain] frame 1200
+  [Zohre lines] frame 100  qh_med=0.62
+  [Zohre lines] frame 200  qh_med=0.15
+  [Zohre lines] frame 300  qh_med=0.14
+  [Zohre lines] frame 400  qh_med=0.31
+  [Zohre lines] frame 500  qh_med=0.52
+  [Zohre lines] frame 600  qh_med=0.28
+  [Zohre lines] frame 700  qh_med=0.41
+  [Zohre lines] frame 800  qh_med=0.46
+  [Zohre lines] frame 900  qh_med=0.44
+  [Zohre lines] frame 1000  qh_med=0.64
+  [Zohre lines] frame 1100  qh_med=0.59
+  [Zohre lines] frame 1200  qh_med=0.32
+  clock OFF=0.35s (chain-vs-dot r=+0.76)
+  [Zohre m4] frame 100/1255 (67s)
+  [Zohre m4] frame 200/1255 (128s)
+  [Zohre m4] frame 300/1255 (169s)
+  [Zohre m4] frame 400/1255 (217s)
+  [Zohre m4] frame 500/1255 (286s)
+  [Zohre m4] frame 600/1255 (328s)
+  [Zohre m4] frame 700/1255 (356s)
+  [Zohre m4] frame 800/1255 (386s)
+  [Zohre m4] frame 900/1255 (420s)
+  [Zohre m4] frame 1000/1255 (466s)
+  [Zohre m4] frame 1100/1255 (522s)
+  [Zohre m4] frame 1200/1255 (568s)
+  DPF @ 14659 Hz, 1013232 samples, in-FOV 60%
+  r-vs-dot x=0.77 y=0.90; r-vs-tracker x=0.40 y=0.44
+  [Zohre] wrote /Users/ashtonperlroth/Kodiak/gaze-model/people_data_results/gaze2d_Zohre_m4_dpf.mp4 (2073 frames @ 30.0 fps)

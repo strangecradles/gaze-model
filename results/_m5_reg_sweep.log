@@ -1,0 +1,40 @@
+[Ashton3] M4_fwd  prec_x=2.692'  j30=0.930'  hf=0.089  r_dot=0.943
+  [m5 Ashton3] it 0: data -2.4386 (0s)
+  [m5 Ashton3] it 50: data -2.4488 (5s)
+  [m5 Ashton3] it 100: data -2.4492 (10s)
+  [m5 Ashton3] it 150: data -2.4493 (15s)
+  [m5 Ashton3] it 200: data -2.4495 (20s)
+  [m5 Ashton3] it 250: data -2.4495 (25s)
+[Ashton3] M5_base        w_dyn=0.5 beta=4.0  prec_x=3.695'  j30=0.847'  hf=0.209  r_dot=0.941  prec/M4=1.37
+  [m5 Ashton3] it 0: data -2.4386 (0s)
+  [m5 Ashton3] it 50: data -2.4491 (5s)
+  [m5 Ashton3] it 100: data -2.4498 (10s)
+  [m5 Ashton3] it 150: data -2.4499 (14s)
+  [m5 Ashton3] it 200: data -2.4500 (19s)
+  [m5 Ashton3] it 250: data -2.4500 (24s)
+[Ashton3] M5_dyn4        w_dyn=4.0 beta=4.0  prec_x=3.708'  j30=0.854'  hf=0.206  r_dot=0.941  prec/M4=1.38
+  [m5 Ashton3] it 0: data -2.4386 (0s)
+  [m5 Ashton3] it 50: data -2.4493 (5s)
+  [m5 Ashton3] it 100: data -2.4499 (9s)
+  [m5 Ashton3] it 150: data -2.4499 (14s)
+  [m5 Ashton3] it 200: data -2.4500 (19s)
+  [m5 Ashton3] it 250: data -2.4500 (23s)
+[Ashton3] M5_dyn8        w_dyn=8.0 beta=4.0  prec_x=3.714'  j30=0.849'  hf=0.205  r_dot=0.941  prec/M4=1.38
+  [m5 Ashton3] it 0: data -0.6097 (0s)
+  [m5 Ashton3] it 50: data -0.6124 (5s)
+  [m5 Ashton3] it 100: data -0.6125 (9s)
+  [m5 Ashton3] it 150: data -0.6125 (14s)
+  [m5 Ashton3] it 200: data -0.6125 (19s)
+  [m5 Ashton3] it 250: data -0.6125 (23s)
+[Ashton3] M5_beta1       w_dyn=0.5 beta=1.0  prec_x=3.690'  j30=0.848'  hf=0.209  r_dot=0.941  prec/M4=1.37
+  [m5 Ashton3] it 0: data -0.6097 (0s)
+  [m5 Ashton3] it 50: data -0.6125 (5s)
+  [m5 Ashton3] it 100: data -0.6126 (9s)
+  [m5 Ashton3] it 150: data -0.6126 (14s)
+  [m5 Ashton3] it 200: data -0.6126 (19s)
+  [m5 Ashton3] it 250: data -0.6126 (23s)
+[Ashton3] M5_dyn8_beta1  w_dyn=8.0 beta=1.0  prec_x=3.707'  j30=0.851'  hf=0.202  r_dot=0.941  prec/M4=1.38
+
+Wrote /Users/ashtonperlroth/Kodiak/gaze-model/results/m5_reg_sweep_Ashton3.csv
+Best M5: M5_beta1 prec_x=3.690' (M4 forward 2.692')
+=> Even strongly-regularized M5 does NOT beat the forward filter's HF floor -> the floor is observation/motion-limited, not estimator-bandwidth-limited.

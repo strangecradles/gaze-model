@@ -1,0 +1,354 @@
+
+=== [1/27] phys_N300_base  (rate=1182.0, dur=None) ===
+  prec_x=2.055 r_dot_x=0.901 r_trk_x=0.550 valid=70% PASS (2s)
+
+=== [2/27] learn_N1000  (rate=1182.0, dur=None) ===
+  prec_x=1.984 r_dot_x=0.905 r_trk_x=0.551 valid=71% PASS (0s)
+
+=== [3/27] phys_N500  (rate=1182.0, dur=None) ===
+  [m4 1182Hz physics] frame 100/1025 (7s)
+  [m4 1182Hz physics] frame 200/1025 (16s)
+  [m4 1182Hz physics] frame 300/1025 (25s)
+  [m4 1182Hz physics] frame 400/1025 (34s)
+  [m4 1182Hz physics] frame 500/1025 (44s)
+  [m4 1182Hz physics] frame 600/1025 (53s)
+  [m4 1182Hz physics] frame 700/1025 (64s)
+  [m4 1182Hz physics] frame 800/1025 (75s)
+  [m4 1182Hz physics] frame 900/1025 (84s)
+  [m4 1182Hz physics] frame 1000/1025 (94s)
+  prec_x=2.112 r_dot_x=0.906 r_trk_x=0.551 valid=70% PASS (96s)
+
+=== [4/27] phys_N1000  (rate=1182.0, dur=None) ===
+  [m4 1182Hz physics] frame 100/1025 (12s)
+  [m4 1182Hz physics] frame 200/1025 (28s)
+  [m4 1182Hz physics] frame 300/1025 (45s)
+  [m4 1182Hz physics] frame 400/1025 (62s)
+  [m4 1182Hz physics] frame 500/1025 (82s)
+  [m4 1182Hz physics] frame 600/1025 (98s)
+  [m4 1182Hz physics] frame 700/1025 (117s)
+  [m4 1182Hz physics] frame 800/1025 (137s)
+  [m4 1182Hz physics] frame 900/1025 (154s)
+  [m4 1182Hz physics] frame 1000/1025 (172s)
+  prec_x=2.106 r_dot_x=0.903 r_trk_x=0.549 valid=71% PASS (175s)
+
+=== [5/27] phys_N2000  (rate=1182.0, dur=None) ===
+  [m4 1182Hz physics] frame 100/1025 (22s)
+  [m4 1182Hz physics] frame 200/1025 (50s)
+  [m4 1182Hz physics] frame 300/1025 (78s)
+  [m4 1182Hz physics] frame 400/1025 (107s)
+  [m4 1182Hz physics] frame 500/1025 (141s)
+  [m4 1182Hz physics] frame 600/1025 (169s)
+  [m4 1182Hz physics] frame 700/1025 (203s)
+  [m4 1182Hz physics] frame 800/1025 (238s)
+  [m4 1182Hz physics] frame 900/1025 (267s)
+  [m4 1182Hz physics] frame 1000/1025 (298s)
+  prec_x=2.170 r_dot_x=0.903 r_trk_x=0.548 valid=71% PASS (304s)
+
+=== [6/27] phys_b10  (rate=1182.0, dur=None) ===
+  [m4 1182Hz physics] frame 100/1025 (5s)
+  [m4 1182Hz physics] frame 200/1025 (12s)
+  [m4 1182Hz physics] frame 300/1025 (19s)
+  [m4 1182Hz physics] frame 400/1025 (26s)
+  [m4 1182Hz physics] frame 500/1025 (33s)
+  [m4 1182Hz physics] frame 600/1025 (40s)
+  [m4 1182Hz physics] frame 700/1025 (48s)
+  [m4 1182Hz physics] frame 800/1025 (56s)
+  [m4 1182Hz physics] frame 900/1025 (63s)
+  [m4 1182Hz physics] frame 1000/1025 (71s)
+  prec_x=2.021 r_dot_x=0.904 r_trk_x=0.551 valid=70% PASS (72s)
+
+=== [7/27] phys_b30  (rate=1182.0, dur=None) ===
+  [m4 1182Hz physics] frame 100/1025 (6s)
+  [m4 1182Hz physics] frame 200/1025 (12s)
+  [m4 1182Hz physics] frame 300/1025 (19s)
+  [m4 1182Hz physics] frame 400/1025 (26s)
+  [m4 1182Hz physics] frame 500/1025 (34s)
+  [m4 1182Hz physics] frame 600/1025 (41s)
+  [m4 1182Hz physics] frame 700/1025 (49s)
+  [m4 1182Hz physics] frame 800/1025 (57s)
+  [m4 1182Hz physics] frame 900/1025 (64s)
+  [m4 1182Hz physics] frame 1000/1025 (71s)
+  prec_x=2.102 r_dot_x=0.902 r_trk_x=0.548 valid=70% PASS (73s)
+
+=== [8/27] phys_b40  (rate=1182.0, dur=None) ===
+  prec_x=2.156 r_dot_x=0.903 r_trk_x=0.543 valid=70% fail-guardrail (0s)
+
+=== [9/27] phys_hp3  (rate=1182.0, dur=None) ===
+  [m4 1182Hz physics] frame 100/1025 (5s)
+  [m4 1182Hz physics] frame 200/1025 (10s)
+  [m4 1182Hz physics] frame 300/1025 (16s)
+  [m4 1182Hz physics] frame 400/1025 (22s)
+  [m4 1182Hz physics] frame 500/1025 (29s)
+  [m4 1182Hz physics] frame 600/1025 (35s)
+  [m4 1182Hz physics] frame 700/1025 (42s)
+  [m4 1182Hz physics] frame 800/1025 (50s)
+  [m4 1182Hz physics] frame 900/1025 (56s)
+  [m4 1182Hz physics] frame 1000/1025 (62s)
+  prec_x=2.074 r_dot_x=0.902 r_trk_x=0.548 valid=70% PASS (63s)
+
+=== [10/27] phys_hp4  (rate=1182.0, dur=None) ===
+  [m4 1182Hz physics] frame 100/1025 (5s)
+  [m4 1182Hz physics] frame 200/1025 (11s)
+  [m4 1182Hz physics] frame 300/1025 (17s)
+  [m4 1182Hz physics] frame 400/1025 (23s)
+  [m4 1182Hz physics] frame 500/1025 (30s)
+  [m4 1182Hz physics] frame 600/1025 (36s)
+  [m4 1182Hz physics] frame 700/1025 (43s)
+  [m4 1182Hz physics] frame 800/1025 (50s)
+  [m4 1182Hz physics] frame 900/1025 (56s)
+  [m4 1182Hz physics] frame 1000/1025 (63s)
+  prec_x=2.113 r_dot_x=0.903 r_trk_x=0.550 valid=70% PASS (65s)
+
+=== [11/27] phys_hp5  (rate=1182.0, dur=None) ===
+  [m4 1182Hz physics] frame 100/1025 (5s)
+  [m4 1182Hz physics] frame 200/1025 (11s)
+  [m4 1182Hz physics] frame 300/1025 (17s)
+  [m4 1182Hz physics] frame 400/1025 (24s)
+  [m4 1182Hz physics] frame 500/1025 (32s)
+  [m4 1182Hz physics] frame 600/1025 (38s)
+  [m4 1182Hz physics] frame 700/1025 (46s)
+  [m4 1182Hz physics] frame 800/1025 (54s)
+  [m4 1182Hz physics] frame 900/1025 (60s)
+  [m4 1182Hz physics] frame 1000/1025 (68s)
+  prec_x=2.098 r_dot_x=0.905 r_trk_x=0.549 valid=70% PASS (69s)
+
+=== [12/27] phys_hp8  (rate=1182.0, dur=None) ===
+  [m4 1182Hz physics] frame 100/1025 (6s)
+  [m4 1182Hz physics] frame 200/1025 (13s)
+  [m4 1182Hz physics] frame 300/1025 (20s)
+  [m4 1182Hz physics] frame 400/1025 (28s)
+  [m4 1182Hz physics] frame 500/1025 (36s)
+  [m4 1182Hz physics] frame 600/1025 (43s)
+  [m4 1182Hz physics] frame 700/1025 (52s)
+  [m4 1182Hz physics] frame 800/1025 (61s)
+  [m4 1182Hz physics] frame 900/1025 (68s)
+  [m4 1182Hz physics] frame 1000/1025 (76s)
+  prec_x=2.071 r_dot_x=0.903 r_trk_x=0.549 valid=70% PASS (78s)
+
+=== [13/27] phys_hp10  (rate=1182.0, dur=None) ===
+  [m4 1182Hz physics] frame 100/1025 (6s)
+  [m4 1182Hz physics] frame 200/1025 (14s)
+  [m4 1182Hz physics] frame 300/1025 (22s)
+  [m4 1182Hz physics] frame 400/1025 (31s)
+  [m4 1182Hz physics] frame 500/1025 (40s)
+  [m4 1182Hz physics] frame 600/1025 (49s)
+  [m4 1182Hz physics] frame 700/1025 (58s)
+  [m4 1182Hz physics] frame 800/1025 (69s)
+  [m4 1182Hz physics] frame 900/1025 (77s)
+  [m4 1182Hz physics] frame 1000/1025 (86s)
+  prec_x=2.012 r_dot_x=0.904 r_trk_x=0.549 valid=71% PASS (88s)
+
+=== [14/27] phys_hp12  (rate=1182.0, dur=None) ===
+  [m4 1182Hz physics] frame 100/1025 (7s)
+  [m4 1182Hz physics] frame 200/1025 (15s)
+  [m4 1182Hz physics] frame 300/1025 (24s)
+  [m4 1182Hz physics] frame 400/1025 (33s)
+  [m4 1182Hz physics] frame 500/1025 (43s)
+  [m4 1182Hz physics] frame 600/1025 (52s)
+  [m4 1182Hz physics] frame 700/1025 (63s)
+  [m4 1182Hz physics] frame 800/1025 (73s)
+  [m4 1182Hz physics] frame 900/1025 (83s)
+  [m4 1182Hz physics] frame 1000/1025 (93s)
+  prec_x=1.978 r_dot_x=0.904 r_trk_x=0.552 valid=71% PASS (95s)
+
+=== [15/27] phys_sa1  (rate=1182.0, dur=None) ===
+  [m4 1182Hz physics] frame 100/1025 (5s)
+  [m4 1182Hz physics] frame 200/1025 (12s)
+  [m4 1182Hz physics] frame 300/1025 (18s)
+  [m4 1182Hz physics] frame 400/1025 (25s)
+  [m4 1182Hz physics] frame 500/1025 (33s)
+  [m4 1182Hz physics] frame 600/1025 (40s)
+  [m4 1182Hz physics] frame 700/1025 (48s)
+  [m4 1182Hz physics] frame 800/1025 (56s)
+  [m4 1182Hz physics] frame 900/1025 (63s)
+  [m4 1182Hz physics] frame 1000/1025 (71s)
+  prec_x=2.127 r_dot_x=0.907 r_trk_x=0.553 valid=70% PASS (72s)
+
+=== [16/27] phys_sa3  (rate=1182.0, dur=None) ===
+  [m4 1182Hz physics] frame 100/1025 (5s)
+  [m4 1182Hz physics] frame 200/1025 (12s)
+  [m4 1182Hz physics] frame 300/1025 (19s)
+  [m4 1182Hz physics] frame 400/1025 (26s)
+  [m4 1182Hz physics] frame 500/1025 (34s)
+  [m4 1182Hz physics] frame 600/1025 (41s)
+  [m4 1182Hz physics] frame 700/1025 (49s)
+  [m4 1182Hz physics] frame 800/1025 (57s)
+  [m4 1182Hz physics] frame 900/1025 (64s)
+  [m4 1182Hz physics] frame 1000/1025 (71s)
+  prec_x=2.059 r_dot_x=0.904 r_trk_x=0.549 valid=71% PASS (73s)
+
+=== [17/27] phys_ess0.3  (rate=1182.0, dur=None) ===
+  [m4 1182Hz physics] frame 100/1025 (5s)
+  [m4 1182Hz physics] frame 200/1025 (12s)
+  [m4 1182Hz physics] frame 300/1025 (18s)
+  [m4 1182Hz physics] frame 400/1025 (25s)
+  [m4 1182Hz physics] frame 500/1025 (33s)
+  [m4 1182Hz physics] frame 600/1025 (40s)
+  [m4 1182Hz physics] frame 700/1025 (48s)
+  [m4 1182Hz physics] frame 800/1025 (57s)
+  [m4 1182Hz physics] frame 900/1025 (64s)
+  [m4 1182Hz physics] frame 1000/1025 (71s)
+  prec_x=2.030 r_dot_x=0.903 r_trk_x=0.551 valid=70% PASS (73s)
+
+=== [18/27] phys_ess0.7  (rate=1182.0, dur=None) ===
+  [m4 1182Hz physics] frame 100/1025 (5s)
+  [m4 1182Hz physics] frame 200/1025 (12s)
+  [m4 1182Hz physics] frame 300/1025 (18s)
+  [m4 1182Hz physics] frame 400/1025 (25s)
+  [m4 1182Hz physics] frame 500/1025 (33s)
+  [m4 1182Hz physics] frame 600/1025 (40s)
+  [m4 1182Hz physics] frame 700/1025 (48s)
+  [m4 1182Hz physics] frame 800/1025 (56s)
+  [m4 1182Hz physics] frame 900/1025 (63s)
+  [m4 1182Hz physics] frame 1000/1025 (71s)
+  prec_x=1.975 r_dot_x=0.905 r_trk_x=0.550 valid=70% PASS (72s)
+
+=== [19/27] phys_rp0.25  (rate=1182.0, dur=None) ===
+  [m4 1182Hz physics] frame 100/1025 (5s)
+  [m4 1182Hz physics] frame 200/1025 (12s)
+  [m4 1182Hz physics] frame 300/1025 (19s)
+  [m4 1182Hz physics] frame 400/1025 (25s)
+  [m4 1182Hz physics] frame 500/1025 (33s)
+  [m4 1182Hz physics] frame 600/1025 (40s)
+  [m4 1182Hz physics] frame 700/1025 (48s)
+  [m4 1182Hz physics] frame 800/1025 (57s)
+  [m4 1182Hz physics] frame 900/1025 (64s)
+  [m4 1182Hz physics] frame 1000/1025 (71s)
+  prec_x=1.997 r_dot_x=0.904 r_trk_x=0.548 valid=70% PASS (73s)
+
+=== [20/27] phys_rp1.0  (rate=1182.0, dur=None) ===
+  [m4 1182Hz physics] frame 100/1025 (5s)
+  [m4 1182Hz physics] frame 200/1025 (12s)
+  [m4 1182Hz physics] frame 300/1025 (18s)
+  [m4 1182Hz physics] frame 400/1025 (25s)
+  [m4 1182Hz physics] frame 500/1025 (33s)
+  [m4 1182Hz physics] frame 600/1025 (39s)
+  [m4 1182Hz physics] frame 700/1025 (48s)
+  [m4 1182Hz physics] frame 800/1025 (56s)
+  [m4 1182Hz physics] frame 900/1025 (63s)
+  [m4 1182Hz physics] frame 1000/1025 (71s)
+  prec_x=2.121 r_dot_x=0.903 r_trk_x=0.548 valid=71% PASS (72s)
+
+=== [21/27] phys_nw3  (rate=1182.0, dur=None) ===
+  [m4 1182Hz physics] frame 100/1025 (5s)
+  [m4 1182Hz physics] frame 200/1025 (12s)
+  [m4 1182Hz physics] frame 300/1025 (18s)
+  [m4 1182Hz physics] frame 400/1025 (25s)
+  [m4 1182Hz physics] frame 500/1025 (33s)
+  [m4 1182Hz physics] frame 600/1025 (39s)
+  [m4 1182Hz physics] frame 700/1025 (47s)
+  [m4 1182Hz physics] frame 800/1025 (55s)
+  [m4 1182Hz physics] frame 900/1025 (61s)
+  [m4 1182Hz physics] frame 1000/1025 (69s)
+  prec_x=1.950 r_dot_x=0.903 r_trk_x=0.550 valid=71% PASS (70s)
+
+=== [22/27] phys_nw10  (rate=1182.0, dur=None) ===
+  [m4 1182Hz physics] frame 100/1025 (5s)
+  [m4 1182Hz physics] frame 200/1025 (11s)
+  [m4 1182Hz physics] frame 300/1025 (18s)
+  [m4 1182Hz physics] frame 400/1025 (24s)
+  [m4 1182Hz physics] frame 500/1025 (32s)
+  [m4 1182Hz physics] frame 600/1025 (39s)
+  [m4 1182Hz physics] frame 700/1025 (46s)
+  [m4 1182Hz physics] frame 800/1025 (55s)
+  [m4 1182Hz physics] frame 900/1025 (63s)
+  [m4 1182Hz physics] frame 1000/1025 (70s)
+  prec_x=2.183 r_dot_x=0.905 r_trk_x=0.551 valid=69% PASS (72s)
+
+=== [23/27] phys_rs125  (rate=1182.0, dur=None) ===
+  [m4 1182Hz physics] frame 100/1025 (5s)
+  [m4 1182Hz physics] frame 200/1025 (11s)
+  [m4 1182Hz physics] frame 300/1025 (18s)
+  [m4 1182Hz physics] frame 400/1025 (24s)
+  [m4 1182Hz physics] frame 500/1025 (32s)
+  [m4 1182Hz physics] frame 600/1025 (38s)
+  [m4 1182Hz physics] frame 700/1025 (46s)
+  [m4 1182Hz physics] frame 800/1025 (54s)
+  [m4 1182Hz physics] frame 900/1025 (61s)
+  [m4 1182Hz physics] frame 1000/1025 (68s)
+  prec_x=4.457 r_dot_x=0.897 r_trk_x=0.546 valid=70% PASS (69s)
+
+=== [24/27] phys_rs60  (rate=1182.0, dur=None) ===
+  [m4 1182Hz physics] frame 100/1025 (5s)
+  [m4 1182Hz physics] frame 200/1025 (11s)
+  [m4 1182Hz physics] frame 300/1025 (18s)
+  [m4 1182Hz physics] frame 400/1025 (25s)
+  [m4 1182Hz physics] frame 500/1025 (33s)
+  [m4 1182Hz physics] frame 600/1025 (40s)
+  [m4 1182Hz physics] frame 700/1025 (48s)
+  [m4 1182Hz physics] frame 800/1025 (56s)
+  [m4 1182Hz physics] frame 900/1025 (63s)
+  [m4 1182Hz physics] frame 1000/1025 (70s)
+  prec_x=2.743 r_dot_x=0.895 r_trk_x=0.551 valid=70% fail-guardrail (72s)
+
+=== [25/27] phys_ll250  (rate=1182.0, dur=None) ===
+  [m4 1182Hz physics] frame 100/1025 (6s)
+  [m4 1182Hz physics] frame 200/1025 (13s)
+  [m4 1182Hz physics] frame 300/1025 (20s)
+  [m4 1182Hz physics] frame 400/1025 (28s)
+  [m4 1182Hz physics] frame 500/1025 (36s)
+  [m4 1182Hz physics] frame 600/1025 (44s)
+  [m4 1182Hz physics] frame 700/1025 (53s)
+  [m4 1182Hz physics] frame 800/1025 (63s)
+  [m4 1182Hz physics] frame 900/1025 (71s)
+  [m4 1182Hz physics] frame 1000/1025 (79s)
+  prec_x=2.038 r_dot_x=0.904 r_trk_x=0.550 valid=70% PASS (81s)
+
+=== [26/27] phys_ll300  (rate=1182.0, dur=None) ===
+  [m4 1182Hz physics] frame 100/1025 (7s)
+  [m4 1182Hz physics] frame 200/1025 (15s)
+  [m4 1182Hz physics] frame 300/1025 (23s)
+  [m4 1182Hz physics] frame 400/1025 (31s)
+  [m4 1182Hz physics] frame 500/1025 (40s)
+  [m4 1182Hz physics] frame 600/1025 (48s)
+  [m4 1182Hz physics] frame 700/1025 (57s)
+  [m4 1182Hz physics] frame 800/1025 (67s)
+  [m4 1182Hz physics] frame 900/1025 (76s)
+  [m4 1182Hz physics] frame 1000/1025 (85s)
+  prec_x=2.026 r_dot_x=0.909 r_trk_x=0.549 valid=70% PASS (87s)
+
+=== [27/27] phys_pw120  (rate=1182.0, dur=None) ===
+  [m4 1182Hz physics] frame 100/1025 (5s)
+  [m4 1182Hz physics] frame 200/1025 (12s)
+  [m4 1182Hz physics] frame 300/1025 (18s)
+  [m4 1182Hz physics] frame 400/1025 (24s)
+  [m4 1182Hz physics] frame 500/1025 (32s)
+  [m4 1182Hz physics] frame 600/1025 (39s)
+  [m4 1182Hz physics] frame 700/1025 (46s)
+  [m4 1182Hz physics] frame 800/1025 (55s)
+  [m4 1182Hz physics] frame 900/1025 (62s)
+  [m4 1182Hz physics] frame 1000/1025 (69s)
+  prec_x=1.999 r_dot_x=0.905 r_trk_x=0.550 valid=70% PASS (70s)
+
+====================================================================================================
+BROAD SEARCH — 1182 Hz full-length
+====================================================================================================
+config                  prec_x  r_dot_x  r_trk_x  prec_y  valid  guard
+----------------------------------------------------------------------
+phys_nw3                 1.950    0.903    0.550   1.001    71%   PASS*
+phys_ess0.7              1.975    0.905    0.550   0.980    70%   PASS*
+phys_hp12                1.978    0.904    0.552   0.987    71%   PASS*
+learn_N1000              1.984    0.905    0.551   0.977    71%   PASS*
+phys_rp0.25              1.997    0.904    0.548   0.967    70%   PASS*
+phys_pw120               1.999    0.905    0.550   0.958    70%   PASS*
+phys_hp10                2.012    0.904    0.549   0.985    71%   PASS*
+phys_b10                 2.021    0.904    0.551   0.956    70%   PASS*
+phys_ll300               2.026    0.909    0.549   0.954    70%   PASS*
+phys_ess0.3              2.030    0.903    0.551   0.960    70%   PASS*
+phys_ll250               2.038    0.904    0.550   0.986    70%   PASS*
+phys_N300_base           2.055    0.901    0.550   0.952    70%   PASS 
+phys_sa3                 2.059    0.904    0.549   0.959    71%   PASS 
+phys_hp8                 2.071    0.903    0.549   0.973    70%   PASS 
+phys_hp3                 2.074    0.902    0.548   0.984    70%   PASS 
+phys_hp5                 2.098    0.905    0.549   0.970    70%   PASS 
+phys_b30                 2.102    0.902    0.548   0.956    70%   PASS 
+phys_N1000               2.106    0.903    0.549   0.996    71%   PASS 
+phys_N500                2.112    0.906    0.551   0.985    70%   PASS 
+phys_hp4                 2.113    0.903    0.550   0.989    70%   PASS 
+phys_rp1.0               2.121    0.903    0.548   0.974    71%   PASS 
+phys_sa1                 2.127    0.907    0.553   0.987    70%   PASS 
+phys_N2000               2.170    0.903    0.548   1.024    71%   PASS 
+phys_nw10                2.183    0.905    0.551   0.945    69%   PASS 
+phys_rs125               4.457    0.897    0.546   0.947    70%   PASS 
+phys_b40                 2.156    0.903    0.543   0.972    70%   fail 
+phys_rs60                2.743    0.895    0.551   0.954    70%   fail 

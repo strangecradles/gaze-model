@@ -1,0 +1,24 @@
+{
+  "Igor": {
+    "person": "Igor",
+    "n_total": 1011616,
+    "n_fov": 518512,
+    "frac_alias_flip_prone": 0.46087265097046937,
+    "frac_real_microsacc": 0.030329095565772828,
+    "frac_clean": 0.30155907674267907,
+    "main_sequence_r": 0.3008509203516308,
+    "flip_px_threshold": 3.0,
+    "agree_px_threshold": 1.5
+  },
+  "Ashton3": {
+    "person": "Ashton3",
+    "n_total": 1038280,
+    "n_fov": 903065,
+    "frac_alias_flip_prone": 0.33266486908472814,
+    "frac_real_microsacc": 0.03431203733950491,
+    "frac_clean": 0.4204846827194056,
+    "main_sequence_r": 0.3485498016560944,
+    "flip_px_threshold": 3.0,
+    "agree_px_threshold": 1.5
+  }
+}

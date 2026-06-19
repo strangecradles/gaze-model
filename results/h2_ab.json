@@ -1,0 +1,16 @@
+{
+  "Igor": {
+    "person": "Igor",
+    "ab_run": false,
+    "reason": "power gate FAIL: per-line reref intervention noise 2.05' >= 0.5 x real-motion bound (~1.7'); alias-peak flipping dominates. Guardrail forbids underpowered A/B.",
+    "intervention_noise_arcmin": 2.05254221310856,
+    "verdict": "H2 untestable-as-specified / H0 for the rdx-C1 metric (identity for FOV-locked lines, alias-flip noise otherwise)."
+  },
+  "Ashton3": {
+    "person": "Ashton3",
+    "ab_run": false,
+    "reason": "power gate FAIL: per-line reref intervention noise 1.84' >= 0.5 x real-motion bound (~1.7'); alias-peak flipping dominates. Guardrail forbids underpowered A/B.",
+    "intervention_noise_arcmin": 1.8350867258291341,
+    "verdict": "H2 untestable-as-specified / H0 for the rdx-C1 metric (identity for FOV-locked lines, alias-flip noise otherwise)."
+  }
+}

@@ -1,0 +1,54 @@
+{
+  "Igor": {
+    "person": "Igor",
+    "K": 3,
+    "n": 518512,
+    "resid_common_arcmin": 3.457082154426661,
+    "feature_r2": {
+      "qh": {
+        "r2": 3.3744642770061617e-06,
+        "slope": 0.07383395156398997,
+        "n": 518512
+      },
+      "curvature": {
+        "r2": 1.1079843237671305e-05,
+        "slope": 0.07822797919465901,
+        "n": 518512
+      },
+      "subphase_abs": {
+        "r2": 0.0025558977672638372,
+        "slope": 2.1255971077555995,
+        "n": 518512
+      }
+    },
+    "joint_r2": 1.2466992484250206e-05,
+    "C2_arcmin_lowerbound": 0.012206482957637307,
+    "note": "C2 = feature-explained part of the common-track residual. Features are reference-independent (qh, peak curvature, sub-pixel phase) so this isolates argmax/sub-pixel bias from real motion. LOWER bound on C2."
+  },
+  "Ashton3": {
+    "person": "Ashton3",
+    "K": 3,
+    "n": 903065,
+    "resid_common_arcmin": 3.607001094385271,
+    "feature_r2": {
+      "qh": {
+        "r2": 0.0010574955919270268,
+        "slope": 1.6900950474584104,
+        "n": 903065
+      },
+      "curvature": {
+        "r2": 0.002105646809272055,
+        "slope": -1.8845979817534084,
+        "n": 903065
+      },
+      "subphase_abs": {
+        "r2": 0.0014970466503793078,
+        "slope": 1.791208690785605,
+        "n": 903065
+      }
+    },
+    "joint_r2": 0.0038766258569749024,
+    "C2_arcmin_lowerbound": 0.2245811069743253,
+    "note": "C2 = feature-explained part of the common-track residual. Features are reference-independent (qh, peak curvature, sub-pixel phase) so this isolates argmax/sub-pixel bias from real motion. LOWER bound on C2."
+  }
+}

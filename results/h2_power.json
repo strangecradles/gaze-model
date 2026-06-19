@@ -1,0 +1,82 @@
+{
+  "Igor": {
+    "person": "Igor",
+    "reref_delta_rms_px": 2.2277307227562404,
+    "intervention_noise_arcmin": 2.05254221310856,
+    "sweep": {
+      "scale_0.05": {
+        "delta_rms_px": 0.11138653613781202,
+        "intervention_noise_arcmin": 1.1125145170450064,
+        "max_abs_change_px": 106.56011199951172,
+        "frac_jumped_gt1px": 0.015066666666666667
+      },
+      "scale_0.1": {
+        "delta_rms_px": 0.22277307227562404,
+        "intervention_noise_arcmin": 1.3956994994746506,
+        "max_abs_change_px": 106.550537109375,
+        "frac_jumped_gt1px": 0.024016666666666665
+      },
+      "scale_0.25": {
+        "delta_rms_px": 0.5569326806890601,
+        "intervention_noise_arcmin": 1.751838999412162,
+        "max_abs_change_px": 106.52553176879883,
+        "frac_jumped_gt1px": 0.03985
+      },
+      "scale_0.5": {
+        "delta_rms_px": 1.1138653613781202,
+        "intervention_noise_arcmin": 1.9158525077651543,
+        "max_abs_change_px": 107.40281295776367,
+        "frac_jumped_gt1px": 0.0509
+      },
+      "scale_1.0": {
+        "delta_rms_px": 2.2277307227562404,
+        "intervention_noise_arcmin": 2.05254221310856,
+        "max_abs_change_px": 106.51094818115234,
+        "frac_jumped_gt1px": 0.0558
+      }
+    },
+    "n_subset": 60000,
+    "PASS_power_gate": false,
+    "note": "Per-line reref shifts the per-column search center by the causal running estimate and re-adds it. Translation-equivariance makes it identity ONLY while the SAME alias peak stays global; the NCC profile is multi-peaked (photoreceptor mosaic), so realistic-magnitude shifts flip alias peaks and inject large noise. Power gate compares intervention noise to <0.5x the real-motion upper bound (~1.7'). Identity verified at scale->0."
+  },
+  "Ashton3": {
+    "person": "Ashton3",
+    "reref_delta_rms_px": 3.4681132200920306,
+    "intervention_noise_arcmin": 1.8350867258291341,
+    "sweep": {
+      "scale_0.05": {
+        "delta_rms_px": 0.17340566100460153,
+        "intervention_noise_arcmin": 1.2890538595672545,
+        "max_abs_change_px": 129.7676544189453,
+        "frac_jumped_gt1px": 0.018516666666666667
+      },
+      "scale_0.1": {
+        "delta_rms_px": 0.34681132200920306,
+        "intervention_noise_arcmin": 1.5007269749020817,
+        "max_abs_change_px": 131.34651947021484,
+        "frac_jumped_gt1px": 0.0248
+      },
+      "scale_0.25": {
+        "delta_rms_px": 0.8670283050230077,
+        "intervention_noise_arcmin": 1.687380186338583,
+        "max_abs_change_px": 96.99239349365234,
+        "frac_jumped_gt1px": 0.03501666666666667
+      },
+      "scale_0.5": {
+        "delta_rms_px": 1.7340566100460153,
+        "intervention_noise_arcmin": 1.824104597675193,
+        "max_abs_change_px": 143.9773941040039,
+        "frac_jumped_gt1px": 0.04078333333333333
+      },
+      "scale_1.0": {
+        "delta_rms_px": 3.4681132200920306,
+        "intervention_noise_arcmin": 1.8350867258291341,
+        "max_abs_change_px": 159.7659912109375,
+        "frac_jumped_gt1px": 0.04235
+      }
+    },
+    "n_subset": 60000,
+    "PASS_power_gate": false,
+    "note": "Per-line reref shifts the per-column search center by the causal running estimate and re-adds it. Translation-equivariance makes it identity ONLY while the SAME alias peak stays global; the NCC profile is multi-peaked (photoreceptor mosaic), so realistic-magnitude shifts flip alias peaks and inject large noise. Power gate compares intervention noise to <0.5x the real-motion upper bound (~1.7'). Identity verified at scale->0."
+  }
+}

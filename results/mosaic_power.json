@@ -1,0 +1,38 @@
+{
+  "Igor": {
+    "mechanism": "(a) mode-gated alias-robust-mean window shrink",
+    "lock_gated": {
+      "flip_off": 0.413,
+      "flip_on": 0.415,
+      "delta": 0.002,
+      "core_off": 1.06,
+      "core_on": 1.059,
+      "powered": false
+    },
+    "ungated_aggressive_window1row": {
+      "flip_off": 0.413,
+      "flip_on": 0.434,
+      "delta": 0.022,
+      "core_off": 1.06,
+      "core_on": 1.254,
+      "frac_lines_changed_gt0p5px": 0.367,
+      "max_abs_change_px": 58.9
+    },
+    "diagnosis": "window approach DEAD: narrowing the robust mean locks onto the flipped peak (flip lives in the cloud POSITION via likelihood, not in posterior averaging); ungated makes flip-rate WORSE (+0.022) and inflates core (+0.19).",
+    "ncc_overlap": {
+      "alias_flip_median": 0.323,
+      "alias_flip_iqr": [
+        0.258,
+        0.419
+      ],
+      "microsacc_median": 0.424,
+      "microsacc_iqr": [
+        0.316,
+        0.564
+      ],
+      "clean_median": 0.593,
+      "separable_online": false
+    },
+    "verdict": "POWER GATE FAILED. No A/B run (guardrail). Online window/posterior rejection cannot reduce the alias floor without making it worse."
+  }
+}

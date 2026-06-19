@@ -1,0 +1,228 @@
+{
+  "generated": "2026-06-18T00:43:10",
+  "selection": "Per subject: prefer hard-gate pass, then score, raw jump reduction, p99.9 speed reduction, small |delta_j30|, small |delta_prec_x|.",
+  "source_paths": [
+    "results/along_quality_calibration_prune20_constant_sg100_mp_s2_tau3.csv",
+    "results/along_quality_calibration_prune20_failure_motion_grid.csv",
+    "results/along_quality_calibration_prune20_s2_tau6_remaining.csv"
+  ],
+  "subjects": {
+    "Ashton3": {
+      "source_row": {
+        "cache_path": "/Users/ashtonperlroth/Kodiak/gaze-model/cache/people_fov/Ashton3/m4_dpf_physics_aq_constant_sg100_mp_s2_tau3_d20.npz",
+        "config_id": "constant",
+        "delta_j30": "-0.036724533725124964",
+        "delta_prec_x": "-0.0617828891269796",
+        "delta_r_dot_x": "0.00033065513134045155",
+        "delta_valid_frac": "-0.0035025905654666456",
+        "oculo_j30_reduction": "0.02032817183340344",
+        "pass_hard_gates": "True",
+        "raw_jump_reduction": "0.289158456480714",
+        "raw_speed_p999_reduction": "0.12750293842942761",
+        "stage": "prune",
+        "subject": "Ashton3",
+        "variant_id": "constant_sg100_mp_s2_tau3"
+      },
+      "variant": {
+        "acceleration_cost": 0.0,
+        "acceleration_sigma_deg_s2": 5000.0,
+        "config_id": "constant",
+        "motion_prior": true,
+        "motion_prior_ncc_thr": 0.2,
+        "motion_prior_sigma_rows": 2.0,
+        "motion_prior_tau_s": 0.003,
+        "slew_gate": true,
+        "slew_max_deg_s": 100.0,
+        "variant_id": "constant_sg100_mp_s2_tau3",
+        "velocity_cost": 0.0,
+        "velocity_sigma_deg_s": 80.0
+      }
+    },
+    "Chong": {
+      "source_row": {
+        "cache_path": "/Users/ashtonperlroth/Kodiak/gaze-model/cache/people_fov/Chong/m4_dpf_physics_aq_constant_sg100_mp_s2_tau6_d20.npz",
+        "config_id": "constant",
+        "delta_j30": "0.007682824995086435",
+        "delta_prec_x": "0.01779331742728285",
+        "delta_r_dot_x": "0.0003000960947332487",
+        "delta_valid_frac": "-0.006508392277905561",
+        "oculo_j30_reduction": "-0.04686683610985885",
+        "pass_hard_gates": "True",
+        "raw_jump_reduction": "0.2864494571815681",
+        "raw_speed_p999_reduction": "0.19723073989340545",
+        "stage": "prune",
+        "subject": "Chong",
+        "variant_id": "constant_sg100_mp_s2_tau6"
+      },
+      "variant": {
+        "acceleration_cost": 0.0,
+        "acceleration_sigma_deg_s2": 5000.0,
+        "config_id": "constant",
+        "motion_prior": true,
+        "motion_prior_ncc_thr": 0.2,
+        "motion_prior_sigma_rows": 2.0,
+        "motion_prior_tau_s": 0.006,
+        "slew_gate": true,
+        "slew_max_deg_s": 100.0,
+        "variant_id": "constant_sg100_mp_s2_tau6",
+        "velocity_cost": 0.0,
+        "velocity_sigma_deg_s": 80.0
+      }
+    },
+    "Igor": {
+      "source_row": {
+        "cache_path": "/Users/ashtonperlroth/Kodiak/gaze-model/cache/people_fov/Igor/m4_dpf_physics_aq_constant_sg100_mp_s2_tau3_d20.npz",
+        "config_id": "constant",
+        "delta_j30": "-0.014379267050856015",
+        "delta_prec_x": "-0.019314210394268727",
+        "delta_r_dot_x": "-0.0024426220265734155",
+        "delta_valid_frac": "-0.011252579167191468",
+        "oculo_j30_reduction": "0.005411726850925134",
+        "pass_hard_gates": "True",
+        "raw_jump_reduction": "0.29155202826899157",
+        "raw_speed_p999_reduction": "0.15498905505196814",
+        "stage": "prune",
+        "subject": "Igor",
+        "variant_id": "constant_sg100_mp_s2_tau3"
+      },
+      "variant": {
+        "acceleration_cost": 0.0,
+        "acceleration_sigma_deg_s2": 5000.0,
+        "config_id": "constant",
+        "motion_prior": true,
+        "motion_prior_ncc_thr": 0.2,
+        "motion_prior_sigma_rows": 2.0,
+        "motion_prior_tau_s": 0.003,
+        "slew_gate": true,
+        "slew_max_deg_s": 100.0,
+        "variant_id": "constant_sg100_mp_s2_tau3",
+        "velocity_cost": 0.0,
+        "velocity_sigma_deg_s": 80.0
+      }
+    },
+    "John": {
+      "source_row": {
+        "cache_path": "/Users/ashtonperlroth/Kodiak/gaze-model/cache/people_fov/John/m4_dpf_physics_aq_constant_sg100_mp_s2_tau3_d20.npz",
+        "config_id": "constant",
+        "delta_j30": "-0.043869531739906265",
+        "delta_prec_x": "-0.07812757920890245",
+        "delta_r_dot_x": "0.00032094196672349806",
+        "delta_valid_frac": "-0.003907849534721786",
+        "oculo_j30_reduction": "0.013802452353898409",
+        "pass_hard_gates": "True",
+        "raw_jump_reduction": "0.30301691602108927",
+        "raw_speed_p999_reduction": "0.17485337649239563",
+        "stage": "prune",
+        "subject": "John",
+        "variant_id": "constant_sg100_mp_s2_tau3"
+      },
+      "variant": {
+        "acceleration_cost": 0.0,
+        "acceleration_sigma_deg_s2": 5000.0,
+        "config_id": "constant",
+        "motion_prior": true,
+        "motion_prior_ncc_thr": 0.2,
+        "motion_prior_sigma_rows": 2.0,
+        "motion_prior_tau_s": 0.003,
+        "slew_gate": true,
+        "slew_max_deg_s": 100.0,
+        "variant_id": "constant_sg100_mp_s2_tau3",
+        "velocity_cost": 0.0,
+        "velocity_sigma_deg_s": 80.0
+      }
+    },
+    "Kathy": {
+      "source_row": {
+        "cache_path": "/Users/ashtonperlroth/Kodiak/gaze-model/cache/people_fov/Kathy/m4_dpf_physics_aq_constant_sg100_mp_s2_tau6_d20.npz",
+        "config_id": "constant",
+        "delta_j30": "0.02133808270497184",
+        "delta_prec_x": "-0.045208661885228985",
+        "delta_r_dot_x": "0.00044981636966567873",
+        "delta_valid_frac": "-0.0069022355834983395",
+        "oculo_j30_reduction": "-0.052969262705440105",
+        "pass_hard_gates": "True",
+        "raw_jump_reduction": "0.294942550935553",
+        "raw_speed_p999_reduction": "0.2046691033454933",
+        "stage": "prune",
+        "subject": "Kathy",
+        "variant_id": "constant_sg100_mp_s2_tau6"
+      },
+      "variant": {
+        "acceleration_cost": 0.0,
+        "acceleration_sigma_deg_s2": 5000.0,
+        "config_id": "constant",
+        "motion_prior": true,
+        "motion_prior_ncc_thr": 0.2,
+        "motion_prior_sigma_rows": 2.0,
+        "motion_prior_tau_s": 0.006,
+        "slew_gate": true,
+        "slew_max_deg_s": 100.0,
+        "variant_id": "constant_sg100_mp_s2_tau6",
+        "velocity_cost": 0.0,
+        "velocity_sigma_deg_s": 80.0
+      }
+    },
+    "Pavel": {
+      "source_row": {
+        "cache_path": "/Users/ashtonperlroth/Kodiak/gaze-model/cache/people_fov/Pavel/m4_dpf_physics_aq_constant_sg100_mp_s2_tau6_d20.npz",
+        "config_id": "constant",
+        "delta_j30": "0.0015519233151977119",
+        "delta_prec_x": "0.08094912206248717",
+        "delta_r_dot_x": "0.00022925473078405645",
+        "delta_valid_frac": "-0.012810642597577138",
+        "oculo_j30_reduction": "-0.09558105360650822",
+        "pass_hard_gates": "True",
+        "raw_jump_reduction": "0.30954577982890813",
+        "raw_speed_p999_reduction": "0.15700570893519744",
+        "stage": "prune",
+        "subject": "Pavel",
+        "variant_id": "constant_sg100_mp_s2_tau6"
+      },
+      "variant": {
+        "acceleration_cost": 0.0,
+        "acceleration_sigma_deg_s2": 5000.0,
+        "config_id": "constant",
+        "motion_prior": true,
+        "motion_prior_ncc_thr": 0.2,
+        "motion_prior_sigma_rows": 2.0,
+        "motion_prior_tau_s": 0.006,
+        "slew_gate": true,
+        "slew_max_deg_s": 100.0,
+        "variant_id": "constant_sg100_mp_s2_tau6",
+        "velocity_cost": 0.0,
+        "velocity_sigma_deg_s": 80.0
+      }
+    },
+    "Zohre": {
+      "source_row": {
+        "cache_path": "/Users/ashtonperlroth/Kodiak/gaze-model/cache/people_fov/Zohre/m4_dpf_physics_aq_constant_sg100_mp_s4_tau6_d20.npz",
+        "config_id": "constant",
+        "delta_j30": "-0.06316858694133387",
+        "delta_prec_x": "-0.16608047243386181",
+        "delta_r_dot_x": "0.004509551973048365",
+        "delta_valid_frac": "-0.017282860035726877",
+        "oculo_j30_reduction": "0.024652780621859487",
+        "pass_hard_gates": "True",
+        "raw_jump_reduction": "0.3906365141260863",
+        "raw_speed_p999_reduction": "0.13693600406762618",
+        "stage": "prune",
+        "subject": "Zohre",
+        "variant_id": "constant_sg100_mp_s4_tau6"
+      },
+      "variant": {
+        "acceleration_cost": 0.0,
+        "acceleration_sigma_deg_s2": 5000.0,
+        "config_id": "constant",
+        "motion_prior": true,
+        "motion_prior_ncc_thr": 0.2,
+        "motion_prior_sigma_rows": 4.0,
+        "motion_prior_tau_s": 0.006,
+        "slew_gate": true,
+        "slew_max_deg_s": 100.0,
+        "variant_id": "constant_sg100_mp_s4_tau6",
+        "velocity_cost": 0.0,
+        "velocity_sigma_deg_s": 80.0
+      }
+    }
+  }
+}

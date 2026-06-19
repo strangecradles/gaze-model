@@ -1,0 +1,19 @@
+  [Igor chain] frame 200
+  [Igor chain] frame 400
+  [Igor chain] frame 600
+  [Igor chain] frame 800
+  [Igor chain] frame 1000
+  [Igor chain] frame 1200
+  [Igor lines] frame 100  qh_med=0.57
+  [Igor lines] frame 200  qh_med=0.49
+  [Igor lines] frame 300  qh_med=0.35
+  [Igor lines] frame 400  qh_med=0.43
+  [Igor lines] frame 500  qh_med=0.46
+  [Igor lines] frame 600  qh_med=0.33
+  [Igor lines] frame 700  qh_med=0.53
+  [Igor lines] frame 800  qh_med=0.43
+  [Igor lines] frame 900  qh_med=0.33
+  [Igor lines] frame 1000  qh_med=0.50
+  [Igor lines] frame 1100  qh_med=0.14
+  [Igor lines] frame 1200  qh_med=0.14
+DONE dewarp build Igor n=1011616 in 161s

@@ -1,0 +1,13 @@
+  [Ashton3 lines] frame 100  qh_med=0.63
+  [Ashton3 lines] frame 200  qh_med=0.70
+  [Ashton3 lines] frame 300  qh_med=0.62
+  [Ashton3 lines] frame 400  qh_med=0.73
+  [Ashton3 lines] frame 500  qh_med=0.71
+  [Ashton3 lines] frame 600  qh_med=0.62
+  [Ashton3 lines] frame 700  qh_med=0.68
+  [Ashton3 lines] frame 800  qh_med=0.67
+  [Ashton3 lines] frame 900  qh_med=0.57
+  [Ashton3 lines] frame 1000  qh_med=0.38
+  [Ashton3 lines] frame 1100  qh_med=0.48
+  [Ashton3 lines] frame 1200  qh_med=0.54
+DONE ashton3 dewarp n=1038280 in 51s

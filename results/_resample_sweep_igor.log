@@ -1,0 +1,69 @@
+
+[Igor] b3_rp0.05 dur=15.0 -> m4_b3_rp0.05_d15.npz
+  [Igor m4] frame 100/1253 (105s)
+  [Igor m4] frame 200/1253 (204s)
+  prec_x=3.30'  j30=1.24'  r_dot=0.89  resample=0.17(lock 0.08)  guardrail=OK  (270s)
+
+[Igor] b3_rp0.15 dur=15.0 -> m4_b3_rp0.15_d15.npz
+  [Igor m4] frame 100/1253 (84s)
+  [Igor m4] frame 200/1253 (181s)
+  prec_x=3.29'  j30=1.20'  r_dot=0.89  resample=0.17(lock 0.09)  guardrail=OK  (240s)
+
+[Igor] b3_rp0.5 dur=15.0 -> m4_b3_rp0.5_d15.npz
+  [Igor m4] frame 100/1253 (87s)
+  [Igor m4] frame 200/1253 (171s)
+  prec_x=3.39'  j30=1.33'  r_dot=0.89  resample=0.18(lock 0.11)  guardrail=OK  (231s)
+
+[Igor] b5_rp0.05 dur=15.0 -> m4_b5_rp0.05_d15.npz
+  [Igor m4] frame 100/1253 (85s)
+  [Igor m4] frame 200/1253 (174s)
+  prec_x=3.43'  j30=1.24'  r_dot=0.89  resample=0.20(lock 0.10)  guardrail=OK  (233s)
+
+[Igor] b5_rp0.15 dur=15.0 -> m4_b5_rp0.15_d15.npz
+  [Igor m4] frame 100/1253 (87s)
+  [Igor m4] frame 200/1253 (175s)
+  prec_x=3.32'  j30=1.22'  r_dot=0.89  resample=0.21(lock 0.12)  guardrail=OK  (236s)
+
+[Igor] b5_rp0.5 dur=15.0 -> m4_b5_rp0.5_d15.npz
+  [Igor m4] frame 100/1253 (84s)
+  [Igor m4] frame 200/1253 (169s)
+  prec_x=3.47'  j30=1.28'  r_dot=0.89  resample=0.23(lock 0.15)  guardrail=OK  (230s)
+
+[Igor] b8_rp0.05 dur=15.0 -> m4_b8_rp0.05_d15.npz
+  [Igor m4] frame 100/1253 (85s)
+  [Igor m4] frame 200/1253 (171s)
+  prec_x=3.40'  j30=1.21'  r_dot=0.89  resample=0.25(lock 0.13)  guardrail=OK  (232s)
+
+[Igor] b8_rp0.15 dur=15.0 -> m4_b8_rp0.15_d15.npz
+  [Igor m4] frame 100/1253 (94s)
+  [Igor m4] frame 200/1253 (185s)
+  prec_x=3.47'  j30=1.21'  r_dot=0.89  resample=0.27(lock 0.16)  guardrail=OK  (244s)
+
+[Igor] b8_rp0.5 dur=15.0 -> m4_b8_rp0.5_d15.npz
+  [Igor m4] frame 100/1253 (82s)
+  [Igor m4] frame 200/1253 (165s)
+  prec_x=3.52'  j30=1.23'  r_dot=0.89  resample=0.30(lock 0.21)  guardrail=OK  (223s)
+
+[Igor] b20_rp0.05 dur=15.0 -> m4_b20_rp0.05_d15.npz
+  [Igor m4] frame 100/1253 (82s)
+  [Igor m4] frame 200/1253 (308s)
+  prec_x=3.74'  j30=1.27'  r_dot=0.89  resample=0.39(lock 0.24)  guardrail=OK  (367s)
+
+[Igor] b20_rp0.15 dur=15.0 -> m4_b20_rp0.15_d15.npz
+  [Igor m4] frame 100/1253 (84s)
+  [Igor m4] frame 200/1253 (168s)
+  prec_x=3.71'  j30=1.29'  r_dot=0.89  resample=0.44(lock 0.32)  guardrail=OK  (230s)
+
+[Igor] b20_rp0.5 dur=15.0 -> m4_b20_rp0.5_d15.npz
+  [Igor m4] frame 100/1253 (85s)
+  [Igor m4] frame 200/1253 (167s)
+  prec_x=3.77'  j30=1.23'  r_dot=0.89  resample=0.56(lock 0.49)  guardrail=OK  (225s)
+
+[Igor] lock_gated dur=15.0 -> m4_lg_d15.npz
+  [Igor m4] frame 100/1253 (86s)
+  [Igor m4] frame 200/1253 (174s)
+  prec_x=3.50'  j30=1.29'  r_dot=0.89  resample=0.18(lock 0.08)  guardrail=OK  (236s)
+
+Wrote /Users/ashtonperlroth/Kodiak/gaze-model/results/pf_dejitter_sweep_Igor_d15.csv
+Wrote /Users/ashtonperlroth/Kodiak/gaze-model/results/pf_dejitter_sweep_Igor_d15.png
+Best (guardrailed): b3_rp0.15 prec_x=3.29' j30=1.20' r_dot=0.89
