@@ -26,6 +26,7 @@ results/animations/
 # --- local tool/session state ---
 .omc/
 .claude/
+.venv/
 
 # --- OS / editor noise ---
 .DS_Store
